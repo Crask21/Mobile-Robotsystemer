@@ -1,9 +1,9 @@
 import pyaudio
 import struct
 import numpy as np
-
+import matplotlib.pyplot as plt
 from scipy.fftpack import fft
-
+import time
 
 #frequencies to delete
 delList=np.arange(-1953,0)
@@ -15,8 +15,9 @@ FORMAT = pyaudio.paInt16     # audio format (bytes per sample?)
 CHANNELS = 1                 # single channel for microphone
 RATE = 44100                 # samples per second
 
+# create matplotlib figure and axes
+fig, (ax1, ax2) = plt.subplots(2, figsize=(15, 7))
 
-#dav
 # pyaudio class instance
 p = pyaudio.PyAudio()
 
@@ -27,8 +28,8 @@ stream = p.open(
     rate=RATE,
     input=True,
     output=True,
-    frames_per_buffer=CHUNK
-    #input_device_index=3
+    frames_per_buffer=CHUNK,
+    input_device_index=1
     
 )
 
@@ -38,13 +39,36 @@ xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
 xf=np.delete(xf, delListLow)
 
+###find out which indices in xf have frequency higher than 2000
+#myList=np.where(xf>500)
+#print(myList[0])
+#print(xf[24])
+#time.sleep(1000)
+# create a line object with random data
+line, = ax1.plot(x, np.random.rand(CHUNK), '-', lw=2)
 
+# create semilogx line for spectrum
+line_fft, = ax2.semilogx(xf, np.random.rand(xf.size), '-', lw=2)
 
+# format waveform axes
+ax1.set_title('AUDIO WAVEFORM')
+ax1.set_xlabel('samples')
+ax1.set_ylabel('volume')
+ax1.set_ylim(0, 255)
+ax1.set_xlim(0, 2 * CHUNK)
+plt.setp(ax1, xticks=[0, CHUNK, 2 * CHUNK], yticks=[0, 128, 255])
 
+# format spectrum axes
+ax2.set_xlim(20, RATE / 2)
 
 print('stream started')
 
+# for measuring frame rate
+frame_count = 0
+start_time = time.time()
 
+plt.show(block=False)
+hej=2
 
 while True:
     # binary data
@@ -56,18 +80,25 @@ while True:
     # create np array and offset by 128
     data_np = np.array(data_int, dtype='b')[::2] + 128
     
+    line.set_ydata(data_np)
     
     # compute FFT and update line
     yf = fft(data_int)
     yf =np.delete(yf,delList)
     yf =np.delete(yf, delListLow)
+    line_fft.set_ydata(np.abs(yf[0:xf.size])  / (128 * CHUNK))
     freqMagn=np.abs(yf[0:xf.size])  / (128 * xf.size)
     #delete frequencies above 2000
     #delList=np.arange(-1953,0)
     #highfreq=np.delete(highfreq,delList)
 
 
-
+   
+    # update figure canvas
+    
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+    
 
     #print(xf[np.argmax(freqMagn)])
     
