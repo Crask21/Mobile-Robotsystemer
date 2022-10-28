@@ -16,7 +16,7 @@ CHANNELS = 1                 # single channel for microphone
 RATE = 44100                 # samples per second
 
 
-
+#dav
 # pyaudio class instance
 p = pyaudio.PyAudio()
 
