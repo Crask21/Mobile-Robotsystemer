@@ -40,6 +40,7 @@ xf=np.delete(xf, delListLow)
 
 #intialize list to store data
 myProgram=[]
+myProgram=np.array(myProgram)
 sampleCount=1
 
 
@@ -87,12 +88,15 @@ while True:
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
     #closeFreq=np.where(highestFreq)
     #print(xf[highestFreqs])
+    
     sampleCount+=1
     if sampleCount%100==0:
-        myProgram=myProgram.append(xf[highestFreqs])
+        myProgram=np.append(myProgram,xf[highestFreqs])
         print("MyProgram:")
         print(myProgram)
-        print("------------------------------------")
+
+    #print(xf[highestFreqs])
+    #print("------------------------------------")
     
     
     
