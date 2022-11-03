@@ -1,6 +1,7 @@
 import pyaudio
 import struct
 import numpy as np
+import os
 
 from scipy.fftpack import fft
 
@@ -16,7 +17,6 @@ CHANNELS = 1                 # single channel for microphone
 RATE = 44100                 # samples per second
 
 
-#dav med dig der
 # pyaudio class instance
 p = pyaudio.PyAudio()
 
@@ -38,9 +38,7 @@ xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
 xf=np.delete(xf, delListLow)
 
-#intialize list to store data
-myProgram=[]
-myProgram=np.array(myProgram)
+#counter to only count specific values
 sampleCount=1
 
 
@@ -90,13 +88,13 @@ while True:
     #print(xf[highestFreqs])
     
     sampleCount+=1
-    if sampleCount%100==0:
-        myProgram=np.append(myProgram,xf[highestFreqs])
-        print("MyProgram:")
-        print(myProgram)
+    
+    if sampleCount%3==0:
+        print(xf[highestFreqs])
+        print("------------------------------------")
+        #os.system("cls")
 
-    #print(xf[highestFreqs])
-    #print("------------------------------------")
+    
     
     
     
