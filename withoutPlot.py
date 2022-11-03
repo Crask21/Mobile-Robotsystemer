@@ -38,7 +38,9 @@ xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
 xf=np.delete(xf, delListLow)
 
-
+#intialize list to store data
+myProgram=[]
+sampleCount=1
 
 
 
@@ -58,6 +60,8 @@ while True:
     
     
     # compute FFT and update line
+
+    #perhaps use goertzel later for optimization
     yf = fft(data_int)
     yf =np.delete(yf,delList)
     yf =np.delete(yf, delListLow)
@@ -82,8 +86,15 @@ while True:
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
     #closeFreq=np.where(highestFreq)
-    print(xf[highestFreqs])
-    print("------------------------------------")
+    #print(xf[highestFreqs])
+    sampleCount+=1
+    if sampleCount%100==0:
+        myProgram=myProgram.append(xf[highestFreqs])
+        print("MyProgram:")
+        print(myProgram)
+        print("------------------------------------")
+    
+    
     
 
 
