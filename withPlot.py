@@ -114,6 +114,11 @@ while True:
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
     #closeFreq=np.where(highestFreq)
     print(xf[highestFreqs])
+    #myProgram=myProgram+xf[highestFreqs]
+    #tooBig=len(myProgram)>100
+    #if tooBig:
+        
+
     print("------------------------------------")
     
 
