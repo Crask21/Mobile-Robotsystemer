@@ -5,6 +5,57 @@ import os
 
 from scipy.fftpack import fft
 
+def dtmf_to_hexa(inputList):
+
+    output = []
+
+    for i in range(len(inputList)):
+        if(inputList[0]>inputList[1]):
+            temp = inputList[0]
+            inputList[0] = inputList[1]
+            inputList[1] = temp
+
+    input1 = inputList[0]
+    input2 = inputList[1]
+
+    if((input1>=650) and (input1<=730)):
+        if((input2>=1150) and (input2<=1250)):
+            output.append(0)
+        elif((input2>=1280) and (input2<=1380)):
+            output.append(1)
+        elif((input2>=1420) and (input2<=1520)):
+            output.append(2)
+        elif((input2>=1580) and (input2<=1680)):
+            output.append(3)
+    elif((input1>=745) and (input1<=810)):
+        if((input2>=1150) and (input2<=1250)):
+            output.append(4)
+        elif((input2>=1280) and (input2<=1380)):
+            output.append(5)
+        elif((input2>=1420) and (input2<=1520)):
+            output.append(6)
+        elif((input2>=1580) and (input2<=1680)):
+            output.append(7)
+    elif((input1>=820) and (input1<=890)):
+        if((input2>=1150) and (input2<=1250)):
+            output.append(8)
+        elif((input2>=1280) and (input2<=1380)):
+            output.append(9)
+        elif((input2>=1420) and (input2<=1520)):
+            output.append('A')
+        elif((input2>=1580) and (input2<=1680)):
+            output.append('B')
+    elif((input1>=900) and (input1<=980)):
+        if((input2>=1150) and (input2<=1250)):
+            output.append('C')
+        elif((input2>=1280) and (input2<=1380)):
+            output.append('D')
+        elif((input2>=1420) and (input2<=1520)):
+            output.append('E')
+        elif((input2>=1580) and (input2<=1680)):
+            output.append('F')
+
+    return output
 
 #frequencies to delete
 delList=np.arange(-1953,0)
@@ -45,7 +96,7 @@ sampleCount=1
 
 print('stream started')
 
-
+outputList=[]
 
 while True:
     # binary data
@@ -57,9 +108,6 @@ while True:
     # create np array and offset by 128
     data_np = np.array(data_int, dtype='b')[::2] + 128
     
-    
-    # compute FFT and update line
-
     #perhaps use goertzel later for optimization
     yf = fft(data_int)
     yf =np.delete(yf,delList)
@@ -75,7 +123,8 @@ while True:
     #print(xf[np.argmax(freqMagn)])
     
     #find frequencies above 0.15 in magnitude
-    listFreq=np.where(freqMagn>0.15)
+    #listFreq=np.where(freqMagn>0.3)
+    
     #find largest frequency
     highestFreq=np.argmax(freqMagn)
     #make list of neighbours
@@ -90,9 +139,16 @@ while True:
     sampleCount+=1
     
     if sampleCount%3==0:
-        print(xf[highestFreqs])
+        #print(xf[highestFreqs])
+        #print(freqMagn[highestFreqs])
+        if freqMagn[highestFreqs[1]]>3:
+            outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
+        print(outputList)
         print("------------------------------------")
         #os.system("cls")
+
+
+
 
     
     

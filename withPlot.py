@@ -103,7 +103,7 @@ while True:
     #print(xf[np.argmax(freqMagn)])
     
     #find frequencies above 0.15 in magnitude
-    listFreq=np.where(freqMagn>0.15)
+    listFreq=np.where(freqMagn>0.2)
     #find largest frequency
     highestFreq=np.argmax(freqMagn)
     #make list of neighbours

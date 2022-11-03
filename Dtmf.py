@@ -1,9 +1,9 @@
 
 inputList1 = [927,1445];
 
-output = []
-
 def dtmf_to_hexa(inputList):
+
+    output = [];
 
     for i in range(len(inputList)):
         if(inputList[0]>inputList[1]):
@@ -50,6 +50,9 @@ def dtmf_to_hexa(inputList):
             output.append('E');
         elif((input2>=1580) and (input2<=1680)):
             output.append('F');
+
+    return output;
+      
             
 dtmf_to_hexa(inputList1)
 
