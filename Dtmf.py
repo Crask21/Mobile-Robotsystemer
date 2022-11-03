@@ -1,17 +1,18 @@
 
-inputList = [[927,1445],[764,1358],[1482,855]];
+inputList1 = [927,1445];
 
 output = []
 
-for i in range(len(inputList)):
-    if(inputList[i][0]>inputList[i][1]):
-        temp = inputList[i][0];
-        inputList[i][0] = inputList[i][1];
-        inputList[i][1] = temp;
+def dtmf_to_hexa(inputList):
 
-for i in range(len(inputList)):
-    input1 = inputList[i][0];
-    input2 = inputList[i][1];
+    for i in range(len(inputList)):
+        if(inputList[0]>inputList[1]):
+            temp = inputList[0];
+            inputList[0] = inputList[1];
+            inputList[1] = temp;
+
+    input1 = inputList[0];
+    input2 = inputList[1];
 
     if((input1>=650) and (input1<=730)):
         if((input2>=1150) and (input2<=1250)):
@@ -49,5 +50,7 @@ for i in range(len(inputList)):
             output.append('E');
         elif((input2>=1580) and (input2<=1680)):
             output.append('F');
+            
+dtmf_to_hexa(inputList1)
 
 print(output);
