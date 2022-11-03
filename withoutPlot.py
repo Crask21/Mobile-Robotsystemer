@@ -1,8 +1,7 @@
 import pyaudio
 import struct
 import numpy as np
-import os
-
+import time
 from scipy.fftpack import fft
 
 def dtmf_to_hexa(inputList):
@@ -99,31 +98,22 @@ print('stream started')
 outputList=[]
 
 while True:
+    loopStart=time.time()
     # binary data
     data = stream.read(CHUNK)  
-    
     # convert data to integers, make np array, then offset it by 127
     data_int = struct.unpack(str(2 * CHUNK) + 'B', data)
     
     # create np array and offset by 128
     data_np = np.array(data_int, dtype='b')[::2] + 128
     
+    
     #perhaps use goertzel later for optimization
     yf = fft(data_int)
     yf =np.delete(yf,delList)
     yf =np.delete(yf, delListLow)
     freqMagn=np.abs(yf[0:xf.size])  / (128 * xf.size)
-    #delete frequencies above 2000
-    #delList=np.arange(-1953,0)
-    #highfreq=np.delete(highfreq,delList)
-
-
-
-
-    #print(xf[np.argmax(freqMagn)])
     
-    #find frequencies above 0.15 in magnitude
-    #listFreq=np.where(freqMagn>0.3)
     
     #find largest frequency
     highestFreq=np.argmax(freqMagn)
@@ -133,26 +123,16 @@ while True:
     #delete the neighbours
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
-    #closeFreq=np.where(highestFreq)
-    #print(xf[highestFreqs])
     
-    sampleCount+=1
-    
-    if sampleCount%3==0:
-        #print(xf[highestFreqs])
-        #print(freqMagn[highestFreqs])
-        if freqMagn[highestFreqs[1]]>3:
-            outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
-        print(outputList)
-        print("------------------------------------")
-        #os.system("cls")
+    if freqMagn[highestFreqs[1]]>3:
+        outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
+    print(outputList)
+    print("------------------------------------")
+    loopEnd=time.time()
+    if loopEnd-loopStart>0.1:
+        print("ERROR: The baudrate is too fast")
+    while loopEnd-loopStart<0.1:
+        loopEnd=time.time()
 
 
-
-
-    
-    
-    
-    
-
-
+    print(loopEnd-loopStart)
