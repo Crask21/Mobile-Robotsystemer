@@ -1,4 +1,4 @@
-project(paho_cpp_example)
+project(main)
 
 cmake_minimum_required(VERSION 3.10)
 
@@ -7,5 +7,5 @@ find_package(PahoMqttCpp REQUIRED)
 
 include_directories("inc")
 
-add_executable(cpp_example cpp_example.cpp)
-target_link_libraries(cpp_example PahoMqttCpp::paho-mqttpp3)
+add_executable(main main.cpp)
+target_link_libraries(main PahoMqttCpp::paho-mqttpp3)
