@@ -88,10 +88,6 @@ xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
 xf=np.delete(xf, delListLow)
 
-#counter to only count specific values
-sampleCount=1
-
-
 
 print('stream started')
 
@@ -134,11 +130,14 @@ while True:
     while loopEnd-loopStart<0.1:
         loopEnd=time.time()
     print(loopEnd-loopStart)
-    if outputList[0]:
-        outputList=[]
-    if outputList==["A","B","C","D","E","F"]:
+    if len(outputList)>0:
+        if outputList[0]!="A":
+            outputList=[]
+    if outputList==["A","B","C"]:
         print("Synchronization is succesfull")
-    if outputList!=["A","B","C","D","E","F"] and len(outputList)>6:
+        outputList=[]
+    if outputList!=["A","B","C"] and len(outputList)>3:
         print("Synchronization commensing, delaying with 0,01 sec")
+        outputList=[]
         while loopEnd-loopStart<0.11:
             loopEnd=time.time()
