@@ -134,11 +134,11 @@ while True:
     while loopEnd-loopStart<0.1:
         loopEnd=time.time()
     print(loopEnd-loopStart)
+    if outputList[0]:
+        outputList=[]
     if outputList==["A","B","C","D","E","F"]:
         print("Synchronization is succesfull")
-    if outputList!=["A","B","C","D","E","F"]:
+    if outputList!=["A","B","C","D","E","F"] and len(outputList)>6:
         print("Synchronization commensing, delaying with 0,01 sec")
         while loopEnd-loopStart<0.11:
             loopEnd=time.time()
-    elif len(outputList)>8:
-        outputList=[]
