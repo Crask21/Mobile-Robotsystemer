@@ -39,30 +39,38 @@ int main(int argc, char const *argv[])
 
     try {  
         cout << "\nConnecting..." << endl;
-        cli.connect().wait();
+        cli.connect()->wait();
         cout << "  ...OK" << endl;
     }
     catch (const mqtt::exception& exc) {
         cerr << exc << endl;
         return false;
     }
-
-    
+    float i = 0.0;
     json forward = {
-        {"linear", {{"x", 0.2}, {"y", 0}, {"z", 0}}},
+        {"linear", {{"x", 0.0}, {"y", 0}, {"z", 0}}},
         {"angular", {{"x", 0}, {"y", 0}, {"z", 0}}}
     };
     json back = {
-        {"linear", {{"x", -0.2}, {"y", 0}, {"z", 0}}},
+        {"linear", {{"x", -0.0}, {"y", 0}, {"z", 0}}},
         {"angular", {{"x", 0}, {"y", 0}, {"z", 0}}}
     };
     while (true) {
+        forward = {
+            {"linear", {{"x", i}, {"y", 0}, {"z", 0}}},
+            {"angular", {{"x", 0}, {"y", 0}, {"z", 0}}}
+        };
+        back = {
+            {"linear", {{"x", -i}, {"y", 0}, {"z", 0}}},
+            {"angular", {{"x", 0}, {"y", 0}, {"z", 0}}}
+        };
         tok = top.publish(forward.dump());
-        tok.wait();
-        this_thread::sleep_for(chrono::milliseconds(2000));
+        tok->wait();
+        this_thread::sleep_for(chrono::milliseconds(1000));
         tok = top.publish(back.dump());
-        tok.wait();
-        this_thread::sleep_for(chrono::milliseconds(2000));
+        tok->wait();
+        this_thread::sleep_for(chrono::milliseconds(1000));
+        i+=0.01;
     }
     return 0;
 }
