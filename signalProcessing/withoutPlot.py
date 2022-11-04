@@ -124,7 +124,7 @@ while True:
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
     
-    if freqMagn[highestFreqs[1]]>3:
+    if freqMagn[highestFreqs[1]]>4:
         outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
     print(outputList)
     print("------------------------------------")
@@ -133,6 +133,12 @@ while True:
         print("ERROR: The baudrate is too fast")
     while loopEnd-loopStart<0.1:
         loopEnd=time.time()
-
-
     print(loopEnd-loopStart)
+    if outputList==["A","B","C","D","E","F"]:
+        print("Synchronization is succesfull")
+    if outputList!=["A","B","C","D","E","F"]:
+        print("Synchronization commensing, delaying with 0,01 sec")
+        while loopEnd-loopStart<0.11:
+            loopEnd=time.time()
+    elif len(outputList)>8:
+        outputList=[]
