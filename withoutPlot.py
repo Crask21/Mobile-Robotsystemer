@@ -140,3 +140,5 @@ while True:
         print("Synchronization commensing, delaying with 0,01 sec")
         while loopEnd-loopStart<0.11:
             loopEnd=time.time()
+    elif len(outputList)>8:
+        outputList=[]
