@@ -88,10 +88,6 @@ xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
 xf=np.delete(xf, delListLow)
 
-#counter to only count specific values
-sampleCount=1
-
-
 
 print('stream started')
 
@@ -124,7 +120,7 @@ while True:
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
     
-    if freqMagn[highestFreqs[1]]>3:
+    if freqMagn[highestFreqs[1]]>4:
         outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
     print(outputList)
     print("------------------------------------")
@@ -133,6 +129,15 @@ while True:
         print("ERROR: The baudrate is too fast")
     while loopEnd-loopStart<0.1:
         loopEnd=time.time()
-
-
     print(loopEnd-loopStart)
+    if len(outputList)>0:
+        if outputList[0]!="A":
+            outputList=[]
+    if outputList==["A","B","C"]:
+        print("Synchronization is succesfull")
+        outputList=[]
+    if outputList!=["A","B","C"] and len(outputList)>3:
+        print("Synchronization commensing, delaying with 0,01 sec")
+        outputList=[]
+        while loopEnd-loopStart<0.11:
+            loopEnd=time.time()
