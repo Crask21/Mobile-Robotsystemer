@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from time import sleep
 import sounddevice as sd
+#import pygame
 
 
 
@@ -24,12 +25,13 @@ def makeDTMF(amplitude,dur,freq1,freq2,k,f_sample):
 
     number_of_faded_points = int(dur*percentage_fade * f_sample)
     fade = np.linspace(0,1,num=number_of_faded_points)
+    fade_end = np.linspace(1,0,num=number_of_faded_points)
 
     for j in np.arange(number_of_faded_points):
         xi[j] = xi[j] * fade[j]
 
     for j in np.arange(-1*number_of_faded_points,-1):    
-        xi[j] = xi[j] * fade[j]
+        xi[j] = xi[j] * fade_end[j]
         
     
     #return [time,xi]
@@ -59,8 +61,8 @@ wE = makeDTMF(10000,duration,dtmf_f[0xE][0],dtmf_f[0xE][1],0,fs)
 wF = makeDTMF(10000,duration,dtmf_f[0xF][0],dtmf_f[0xF][1],0,fs)
 
 
-seq = [*wA,*wB,*wC,*wA,*wB,*wC,*wA,*wB,*wC,*wA,*wB,*wC,*wA,*wB,*wC,*wA,*wB,*wC,*wA,*wB,*wC,*wA,*wB,*wC]
-seq_numb = 24
+seq = [*wA,*wB,*wC]
+seq_numb = 3
 
 
 
@@ -68,14 +70,14 @@ wav_wave = np.array(seq, dtype=np.int16)
 
 
 
-#time = np.arange(0, duration*seq_numb, 1/fs)
+time = np.arange(0, duration*seq_numb, 1/fs)
 #time = np.delete(time,0)
-#plt.plot(time,seq,'r--')
-#plt.ylabel('some numbers')
-#plt.show()
+plt.plot(time,seq,'r--')
+plt.ylabel('some numbers')
+plt.show()
 
-while True:
-    sd.play(wav_wave, blocking=True)
+#while True:
+    #sd.play(wav_wave, blocking=True)
 
 
 
