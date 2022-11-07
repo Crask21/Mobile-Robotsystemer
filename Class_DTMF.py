@@ -141,24 +141,20 @@ class DTMF:
         sd.play(wav_wave, blocking=True)
 
 
-
+# DTMF Settings
 fs = 44100
 amplitude = 1000
-fade_P = 0.05
 media = 'PyGame' # 'SD'
+fade_P = 0.01
+baud_rate = 10
 
-baud_rate = 3
-
-
-
-
-
+# Initialization
 data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
 
 
 
 
-
+# Send stuff
 data_P.send_package([0xA,0xB,0xC,0xD])
 data_P.plot_last_package()
 
