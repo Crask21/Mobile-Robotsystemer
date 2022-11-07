@@ -4,6 +4,7 @@ from time import sleep
 import sounddevice as sd
 #import pygame
 
+import pygame
 
 
 
