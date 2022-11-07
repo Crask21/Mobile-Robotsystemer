@@ -7,7 +7,7 @@ import pygame
 
 
 
-class dataToDTMF:
+class DTMF:
 
     def __init__(data, fs, amplitude, p_fade, baud, sound_media = 'PyGame'):
 
@@ -31,7 +31,7 @@ class dataToDTMF:
 
 
 # Send package of hexi decimals
-    def sendPackage(data, package):
+    def send_package(data, package):
 
         
         data.soundwave = np.arange(0,1)
@@ -52,6 +52,8 @@ class dataToDTMF:
         # Play through Sounddevice
         elif data.sound_media == 'SD':
             data.play_SD(data.soundwave)
+           
+
 # Plot the package as DTMF tones
     def plot_last_package(data):
 
@@ -140,13 +142,28 @@ class dataToDTMF:
 
 
 
-data_P = dataToDTMF(44100, 1000, 0.05, 3,'PyGame')
+fs = 44100
+amplitude = 1000
+fade_P = 0.05
+media = 'PyGame' # 'SD'
 
-data_P.sendPackage([0xA,0xB,0xC,0xD])
+baud_rate = 3
+
+
+
+
+
+data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
+
+
+
+
+
+data_P.send_package([0xA,0xB,0xC,0xD])
 data_P.plot_last_package()
 
 while True:
-    data_P.sendPackage([0xA,0xB,0xC,0xD])
+    data_P.send_package([0xA,0xB,0xC,0xD,0xE,0xF])
     
 
 

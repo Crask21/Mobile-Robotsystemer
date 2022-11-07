@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from time import sleep
 import sounddevice as sd
-#import pygame
-
 import pygame
 
 
@@ -12,7 +10,7 @@ fs = 44100 # Hz   sample frequency
 baud = 1
 duration = 1/baud
 percentage_fade = 0.1
-
+amplitude = 100
 
 
 
@@ -42,43 +40,90 @@ def makeDTMF(amplitude,dur,freq1,freq2,k,f_sample):
 
 dtmf_f = [[1209,697],[1336,697],[1477,697],[1633,697],[1209,770],[1336,770],[1477,770],[1633,770],[1209,852],[1336,852],[1477,852],[1633,852],[1209,941],[1336,941],[1477,941],[1633,941]]
 
-print(dtmf_f[0xF])
+print(0xF)
 
-w0 = makeDTMF(10000,duration,dtmf_f[0x0][0],dtmf_f[0x0][1],0,fs)
-w1 = makeDTMF(10000,duration,dtmf_f[0x1][0],dtmf_f[0x1][1],0,fs)
-w2 = makeDTMF(10000,duration,dtmf_f[0x2][0],dtmf_f[0x2][1],0,fs)
-w3 = makeDTMF(10000,duration,dtmf_f[0x3][0],dtmf_f[0x3][1],0,fs)
-w4 = makeDTMF(10000,duration,dtmf_f[0x4][0],dtmf_f[0x4][1],0,fs)
-w5 = makeDTMF(10000,duration,dtmf_f[0x5][0],dtmf_f[0x5][1],0,fs)
-w6 = makeDTMF(10000,duration,dtmf_f[0x6][0],dtmf_f[0x6][1],0,fs)
-w7 = makeDTMF(10000,duration,dtmf_f[0x7][0],dtmf_f[0x7][1],0,fs)
-w8 = makeDTMF(10000,duration,dtmf_f[0x8][0],dtmf_f[0x8][1],0,fs)
-w9 = makeDTMF(10000,duration,dtmf_f[0x9][0],dtmf_f[0x9][1],0,fs)
-wA = makeDTMF(10000,duration,dtmf_f[0xA][0],dtmf_f[0xA][1],0,fs)
-wB = makeDTMF(10000,duration,dtmf_f[0xB][0],dtmf_f[0xB][1],0,fs)
-wC = makeDTMF(10000,duration,dtmf_f[0xC][0],dtmf_f[0xC][1],0,fs)
-wD = makeDTMF(10000,duration,dtmf_f[0xD][0],dtmf_f[0xD][1],0,fs)
-wE = makeDTMF(10000,duration,dtmf_f[0xE][0],dtmf_f[0xE][1],0,fs)
-wF = makeDTMF(10000,duration,dtmf_f[0xF][0],dtmf_f[0xF][1],0,fs)
-
-
-seq = [*wA,*wB,*wC]
-seq_numb = 3
+w0 = makeDTMF(amplitude,duration,dtmf_f[0x0][0],dtmf_f[0x0][1],0,fs)
+w1 = makeDTMF(amplitude,duration,dtmf_f[0x1][0],dtmf_f[0x1][1],0,fs)
+w2 = makeDTMF(amplitude,duration,dtmf_f[0x2][0],dtmf_f[0x2][1],0,fs)
+w3 = makeDTMF(amplitude,duration,dtmf_f[0x3][0],dtmf_f[0x3][1],0,fs)
+w4 = makeDTMF(amplitude,duration,dtmf_f[0x4][0],dtmf_f[0x4][1],0,fs)
+w5 = makeDTMF(amplitude,duration,dtmf_f[0x5][0],dtmf_f[0x5][1],0,fs)
+w6 = makeDTMF(amplitude,duration,dtmf_f[0x6][0],dtmf_f[0x6][1],0,fs)
+w7 = makeDTMF(amplitude,duration,dtmf_f[0x7][0],dtmf_f[0x7][1],0,fs)
+w8 = makeDTMF(amplitude,duration,dtmf_f[0x8][0],dtmf_f[0x8][1],0,fs)
+w9 = makeDTMF(amplitude,duration,dtmf_f[0x9][0],dtmf_f[0x9][1],0,fs)
+wA = makeDTMF(amplitude,duration,dtmf_f[0xA][0],dtmf_f[0xA][1],0,fs)
+wB = makeDTMF(amplitude,duration,dtmf_f[0xB][0],dtmf_f[0xB][1],0,fs)
+wC = makeDTMF(amplitude,duration,dtmf_f[0xC][0],dtmf_f[0xC][1],0,fs)
+wD = makeDTMF(amplitude,duration,dtmf_f[0xD][0],dtmf_f[0xD][1],0,fs)
+wE = makeDTMF(amplitude,duration,dtmf_f[0xE][0],dtmf_f[0xE][1],0,fs)
+wF = makeDTMF(amplitude,duration,dtmf_f[0xF][0],dtmf_f[0xF][1],0,fs)
 
 
+seq = [w0,w4,w7,w2]
 
-wav_wave = np.array(seq, dtype=np.int16)
+
+
+
+real_seq = np.arange(0,0.1)
+
+for i in seq:
+    real_seq = [*real_seq, *i]
+    real_seq[-1] = 0
+
+
+seq_numb = len(seq)
+
+dtmf = []
+
+for i in dtmf_f:
+    dtmf.append(i)
+    print(dtmf)
+
+
+
 
 
 
 time = np.arange(0, duration*seq_numb, 1/fs)
-#time = np.delete(time,0)
-plt.plot(time,seq,'r--')
+real_seq = np.delete(real_seq,-1)
+
+
+plt.plot(time,real_seq,'r--')
 plt.ylabel('some numbers')
 plt.show()
 
-#while True:
-    #sd.play(wav_wave, blocking=True)
+
+def play_PyGame(soundwave, freq):
+    # Initialize PyGame mixer
+    pygame.mixer.init(frequency=freq, size=-16, channels=1)
+
+    # Convert list to numpy array
+    buffer = np.array(soundwave,dtype=np.int16)
+
+    # (Fixes and error) dublicate sound channel or something (it makes it work)
+    buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
+
+    # Create sound object
+    sound = pygame.sndarray.make_sound(buffer)
+
+    # Play the sound
+    sound.play()
+
+    # Delay for the duration of the sound
+    pygame.time.wait(int(sound.get_length() * 1000))
+
+def play_SD(soundwave):
+    wav_wave = np.array(soundwave, dtype=np.int16)
+    sd.play(wav_wave, blocking=True)
+
+play_PyGame(real_seq,fs)
+
+
+
+
+while True:
+    play_SD(real_seq)
 
 
 
