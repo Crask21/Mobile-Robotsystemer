@@ -60,6 +60,9 @@ def dtmf_to_hexa(inputList):
 delList=np.arange(-1953,0)
 delListLow=np.arange(23)
 
+baudRate=10
+baudTime=1/baudRate
+
 # constants
 CHUNK = 1024 * 2             # samples per frame
 FORMAT = pyaudio.paInt16     # audio format (bytes per sample?)
@@ -77,8 +80,8 @@ stream = p.open(
     rate=RATE,
     input=True,
     output=True,
-    frames_per_buffer=CHUNK
-    #input_device_index=3
+    frames_per_buffer=CHUNK,
+    input_device_index=1
     
 )
 
@@ -120,14 +123,14 @@ while True:
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
     
-    if freqMagn[highestFreqs[1]]>4:
+    if freqMagn[highestFreqs[1]]>1:
         outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
     print(outputList)
     print("------------------------------------")
     loopEnd=time.time()
-    if loopEnd-loopStart>0.1:
+    if loopEnd-loopStart>baudTime:
         print("ERROR: The baudrate is too fast")
-    while loopEnd-loopStart<0.1:
+    while loopEnd-loopStart<baudTime:
         loopEnd=time.time()
     print(loopEnd-loopStart)
     if len(outputList)>0:
@@ -136,8 +139,8 @@ while True:
     if outputList==["A","B","C"]:
         print("Synchronization is succesfull")
         outputList=[]
-    if outputList!=["A","B","C"] and len(outputList)>3:
+    if outputList!=["A","B","C"] and len(outputList)==3:
         print("Synchronization commensing, delaying with 0,01 sec")
         outputList=[]
-        while loopEnd-loopStart<0.11:
+        while loopEnd-loopStart<baudTime+baudTime*0.1:
             loopEnd=time.time()
