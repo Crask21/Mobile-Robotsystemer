@@ -26,8 +26,12 @@ upperRange= 20
 lowerRange=20
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 baudRate=15
 =======
+=======
+thread_f()
+>>>>>>> 11e1d364e65c3f07104e36e8ace64698a6b53a73
 
 x.start()
 
@@ -145,3 +149,17 @@ while True:
         syncCounter=0
         while loopEnd-loopStart<baudTime+baudTime*0.1:
             loopEnd=time.time()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
