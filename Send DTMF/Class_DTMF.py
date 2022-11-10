@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 #import sounddevice as sd
 import pygame 
 import time
+from random import randrange
 
 
 
@@ -181,10 +182,15 @@ fs = 44100
 amplitude = 5000
 media = 'PyGame' # 'SD'
 fade_P = 0.05
-baud_rate = 4
+baud_rate = 8
 
 # Initialization
 data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
+
+r_seq = []
+for i in np.arange(16):
+    r_seq.append(randrange(16))
+print(r_seq)
 
 
 # Plot FFT
@@ -195,11 +201,19 @@ data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
     #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
     #data_P.play_PyGame(sound)
 
+#data_P.send_package([0x6,0x6,0x6,0x6])
+
+data_P.send_package([0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xC,0xC])
+data_P.send_package(r_seq)
+while True:
+    True
+
 while True:
     loopstart = time.time()
-    data_P.send_package([0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0xF,0xA,0xB,0x5])
+    data_P.send_package([0xA,0xB])
     loopend = time.time()
-    print(loopend-loopstart)
+    #print(loopend-loopstart)
+
     
   #dtmf_freq = [[1209,697], # 0
   #                  [1336,697],  # 1
