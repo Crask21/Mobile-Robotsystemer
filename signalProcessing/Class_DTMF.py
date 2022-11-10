@@ -173,10 +173,9 @@ class DTMF:
 
         # Delay for the duration of the sound
         pygame.time.wait(int(sound.get_length() * 1000)) 
-    def play_SD(data, soundwave):
-        wav_wave = np.array(soundwave, dtype=np.int16)
-        sd.play(wav_wave, blocking=True)
-
+    #def play_SD(data, soundwave):
+    #    wav_wave = np.array(soundwave, dtype=np.int16)
+    #    sd.play(wav_wave, blocking=True)
 
 # DTMF Settings
 fs = 44100
@@ -185,7 +184,6 @@ media = 'PyGame' # 'SD'
 fade_P = 0.02
 baud_rate = 15
 
-
 # Initialization
 data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
 
@@ -193,6 +191,7 @@ r_seq = []
 for i in np.arange(16):
     r_seq.append(randrange(16))
 print(r_seq)
+
 
 
 # Plot FFT
@@ -211,12 +210,9 @@ def thread_f():
     data_P.send_package([0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xC,0xC])
     data_P.send_package(r_seq)
 
-#thread_f()
+play_package = threading.Thread(target=thread_f, args=())
 
-
-x = threading.Thread(target=thread_f, args=())
-
-x.start()
+play_package.start()
 
 while True:
     True
@@ -245,3 +241,33 @@ while True:
   #                  [1477,941],  # E
   #                  [1633,941]]  # F
 
+#       SEND DTMF THREAD
+#       SEND DTMF THREAD
+#       SEND DTMF THREAD
+#       SEND DTMF THREAD
+#       SEND DTMF THREAD
+#       SEND DTMF THREAD
+#       SEND DTMF THREAD
+
+# DTMF Settings
+fs = 44100
+amplitude = 5000
+media = 'PyGame' # 'SD'
+fade_P = 0.02
+baud_rate = 15
+
+# Initialization
+data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
+
+r_seq = []
+for i in np.arange(16):
+    r_seq.append(randrange(16))
+print(r_seq)
+
+def thread_f():
+    data_P.send_package([0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xC,0xC])
+    data_P.send_package(r_seq)
+
+play_package = threading.Thread(target=thread_f, args=())
+
+play_package.start()
