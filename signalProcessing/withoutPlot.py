@@ -25,6 +25,7 @@ dtmf_freq = [[1209,697], # 0
 upperRange= 20
 lowerRange=20
 
+thread_f()
 
 x.start()
 
@@ -141,3 +142,17 @@ while True:
         syncCounter=0
         while loopEnd-loopStart<baudTime+baudTime*0.1:
             loopEnd=time.time()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
