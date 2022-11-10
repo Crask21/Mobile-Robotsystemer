@@ -1,9 +1,28 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
-import sounddevice as sd
+#import sounddevice as sd
 import pygame 
+import time
 
 
+
+dtmf_freq = [[1209,697], # 0
+                    [1336,697],  # 1
+                    [1477,697],  # 2
+                    [1633,697],  # 3
+                    [1209,770],  # 4
+                    [1336,770],  # 5
+                    [1477,770],  # 6
+                    [1633,770],  # 7
+                    [1209,852],  # 8
+                    [1336,852],  # 9
+                    [1477,852],  # A
+                    [1633,852],  # B
+                    [1209,941],  # C
+                    [1336,941],  # D
+                    [1477,941],  # E
+                    [1633,941]]  # F
 
 
 
@@ -23,6 +42,7 @@ class DTMF:
 
         # Initialize sound array
         data.soundwave = np.array([])
+        data.FFT = 0
 
         # Initialize DMTF tone list
         data.dtmf = []
@@ -64,7 +84,19 @@ class DTMF:
 
         plt.plot(time,data.soundwave,'r--')
         plt.ylabel('some numbers')
-        plt.show()  
+        plt.show()
+
+
+    def plot_fft(data):
+
+        package_size = round(len(data.FFT)/data.fs/data.duration)
+
+        time = np.arange(0, data.duration * package_size, 1/data.fs)
+        #data.FFT = np.delete(data.FFT,-1)
+
+        plt.plot(data.FFT,'r--')
+        plt.ylabel('some numbers')
+        plt.show()
     
 
 
@@ -81,13 +113,16 @@ class DTMF:
             fade = np.linspace(0,1,num=number_of_faded_points)
             fade_end = np.linspace(1,0,num=number_of_faded_points)
 
+            data.FFT = np.fft.fft(xi)
+
             for j in np.arange(number_of_faded_points):
                 xi[j] = xi[j] * fade[j]
 
             for j in np.arange(-1*number_of_faded_points,-1):    
-                xi[j] = xi[j] * fade_end[j]
+                xi[j] = xi[j] * fade_end[j]    
             # Fadeeeeeee #
             
+
     
             return xi
 
@@ -143,23 +178,43 @@ class DTMF:
 
 # DTMF Settings
 fs = 44100
-amplitude = 1000
+amplitude = 5000
 media = 'PyGame' # 'SD'
-fade_P = 0.01
-baud_rate = 10
+fade_P = 0.05
+baud_rate = 4
 
 # Initialization
 data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
 
 
+# Plot FFT
+    #data_P.send_package([0xC])
+    #data_P.plot_fft()
 
-
-# Send stuff
-data_P.send_package([0xA,0xB,0xC,0xD])
-data_P.plot_last_package()
+# Send custom freq
+    #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
+    #data_P.play_PyGame(sound)
 
 while True:
-    data_P.send_package([0xA,0xB,0xC,0xD,0xE,0xF])
+    loopstart = time.time()
+    data_P.send_package([0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0x0,0xF,0xF,0xA,0xB,0x5])
+    loopend = time.time()
+    print(loopend-loopstart)
     
-
+  #dtmf_freq = [[1209,697], # 0
+  #                  [1336,697],  # 1
+  #                  [1477,697],  # 2
+  #                  [1633,697],  # 3
+  #                  [1209,770],  # 4
+  #                  [1336,770],  # 5
+  #                  [1477,770],  # 6
+  #                  [1633,770],  # 7
+  #                  [1209,852],  # 8
+  #                  [1336,852],  # 9
+  #                  [1477,852],  # A
+  #                  [1633,852],  # B
+  #                  [1209,941],  # C
+  #                  [1336,941],  # D
+  #                  [1477,941],  # E
+  #                  [1633,941]]  # F
 
