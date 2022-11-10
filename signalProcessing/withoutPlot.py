@@ -2,6 +2,7 @@ import pyaudio
 import struct
 import numpy as np
 import time
+import Class_DTMF
 from scipy.fftpack import fft
 
 dtmf_freq = [[1209,697], # 0
@@ -23,6 +24,9 @@ dtmf_freq = [[1209,697], # 0
 
 upperRange= 20
 lowerRange=20
+
+
+x.start()
 
 baudRate=8
 baudTime=1/baudRate
