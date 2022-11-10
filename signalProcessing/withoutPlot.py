@@ -24,7 +24,7 @@ dtmf_freq = [[1209,697], # 0
 upperRange= 20
 lowerRange=20
 
-baudRate=8
+baudRate=15
 baudTime=1/baudRate
 
 #variables for use later
@@ -36,7 +36,7 @@ startReading=False
 CHUNK = 1024 * 2             # samples per frame
 FORMAT = pyaudio.paInt16     # audio format (bytes per sample?)
 CHANNELS = 1                 # single channel for microphone
-RATE = 44100                 # samples per second
+RATE = 44100*2                 # samples per second
 
 def find_highest_freqs(freqMagn):
 #find largest frequency

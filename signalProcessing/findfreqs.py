@@ -64,10 +64,10 @@ baudRate=10
 baudTime=1/baudRate
 
 # constants
-CHUNK = 1024 * 2             # samples per frame
+CHUNK = 1024 * 5             # samples per frame
 FORMAT = pyaudio.paInt16     # audio format (bytes per sample?)
 CHANNELS = 1                 # single channel for microphone
-RATE = 44100                 # samples per second
+RATE = 44100*2                 # samples per second
 
 
 # pyaudio class instance
@@ -122,4 +122,5 @@ while True:
     #delete the neighbours
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
-    print(xf[highestFreqs])
+    #print(xf[highestFreqs])
+    print(xf)

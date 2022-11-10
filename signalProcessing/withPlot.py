@@ -111,7 +111,7 @@ while True:
     delFreq=np.delete(delFreq,np.where(delFreq>71))
     #delete the neighbours
     nfreqMagn=freqMagn[delFreq]=0
-    highestFreqs=[highestFreq, np.argmax(nfreqMagn)]
+    highestFreqs=[highestFreq, np.argmax(nfrfreqMagn)]
     #closeFreq=np.where(highestFreq)
     print(xf[highestFreqs])
     print(freqMagn[highestFreqs])
