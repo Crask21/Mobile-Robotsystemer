@@ -25,18 +25,9 @@ dtmf_freq = [[1209,697], # 0
 upperRange= 20
 lowerRange=20
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 baudRate=15
-=======
-=======
-thread_f()
->>>>>>> 11e1d364e65c3f07104e36e8ace64698a6b53a73
 
-x.start()
-
-baudRate=8
->>>>>>> 60babc70a86401ae8941a70d73470a37a0e1ccc3
 baudTime=1/baudRate
 
 #variables for use later
