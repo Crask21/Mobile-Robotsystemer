@@ -60,14 +60,11 @@ def dtmf_to_hexa(inputList):
 delList=np.arange(-1953,0)
 delListLow=np.arange(23)
 
-baudRate=10
-baudTime=1/baudRate
-
 # constants
-CHUNK = 1024 * 5             # samples per frame
+CHUNK = 1024 * 2             # samples per frame
 FORMAT = pyaudio.paInt16     # audio format (bytes per sample?)
 CHANNELS = 1                 # single channel for microphone
-RATE = 44100*2                 # samples per second
+RATE = 44100                 # samples per second
 
 
 # pyaudio class instance
@@ -80,8 +77,8 @@ stream = p.open(
     rate=RATE,
     input=True,
     output=True,
-    frames_per_buffer=CHUNK,
-    input_device_index=1
+    frames_per_buffer=CHUNK
+    #input_device_index=3
     
 )
 
@@ -90,6 +87,10 @@ x = np.arange(0, 2 * CHUNK, 2)       # samples (waveform)
 xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
 xf=np.delete(xf, delListLow)
+
+#counter to only count specific values
+sampleCount=1
+
 
 
 print('stream started')
@@ -122,5 +123,16 @@ while True:
     #delete the neighbours
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
-    #print(xf[highestFreqs])
-    print(xf)
+    
+    if freqMagn[highestFreqs[1]]>3:
+        outputList=outputList+dtmf_to_hexa(xf[highestFreqs])
+    print(outputList)
+    print("------------------------------------")
+    loopEnd=time.time()
+    if loopEnd-loopStart>0.1:
+        print("ERROR: The baudrate is too fast")
+    while loopEnd-loopStart<0.1:
+        loopEnd=time.time()
+
+
+    print(loopEnd-loopStart)

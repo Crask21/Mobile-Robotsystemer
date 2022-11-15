@@ -7,3 +7,11 @@ numdevices = info.get('deviceCount')
 for i in range(0, numdevices):
     if (p.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
         print("Input Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name'))
+
+
+devinfo = p.get_device_info_by_index(1)  # Or whatever device you care about.
+if p.is_format_supported(48000*8,  # Sample rate
+                         input_device=devinfo['index'],
+                         input_channels=devinfo['maxInputChannels'],
+                         input_format=pyaudio.paInt16):
+  print('Yay!')

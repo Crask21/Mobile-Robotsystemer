@@ -1,5 +1,5 @@
 
-inputList1 = [1336,941]
+inputList1 = [852,1633]
 
 dtmf_freq = [[1209,697], # 0
                     [1336,697],  # 1
@@ -28,6 +28,7 @@ def dtmf_to_hexa(inputFreqs):
     for i in range(16):
         if (inputFreqs[0]<dtmf_freq[i][1]+upperRange and inputFreqs[0]>dtmf_freq[i][1]-lowerRange)and(inputFreqs[1]<dtmf_freq[i][0]+upperRange and inputFreqs[1]>dtmf_freq[i][0]-lowerRange):
             output= hex(i)
+            print(output)
     return output
     #print(output)
 
