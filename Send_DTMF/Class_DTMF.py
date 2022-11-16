@@ -55,6 +55,10 @@ class DTMF:
 # Send package of hexi decimals
     def send_package(data, package):
 
+        # Initialize sound array
+        data.soundwave = np.arange(0,1)
+
+        
         hex_dict = {
         '0' : 0x0,
         '1' : 0x1,
@@ -73,11 +77,9 @@ class DTMF:
         'e' : 0xE,
         'f' : 0xF
         }
-        data.soundwave = np.arange(0,1)
-        # Initialize sound array
         
+        # If the package contains a list of strings it will be converted to ints
         if isinstance(package[0],str):
-            # If the package contains a list of strings it will be converted to ints
             for i in range(len(package)):
                 data.soundwave = np.append(data.soundwave,hex_dict[package[i][-1]])
 
