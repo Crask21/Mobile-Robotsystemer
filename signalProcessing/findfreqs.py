@@ -122,5 +122,5 @@ while True:
     #delete the neighbours
     freqMagn[delFreq]=0
     highestFreqs=[highestFreq, np.argmax(freqMagn)]
-    #print(xf[highestFreqs])
-    print(xf)
+    print(xf[highestFreqs])
+    #print(xf)
