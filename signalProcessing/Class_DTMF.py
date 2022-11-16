@@ -182,8 +182,8 @@ class DTMF:
 fs = 44100
 amplitude = 5000
 media = 'PyGame' # 'SD'
-fade_P = 0.25
-baud_rate = 10
+fade_P = 0.02
+baud_rate = 0.1
 sync_num = 10
 
 # Initialization
@@ -191,7 +191,7 @@ data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
 
 # Synchroniazation
 sync = []
-for i in np.arange(sync_num):
+for i in range(sync_num):
     sync.append(0xA)
     sync.append(0xB)
 sync.append(0xC)
@@ -202,13 +202,13 @@ print(sync)
 # Random package
 size = 16
 random_data = []
-for i in np.arange(16):
+for i in range(size):
     random_data.append(randrange(size))
 print(random_data)
 
 
 
-print(hex(128))
+
 
 # Plot FFT
     #data_P.send_package([0xC])
@@ -218,23 +218,20 @@ print(hex(128))
     #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
     #data_P.play_PyGame(sound)
 
-#data_P.send_package([0x6,0x6,0x6,0x6])
+data_P.send_package([0x6,0x6,0x6,0x6])
 
 
-
-def thread_f():
-    data_P.send_package(sync)
-    data_P.send_package(random_data)
-
+#def thread_f():
+#    data_P.send_package(sync)
+#    data_P.send_package(random_data)
 
 
 
 
 
+#play_package = threading.Thread(target=thread_f, args=())
 
-play_package = threading.Thread(target=thread_f, args=())
-
-play_package.start()
+#play_package.start()
 
 while True:
     True
@@ -246,7 +243,7 @@ while True:
     #print(loopend-loopstart)
 
     
-  #dtmf_freq = [[1209,697], # 0
+     #dtmf_freq = [[1209,697], # 0
   #                  [1336,697],  # 1
   #                  [1477,697],  # 2
   #                  [1633,697],  # 3
