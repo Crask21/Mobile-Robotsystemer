@@ -1,181 +1,27 @@
-
-import numpy as np
-import matplotlib.pyplot as plt
-#import sounddevice as sd
-import pygame 
-import time
-from random import randrange
-import threading
+from Class_DTMF import DTMF
+from Class_DTMF import rand_pack
+from Class_DTMF import synchroniazation
 
 
 
 dtmf_freq = [[1209,697], # 0
-                    [1336,697],  # 1
-                    [1477,697],  # 2
-                    [1633,697],  # 3
-                    [1209,770],  # 4
-                    [1336,770],  # 5
-                    [1477,770],  # 6
-                    [1633,770],  # 7
-                    [1209,852],  # 8
-                    [1336,852],  # 9
-                    [1477,852],  # A
-                    [1633,852],  # B
-                    [1209,941],  # C
-                    [1336,941],  # D
-                    [1477,941],  # E
-                    [1633,941]]  # F
+            [1336,697],  # 1
+            [1477,697],  # 2
+            [1633,697],  # 3
+            [1209,770],  # 4
+            [1336,770],  # 5
+            [1477,770],  # 6
+            [1633,770],  # 7
+            [1209,852],  # 8
+            [1336,852],  # 9
+            [1477,852],  # A
+            [1633,852],  # B
+            [1209,941],  # C
+            [1336,941],  # D
+            [1477,941],  # E
+            [1633,941]]  # F
 
 
-
-class DTMF:
-
-    def __init__(data, fs, amplitude, p_fade, baud, sound_media = 'PyGame'):
-
-        # DTMF setup
-        data.fs = fs
-        data.amplitude = amplitude
-        data.p_fade = p_fade
-
-        # User setting variables
-        data.baud = baud
-        data.duration = 1/baud
-        data.sound_media = sound_media
-
-        # Initialize sound array
-        data.soundwave = np.array([])
-        data.FFT = 0
-
-        # Initialize DMTF tone list
-        data.dtmf = []
-        data.DTMF_init()
-
-
-
-# Send package of hexi decimals
-    def send_package(data, package):
-
-        
-        data.soundwave = np.arange(0,1)
-
-        # Convert package into sound array
-        for i in package:
-            data.soundwave = [*data.soundwave, *data.dtmf[i]]
-
-            # Delete end spike
-            data.soundwave[-1] = 0
-
-        
-
-        # Play through PyGame
-        if data.sound_media == 'PyGame':
-            data.play_PyGame(data.soundwave)
-        
-        # Play through Sounddevice
-        elif data.sound_media == 'SD':
-            data.play_SD(data.soundwave)
-           
-
-# Plot the package as DTMF tones
-    def plot_last_package(data):
-
-        package_size = round(len(data.soundwave)/data.fs/data.duration)
-
-        time = np.arange(0, data.duration * package_size, 1/data.fs)
-        data.soundwave = np.delete(data.soundwave,-1)
-
-        plt.plot(time,data.soundwave,'r--')
-        plt.ylabel('some numbers')
-        plt.show()
-
-
-    def plot_fft(data):
-
-        package_size = round(len(data.FFT)/data.fs/data.duration)
-
-        time = np.arange(0, data.duration * package_size, 1/data.fs)
-        #data.FFT = np.delete(data.FFT,-1)
-
-        plt.plot(data.FFT,'r--')
-        plt.ylabel('some numbers')
-        plt.show()
-    
-
-
-        
-# Make a DTMF tone
-    def makeDTMF(data,amplitude,dur,freq1,freq2,f_sample, percentage_fade):
-            
-            # Turn frequencies into functions 
-            time = np.arange(0, dur, 1/f_sample)
-            xi = amplitude * np.sin(2*np.pi*freq2*time) + amplitude * np.sin(2*np.pi*freq1*time)   
-            
-            # Fadeeeeeee #
-            number_of_faded_points = int(dur * percentage_fade * f_sample)
-            fade = np.linspace(0,1,num=number_of_faded_points)
-            fade_end = np.linspace(1,0,num=number_of_faded_points)
-
-            data.FFT = np.fft.fft(xi)
-
-            for j in np.arange(number_of_faded_points):
-                xi[j] = xi[j] * fade[j]
-
-            for j in np.arange(-1*number_of_faded_points,-1):    
-                xi[j] = xi[j] * fade_end[j]    
-            # Fadeeeeeee #
-            
-
-    
-            return xi
-
-# Setup DTMF tones in list
-    def DTMF_init(data):
-
-
-        # DTMF frequencies
-        dtmf_freq = [[1209,697], # 0
-                    [1336,697],  # 1
-                    [1477,697],  # 2
-                    [1633,697],  # 3
-                    [1209,770],  # 4
-                    [1336,770],  # 5
-                    [1477,770],  # 6
-                    [1633,770],  # 7
-                    [1209,852],  # 8
-                    [1336,852],  # 9
-                    [1477,852],  # A
-                    [1633,852],  # B
-                    [1209,941],  # C
-                    [1336,941],  # D
-                    [1477,941],  # E
-                    [1633,941]]  # F
-
-
-        for i in np.arange(len(dtmf_freq)):
-            data.dtmf.append(data.makeDTMF(data.amplitude, data.duration, dtmf_freq[i][0], dtmf_freq[i][1], data.fs, data.p_fade))
-
-# Play the sound through either PyGame or Sounddevice
-    def play_PyGame(data, soundwave):
-        # Initialize PyGame mixer
-        pygame.mixer.init(frequency=data.fs, size=-16, channels=1)
-
-        # Convert list to numpy array
-        buffer = np.array(soundwave,dtype=np.int16)
-
-        # (Fixes and error) dublicate sound channel or something (it makes it work)
-        buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
-
-        # Create sound object
-        sound = pygame.sndarray.make_sound(buffer)
-
-        # Play the sound
-        sound.play()
-
-        # Delay for the duration of the sound
-        pygame.time.wait(int(sound.get_length() * 1000)) 
-    #def play_SD(data, soundwave):
-    #    wav_wave = np.array(soundwave, dtype=np.int16)
-    #    sd.play(wav_wave, blocking=True)
 
 
 # DTMF Settings
@@ -183,29 +29,19 @@ fs = 44100
 amplitude = 5000
 media = 'PyGame' # 'SD'
 fade_P = 0.02
-baud_rate = 0.1
-sync_num = 10
+baud_rate = 10
+
+
 
 # Initialization
-data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
+dtmf = DTMF(fs, amplitude, fade_P, baud_rate, media)
 
-# Synchroniazation
-sync = []
-for i in range(sync_num):
-    sync.append(0xA)
-    sync.append(0xB)
-sync.append(0xC)
-sync.append(0xC)
 
-print(sync)
 
-# Random package
-size = 16
-random_data = []
-for i in range(size):
-    random_data.append(randrange(size))
+dtmf.send_package(synchroniazation(10))
+dtmf.send_package(rand_pack(10))
 
-#print(random_data)
+
 
 
 
@@ -219,7 +55,7 @@ for i in range(size):
     #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
     #data_P.play_PyGame(sound)
 
-#data_P.send_package([0x6,0x6,0x6,0x6])
+
 
 
 #def thread_f():
@@ -227,62 +63,8 @@ for i in range(size):
 #    data_P.send_package(random_data)
 
 
-
-
-
 #play_package = threading.Thread(target=thread_f, args=())
 
 #play_package.start()
 
 
-
-    #print(loopend-loopstart)
-
-    
-     #dtmf_freq = [[1209,697], # 0
-  #                  [1336,697],  # 1
-  #                  [1477,697],  # 2
-  #                  [1633,697],  # 3
-  #                  [1209,770],  # 4
-  #                  [1336,770],  # 5
-  #                  [1477,770],  # 6
-  #                  [1633,770],  # 7
-  #                  [1209,852],  # 8
-  #                  [1336,852],  # 9
-  #                  [1477,852],  # A
-  #                  [1633,852],  # B
-  #                  [1209,941],  # C
-  #                  [1336,941],  # D
-  #                  [1477,941],  # E
-  #                  [1633,941]]  # F
-
-#       SEND DTMF THREAD
-#       SEND DTMF THREAD
-#       SEND DTMF THREAD
-#       SEND DTMF THREAD
-#       SEND DTMF THREAD
-#       SEND DTMF THREAD
-#       SEND DTMF THREAD
-
-# DTMF Settings
-fs = 44100
-amplitude = 5000
-media = 'PyGame' # 'SD'
-fade_P = 0.02
-baud_rate = 15
-
-# Initialization
-data_P = DTMF(fs, amplitude, fade_P, baud_rate, media)
-
-r_seq = []
-for i in np.arange(16):
-    r_seq.append(randrange(16))
-print(r_seq)
-
-def thread_f():
-    data_P.send_package([0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xC,0xC])
-    data_P.send_package(r_seq)
-
-play_package = threading.Thread(target=thread_f, args=())
-
-play_package.start()

@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 #import sounddevice as sd
@@ -9,22 +8,22 @@ import threading
 
 
 
-dtmf_freq = [[1209,697], # 0
-                    [1336,697],  # 1
-                    [1477,697],  # 2
-                    [1633,697],  # 3
-                    [1209,770],  # 4
-                    [1336,770],  # 5
-                    [1477,770],  # 6
-                    [1633,770],  # 7
-                    [1209,852],  # 8
-                    [1336,852],  # 9
-                    [1477,852],  # A
-                    [1633,852],  # B
-                    [1209,941],  # C
-                    [1336,941],  # D
-                    [1477,941],  # E
-                    [1633,941]]  # F
+#dtmf_freq = [[1209,697], # 0
+#                    [1336,697],  # 1
+#                    [1477,697],  # 2
+#                    [1633,697],  # 3
+#                    [1209,770],  # 4
+#                    [1336,770],  # 5
+#                    [1477,770],  # 6
+#                    [1633,770],  # 7
+#                    [1209,852],  # 8
+#                    [1336,852],  # 9
+#                    [1477,852],  # A
+#                    [1633,852],  # B
+#                    [1209,941],  # C
+#                    [1336,941],  # D
+#                    [1477,941],  # E
+#                    [1633,941]]  # F
 
 
 
@@ -42,8 +41,9 @@ class DTMF:
         data.duration = 1/baud
         data.sound_media = sound_media
 
-        # Initialize sound array
-        data.soundwave = np.array([])
+        
+        
+       
         data.FFT = 0
 
         # Initialize DMTF tone list
@@ -55,11 +55,37 @@ class DTMF:
 # Send package of hexi decimals
     def send_package(data, package):
 
-        
+        hex_dict = {
+        '0' : 0x0,
+        '1' : 0x1,
+        '2' : 0x2,
+        '3' : 0x3,
+        '4' : 0x4,
+        '5' : 0x5,
+        '6' : 0x6,
+        '7' : 0x7,
+        '8' : 0x8,
+        '9' : 0x9,
+        'a' : 0xA,
+        'b' : 0xB,
+        'c' : 0xC,
+        'd' : 0xD,
+        'e' : 0xE,
+        'f' : 0xF
+        }
         data.soundwave = np.arange(0,1)
+        # Initialize sound array
+        
+        if isinstance(package[0],str):
+            # If the package contains a list of strings it will be converted to ints
+            for i in range(len(package)):
+                data.soundwave = np.append(data.soundwave,hex_dict[package[i][-1]])
+
+        elif not isinstance(package[0],int):
+            print('Unknown data type in package!')
 
         # Convert package into sound array
-        for i in package:
+        for i in data.soundwave:
             data.soundwave = [*data.soundwave, *data.dtmf[i]]
 
             # Delete end spike
@@ -200,4 +226,5 @@ def rand_pack(num):
     random_data = []
     for i in range(num):
         random_data.append(randrange(size))
+    print(random_data)
     return random_data
