@@ -2,8 +2,9 @@ import pyaudio
 import struct
 import numpy as np
 import time
-import Class_DTMF
+
 from scipy.fftpack import fft
+
 
 dtmf_freq = [[1209,697], # 0
                     [1336,697],  # 1
@@ -25,9 +26,7 @@ dtmf_freq = [[1209,697], # 0
 upperRange= 20
 lowerRange=20
 
-
-baudRate=15
-
+baudRate=8
 baudTime=1/baudRate
 
 #variables for use later
@@ -39,7 +38,7 @@ startReading=False
 CHUNK = 1024 * 2             # samples per frame
 FORMAT = pyaudio.paInt16     # audio format (bytes per sample?)
 CHANNELS = 1                 # single channel for microphone
-RATE = 44100*2                 # samples per second
+RATE = 44100                 # samples per second
 
 def find_highest_freqs(freqMagn):
 #find largest frequency
@@ -88,7 +87,6 @@ stream = p.open(
 x = np.arange(0, 2 * CHUNK, 2)       # samples (waveform)
 xf = np.linspace(0, RATE, CHUNK)     # frequencies (spectrum)
 xf=np.delete(xf, delList)
-
 
 
 while True:
