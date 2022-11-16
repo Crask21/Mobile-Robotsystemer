@@ -7,41 +7,64 @@ input1 = [[20,10],[10,-30],[contents]]
 
 def protocol_In(input_List):
     temp_main = []
+    temp_main2 = []
     count = 0
     output = []
-    for i in range(len(input1)):
-        temp = []
-        for j in range(len(input1[i])):
-            if isinstance(input1[i][j],int) == True:
-                temp.append(hex(input1[i][j]))
-            elif isinstance(input1[i][j],str) == True:
-                for k in range(len(input1[i][j])):
-                    temp.append(hex(ord(input1[i][j][k])))
-        temp_main.append(temp)
-    for i in range(len(temp_main)):
-        for j in range(len(temp_main[i])):
-            if temp_main[i][j]=='0x0' and temp_main[i][j+1]=='0x1':
-                temp_main[i].insert(j,'0xf')
-                temp_main[i].insert(j,'0xf')
-    for i in range(len(temp_main)):
-        count=count+1
-        temp_main[i].insert(0,hex(count))
-    
-    for i in range(len(temp_main)):
-        temp_main[i].insert(0,'0x1')
-        temp_main[i].insert(0,'0x0')
-        temp_main[i].insert(len(temp_main[i]),'0x0')
-        temp_main[i].insert(len(temp_main[i]),'0x1')
-    '''
-    for i in range(len(temp_main)):
-        for j in range(len(temp_main[i])):
-            output.append(temp_main[j])
-    '''
 
-    return temp_main
+    for i in range(len(input_List)):
+        temp = []
+        for j in range(len(input_List[i])):
+            if isinstance(input_List[i][j],int) == True:
+                temp.append(hex(input_List[i][j]+128))
+            elif isinstance(input_List[i][j],str) == True:
+                for k in range(len(input_List[i][j])):
+                    temp.append(hex(ord(input_List[i][j][k])))
+        temp_main.append(temp)
+
+    for i in range(len(temp_main)):
+        if len(temp_main[i])>2:
+            temp1 = []
+            for j in range(len(temp_main[i])):
+                temp1.append(hex(int(temp_main[i][j][2],16)))
+                temp1.append(hex(int(temp_main[i][j][3],16)))
+            temp_main2.append(temp1)
+        elif len(temp_main[i])==2:
+            temp2 = []
+            for j in range(len(temp_main[i])):
+                if len(temp_main[i][j])==3:
+                    temp2.append(hex(0))
+                    temp2.append(hex(int(temp_main[i][j][2],16)))
+                elif len(temp_main[i][j])==4:
+                    temp2.append(hex(int(temp_main[i][j][2],16)))
+                    temp2.append(hex(int(temp_main[i][j][3],16)))
+            temp_main2.append(temp2)
+
+    for i in range(len(temp_main2)):
+        for j in range(len(temp_main2[i])-1):
+            if temp_main2[i][j]=='0x0' and temp_main2[i][j+1]=='0x1':
+                temp_main2[i].insert(j,'0xf')
+                temp_main2[i].insert(j,'0xf')
+
+    for i in range(len(temp_main2)):
+        count=count+1
+        temp_main2[i].insert(0,hex(count))
+    
+    for i in range(len(temp_main2)):
+        temp_main2[i].insert(0,'0x1')
+        temp_main2[i].insert(0,'0x0')
+        temp_main2[i].insert(len(temp_main2[i]),'0x0')
+        temp_main2[i].insert(len(temp_main2[i]),'0x1')
+    
+    for i in range(len(temp_main2)):
+        for j in range(len(temp_main2[i])):
+            output.append(temp_main2[i][j])
+
+    return output
 
 def protocol_Out(hexaList):
     output = []
+    move = []
+    output2 = []
     tempOut=[]
     check = 0
     for i in range(len(hexaList)-1):
@@ -72,7 +95,20 @@ def protocol_Out(hexaList):
             else:
                 temp1.append(tempOut[k][l])
         output.append(temp1)
-    return output
+    
+    for i in range(len(output)):
+        output[i].pop(0)
 
-print(protocol_In(input1))
-#print(protocol_Out(protocol_In(input1)))
+    for i in range(len(output)):
+        temp2 = []
+        if len(output[i])<2:
+            for j in range(len(output[i])):
+                temp2.append(int(output[i][j],16))
+            move.append(temp2)
+        else:
+            output2=output[i]
+
+    return output2
+
+#print(protocol_In(input1))
+print(protocol_Out(protocol_In(input1)))
