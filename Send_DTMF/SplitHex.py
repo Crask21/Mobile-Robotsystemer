@@ -1,8 +1,12 @@
 import numpy as np
 
-input = 2
+
+
+
+input = -120
 
 print(input)
+print(hex(input+128))
 
 def valTo2Hex(value):
     hex_dict = {
@@ -30,8 +34,9 @@ def valTo2Hex(value):
         return [0x0, hex_dict[value[2]]]
 
 
-def TwoHexToVal(list):
-    return 16*list[0]+list[1]-128
+def TwoHexToVal(val1, val2):
+    # 
+    return 16 * val1 + val2 - 128
 
 
 h_input=valTo2Hex(input)

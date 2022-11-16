@@ -204,7 +204,8 @@ size = 16
 random_data = []
 for i in range(size):
     random_data.append(randrange(size))
-print(random_data)
+
+#print(random_data)
 
 
 
@@ -218,7 +219,7 @@ print(random_data)
     #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
     #data_P.play_PyGame(sound)
 
-data_P.send_package([0x6,0x6,0x6,0x6])
+#data_P.send_package([0x6,0x6,0x6,0x6])
 
 
 #def thread_f():
@@ -233,13 +234,8 @@ data_P.send_package([0x6,0x6,0x6,0x6])
 
 #play_package.start()
 
-while True:
-    True
 
-while True:
-    loopstart = time.time()
-    data_P.send_package([0xA,0xB])
-    loopend = time.time()
+
     #print(loopend-loopstart)
 
     
