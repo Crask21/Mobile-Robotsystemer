@@ -205,28 +205,33 @@ class DTMF:
     #    wav_wave = np.array(soundwave, dtype=np.int16)
     #    sd.play(wav_wave, blocking=True)
 
+    # Synchroniazation
+    def synchroniazation(data,num):
+        sync = []
+        for i in range(num):
+            sync.append(0xA)
+            sync.append(0xB)
+        sync.append(0xC)
+        sync.append(0xC)
+        data.send_package(sync)
+        return sync
+
+        # Random package
+    def rand_pack(data,num):
+        size = 16
+        random_data = []
+        for i in range(num):
+            random_data.append(randrange(size))
+        print(random_data)
+        return random_data
 
 
 
 
 
-# Synchroniazation
-def synchroniazation(num):
-    sync = []
-    for i in range(num):
-        sync.append(0xA)
-        sync.append(0xB)
-    sync.append(0xC)
-    sync.append(0xC)
-    return sync
 
 
 
-# Random package
-def rand_pack(num):
-    size = 16
-    random_data = []
-    for i in range(num):
-        random_data.append(randrange(size))
-    print(random_data)
-    return random_data
+
+
+
