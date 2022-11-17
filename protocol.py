@@ -1,9 +1,9 @@
 import numpy as np
 
-with open('test.txt') as f:
-    contents = f.read()
+print("Hvilken besked vil du sende?")
+contents = input()
 
-input1 = [[20,10],[10,-30],[contents]]
+input1 = [[20,10],[-10,30],[contents]]
 
 def protocol_In(input_List):
     temp_main = []
@@ -65,6 +65,7 @@ def protocol_Out(hexaList):
     output = []
     move = []
     output2 = []
+    message = []
     tempOut=[]
     check = 0
     for i in range(len(hexaList)-1):
@@ -95,20 +96,30 @@ def protocol_Out(hexaList):
             else:
                 temp1.append(tempOut[k][l])
         output.append(temp1)
-    
+
     for i in range(len(output)):
         output[i].pop(0)
-
+    
     for i in range(len(output)):
-        temp2 = []
-        if len(output[i])<2:
-            for j in range(len(output[i])):
-                temp2.append(int(output[i][j],16))
-            move.append(temp2)
+        count = 0
+        new_list = []
+        if len(output[i])==4:
+            for j in range(len(output[i])-1):
+                if count % 2 == 0:
+                    new_list.append((16*int(output[i][j],16)+int(output[i][j+1],16))-128)
+                    count=count+1
+                else:
+                    count=count+1
+            output2.append(new_list)
         else:
-            output2=output[i]
+            output2.append(output[i])
+    
+    for i in range(len(output2)):
+        if len(output2[i])==2:
+            move.append(output2[i])
+        else:
+            message=output2[i]
 
-    return output2
-
+    return move
 #print(protocol_In(input1))
 print(protocol_Out(protocol_In(input1)))
