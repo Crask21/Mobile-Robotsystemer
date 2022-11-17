@@ -24,7 +24,7 @@ package = protocol_In([*robot_control,[PC_message]])
 fs = 44100
 amplitude = 5000
 fade_P = 0.01
-baud_rate = 30
+baud_rate = 200
 
 
 
