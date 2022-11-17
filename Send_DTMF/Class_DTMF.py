@@ -25,6 +25,31 @@ import threading
 #                    [1477,941],  # E
 #                    [1633,941]]  # F
 
+def CharListToInt(list):
+    hex_dict = {
+            '0' : 0x0,
+            '1' : 0x1,
+            '2' : 0x2,
+            '3' : 0x3,
+            '4' : 0x4,
+            '5' : 0x5,
+            '6' : 0x6,
+            '7' : 0x7,
+            '8' : 0x8,
+            '9' : 0x9,
+            'a' : 0xA,
+            'b' : 0xB,
+            'c' : 0xC,
+            'd' : 0xD,
+            'e' : 0xE,
+            'f' : 0xF
+            }
+        
+    res =  []
+    for i in range(len(list)):
+        res.append(hex_dict[list[i][-1]])
+    
+    return res
 
 
 class DTMF:
@@ -53,54 +78,25 @@ class DTMF:
 
 
 # Send package of hexi decimals
-    def send_package(data, package):
+    def send_package(data, package, mute = False):
 
-        # Initialize sound array
+
         data.soundwave = np.arange(0,1)
 
-        
-        hex_dict = {
-        '0' : 0x0,
-        '1' : 0x1,
-        '2' : 0x2,
-        '3' : 0x3,
-        '4' : 0x4,
-        '5' : 0x5,
-        '6' : 0x6,
-        '7' : 0x7,
-        '8' : 0x8,
-        '9' : 0x9,
-        'a' : 0xA,
-        'b' : 0xB,
-        'c' : 0xC,
-        'd' : 0xD,
-        'e' : 0xE,
-        'f' : 0xF
-        }
-        
-        # If the package contains a list of strings it will be converted to ints
-        if isinstance(package[0],str):
-            for i in range(len(package)):
-                data.soundwave = np.append(data.soundwave,hex_dict[package[i][-1]])
-
-        elif not isinstance(package[0],int):
-            print('Unknown data type in package!')
-
         # Convert package into sound array
-        for i in data.soundwave:
+        for i in package:
             data.soundwave = [*data.soundwave, *data.dtmf[i]]
 
             # Delete end spike
             data.soundwave[-1] = 0
 
-        
 
-        # Play through PyGame
-        if data.sound_media == 'PyGame':
+        if not mute and data.sound_media == 'PyGame':
+            # Play through PyGame
             data.play_PyGame(data.soundwave)
-        
-        # Play through Sounddevice
-        elif data.sound_media == 'SD':
+
+            # Play through Sounddevice
+        elif not mute and data.sound_media == 'SD':
             data.play_SD(data.soundwave)
            
 
@@ -110,7 +106,10 @@ class DTMF:
         package_size = round(len(data.soundwave)/data.fs/data.duration)
 
         time = np.arange(0, data.duration * package_size, 1/data.fs)
-        data.soundwave = np.delete(data.soundwave,-1)
+        for i in range(34):
+            data.soundwave = np.delete(data.soundwave,-1)
+
+        
 
         plt.plot(time,data.soundwave,'r--')
         plt.ylabel('some numbers')
@@ -206,14 +205,14 @@ class DTMF:
     #    sd.play(wav_wave, blocking=True)
 
     # Synchroniazation
-    def synchroniazation(data,num):
+    def synchroniazation(data,num, mute = False):
         sync = []
         for i in range(num):
             sync.append(0xA)
             sync.append(0xB)
         sync.append(0xC)
         sync.append(0xC)
-        data.send_package(sync)
+        data.send_package(sync,mute)
         return sync
 
         # Random package
@@ -224,12 +223,6 @@ class DTMF:
             random_data.append(randrange(size))
         print(random_data)
         return random_data
-
-
-
-
-
-
 
 
 

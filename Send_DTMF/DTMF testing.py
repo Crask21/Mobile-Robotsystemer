@@ -1,6 +1,5 @@
 from Class_DTMF import DTMF
-from Class_DTMF import rand_pack
-from Class_DTMF import synchroniazation
+
 
 
 
@@ -38,8 +37,8 @@ dtmf = DTMF(fs, amplitude, fade_P, baud_rate, media)
 
 
 
-dtmf.send_package(synchroniazation(10))
-dtmf.send_package(rand_pack(10))
+dtmf.send_package([0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xC,0xC])
+#dtmf.send_package(dtmf.rand_pack(10))
 
 
 
