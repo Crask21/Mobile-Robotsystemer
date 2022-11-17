@@ -9,6 +9,8 @@ import copy
 from scipy.signal import butter, lfilter
 from scipy.signal import freqz
 
+
+
 #--------------------------------VARIABLES--------------------------------
 
 FORMAT = pyaudio.paInt16 
@@ -21,7 +23,7 @@ LOWCUT = 200
 HIGHCUT = 3000
 
 resolution=int(1)
-baudRate=20
+baudRate=10
 time_per_read=1/baudRate
 z_pad=RATE/resolution-time_per_read*RATE
 z_pad_arr=np.zeros(int(z_pad))
@@ -54,7 +56,7 @@ upperRange= 20
 lowerRange=20
 outputList=[]
 
-#--------------------------------FUNCTIONS--------------------------------
+#-----------------------------------FUNCTIONS------------------------------------------
 def butter_bandpass(LOWCUT, HIGHCUT, fs, order=5):
     nyq = 0.5 * fs
     low = LOWCUT / nyq
@@ -67,7 +69,6 @@ def butter_bandpass_filter(input, LOWCUT=LOWCUT, HIGHCUT=HIGHCUT, fs=RATE, order
     y = lfilter(b, a, input)
     return y
 
-
 def find_highest_freqs(freqMagn):
 #find largest frequency
     freqmagnlow=copy.deepcopy(freqMagn)
@@ -78,18 +79,6 @@ def find_highest_freqs(freqMagn):
     
     return highestFreqs
 
-#def find_highest_freqs(freqMagn):
-##find largest frequency
-#    highestFreq=np.argmax(freqMagn)
-#    #make list of neighbours
-#    delFreq=np.arange(highestFreq-variance,highestFreq+variance)
-#    #Indexes higher than 71 is sorted away, since they cause problems
-#    delFreq=np.delete(delFreq,np.where(delFreq>highestLimit))
-#    #delete the neighbours
-#    freqMagn[delFreq]=0
-#    highestFreqs=[highestFreq, np.argmax(freqMagn)]
-#    return highestFreqs
-
 def dtmf_to_hexa(inputFreqs):
     output =[]
     inputFreqs.sort()
@@ -98,7 +87,7 @@ def dtmf_to_hexa(inputFreqs):
             output= [i]
     return output
 
-#------------------------------------PYAUDIO-----------------------------------
+#-----------------------------------PYAUDIO----------------------------------------------
 # pyaudio class instance
 p = pyaudio.PyAudio()
 
@@ -109,6 +98,8 @@ stream = p.open(format = FORMAT,
          input = True, 
          # is this a good idea? I tried to not give the buffer a fixed size                                
          #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
+         input_device_index=1
+
 )
 
 #-----------------------------------FREQUENCIES------------------------------------------
@@ -135,7 +126,10 @@ yf=np.delete(yf,delList)
 
 syncCounter=0
 startReading=False
+noSignal=0
 
+from main_sender import thread_dtmf, package
+thread_dtmf()
 
 while True:
     start=time.time()
@@ -144,14 +138,15 @@ while True:
     data_int = np.array(struct.unpack(format, data))
     data_int = np.append(data_int, z_pad_arr)
 
-    
     #data_int=butter_bandpass_filter(data_int)
-
     yf=fft(data_int)
     yf=np.delete(yf,delList)
     highestfreqs=find_highest_freqs(abs(yf))
     outputList+=dtmf_to_hexa(highestfreqs)
-    print(outputList)
+    if dtmf_to_hexa(highestfreqs)==[] and startReading==True:
+        noSignal+=1
+
+    #print(outputList)
     end=time.time()
     if end-start>time_per_read:
         print("ERROR: The baudrate is too fast")
@@ -177,8 +172,14 @@ while True:
         syncCounter=0
         while end-start<time_per_read+time_per_read*0.1:
             end=time.time()
+    
+    if noSignal>5:
+        break
     while end-start<time_per_read:
         end=time.time()
 
+print(outputList)
+print(package)
+print(outputList==package)
     
     
