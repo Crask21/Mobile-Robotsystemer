@@ -83,9 +83,10 @@ def protocol_Out(hexaList):
                                 break
                         else:
                             temp.append(hexaList[j])
+    
     for k in range(len(tempOut)):
         temp1 = []
-        for l in range(len(tempOut[k])):
+        for l in range(len(tempOut[k])-1):
             if tempOut[k][l]=='0xf':
                 if tempOut[k][l+1]=='0xf':
                     continue
@@ -95,15 +96,16 @@ def protocol_Out(hexaList):
                     temp1.append(tempOut[k][l])
             else:
                 temp1.append(tempOut[k][l])
+        temp1.append(tempOut[k][4])
         output.append(temp1)
-
+    print(output)
     for i in range(len(output)):
         output[i].pop(0)
     
     for i in range(len(output)):
         count = 0
         new_list = []
-        if len(output[i])==4:
+        if len(output[i])<=4:
             for j in range(len(output[i])-1):
                 if count % 2 == 0:
                     new_list.append((16*int(output[i][j],16)+int(output[i][j+1],16))-128)
@@ -113,7 +115,7 @@ def protocol_Out(hexaList):
             output2.append(new_list)
         else:
             output2.append(output[i])
-    
+
     for i in range(len(output2)):
         if len(output2[i])==2:
             move.append(output2[i])
