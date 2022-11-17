@@ -69,7 +69,7 @@ class DTMF:
         
         
        
-        data.FFT = 0
+        data.FFT = []
 
         # Initialize DMTF tone list
         data.dtmf = []
@@ -142,7 +142,7 @@ class DTMF:
             fade = np.linspace(0,1,num=number_of_faded_points)
             fade_end = np.linspace(1,0,num=number_of_faded_points)
 
-            data.FFT = np.fft.fft(xi)
+            data.FFT.append(np.fft.fft(xi))
 
             for j in np.arange(number_of_faded_points):
                 xi[j] = xi[j] * fade[j]
