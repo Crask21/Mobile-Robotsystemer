@@ -21,7 +21,7 @@ LOWCUT = 200
 HIGHCUT = 3000
 
 resolution=int(1)
-baudRate=20
+baudRate=10
 time_per_read=1/baudRate
 z_pad=RATE/resolution-time_per_read*RATE
 z_pad_arr=np.zeros(int(z_pad))

@@ -98,6 +98,9 @@ class DTMF:
             # Play through Sounddevice
         elif not mute and data.sound_media == 'SD':
             data.play_SD(data.soundwave)
+        
+        
+
            
 
 # Plot the package as DTMF tones
@@ -123,7 +126,9 @@ class DTMF:
         time = np.arange(0, data.duration * package_size, 1/data.fs)
         #data.FFT = np.delete(data.FFT,-1)
 
-        plt.plot(data.FFT,'r--')
+        #fra Markus spørg mig for forklaring
+        xf = np.linspace(0, data.fs, int((1/data.baud)*data.fs))
+        plt.plot(xf,abs(data.FFT),'r--')
         plt.ylabel('some numbers')
         plt.show()
     
@@ -151,8 +156,6 @@ class DTMF:
                 xi[j] = xi[j] * fade_end[j]    
             # Fadeeeeeee #
             
-
-    
             return xi
 
 # Setup DTMF tones in list
