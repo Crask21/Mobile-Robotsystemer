@@ -78,7 +78,7 @@ class SEND:
 
 
 # Send package of hexi decimals
-    def send_package(data, package, mute = False):
+    def package(data, package, mute = False):
 
 
         data.soundwave = np.arange(0,1)
@@ -98,7 +98,11 @@ class SEND:
             # Play through Sounddevice
         elif not mute and data.sound_media == 'SD':
             data.play_SD(data.soundwave)
-           
+
+
+    def send_package(data, package, mute = False):
+        play_package = threading.Thread(target=package, args=(package, mute))
+        play_package.start()
 
 # Plot the package as DTMF tones
     def plot_last_package(data):
