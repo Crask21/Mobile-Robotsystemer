@@ -45,25 +45,3 @@ dtmf.send_package([0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0xA,0xB,0
 
 
 
-
-# Plot FFT
-    #data_P.send_package([0xC])
-    #data_P.plot_fft()
-
-# Send custom freq
-    #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
-    #data_P.play_PyGame(sound)
-
-
-
-
-#def thread_f():
-#    data_P.send_package(sync)
-#    data_P.send_package(random_data)
-
-
-#play_package = threading.Thread(target=thread_f, args=())
-
-#play_package.start()
-
-
