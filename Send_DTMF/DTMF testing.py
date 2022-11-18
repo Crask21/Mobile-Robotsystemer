@@ -63,28 +63,38 @@ dtmf = SEND(fs, amplitude, fade_P, baud_rate)
 #list_send = dtmf.rand_pack(16)
 
 list_send = [11, 8, 5, 1, 15, 2, 5, 6, 14, 14, 11, 2, 2, 6, 15, 13]
-send_count =[]
-for i in range(16):
-    send_count.append(list_send.count(i))
-
-
-
 list_recieved = [10, 8, 5, 1, 12, 2, 5, 13, 14, 11, 2, 2, 6, 15, 13]
-recieved_count = []
-for i in range(16):
-    recieved_count.append(list_recieved.count(i))
+
+def compare(original, recieved):
+    if original == recieved:
+        print('100% match')
+    else:
+        send_count =[]
+        for i in range(16):
+            send_count.append(original.count(i))
 
 
-for i in range(16):
-    if recieved_count[i] == send_count[i]
-print(send_count)
 
-print(recieved_count)
 
-if list_send == list_recieved:
-    print(True)
-else:
-    print(False)
+        recieved_count = []
+        for i in range(16):
+            recieved_count.append(recieved.count(i))
+
+        count = 0
+        for i in range(16):
+            
+            if recieved_count[i] == send_count[i]:
+                count += 1
+
+
+
+        print(count/16*100,'% count match')
+        print(original)
+        print(recieved)
+
+compare(list_send,list_recieved)
+
+
 
 
 

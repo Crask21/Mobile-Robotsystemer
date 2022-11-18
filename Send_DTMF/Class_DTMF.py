@@ -215,7 +215,7 @@ class SEND:
             sync.append(0xB)
         sync.append(0xC)
         sync.append(0xC)
-        data.send_package(sync,mute)
+        #data.send_package(sync,mute)
         return sync
 
         # Random package
@@ -251,6 +251,8 @@ class SEND:
 
 
             print(count/16*100,'% count match')
+            print(original)
+            print(recieved)
 
 
 
