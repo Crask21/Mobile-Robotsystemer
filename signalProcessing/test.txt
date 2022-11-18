@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+deez nuts
+=======
 df
 
 
@@ -187,3 +190,4 @@ print(package)
 print(outputList==package)
     
     
+>>>>>>> 5cb66523a50bab0e0d7f7c0fd311446e63e5bd7e
