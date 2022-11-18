@@ -230,5 +230,34 @@ class SEND:
 
 
 
+    def compare(data,original, recieved):
+        if original == recieved:
+            print('100% match')
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+
+
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,'% count match')
+            print(original)
+            print(recieved)
+
+
+
 
 
