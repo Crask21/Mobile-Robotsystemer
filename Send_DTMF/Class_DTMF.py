@@ -51,7 +51,7 @@ def CharListToInt(list):
     
     return res
 
-###gg
+
 class SEND:
 
     def __init__(data, fs, amplitude, p_fade, baud, sound_media = 'PyGame'):
@@ -101,7 +101,7 @@ class SEND:
 
 
     def send_package(data, package, mute = False):
-        play_package = threading.Thread(target=package, args=(package, mute))
+        play_package = threading.Thread(target=data.package, args=(package, mute))
         play_package.start()
 
 # Plot the package as DTMF tones
