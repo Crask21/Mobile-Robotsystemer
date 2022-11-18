@@ -1,3 +1,9 @@
+from main_sender import thread_dtmf
+
+
+thread_dtmf()
+
+
 
 inputList1 = [927,1445];
 
@@ -54,6 +60,10 @@ def dtmf_to_hexa(inputList):
     return output;
       
             
-dtmf_to_hexa(inputList1)
+#dtmf_to_hexa(inputList1)
 
-print(output);
+print('output')
+
+
+
+

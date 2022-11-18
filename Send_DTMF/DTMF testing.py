@@ -1,6 +1,5 @@
-from Class_DTMF import DTMF
-from Class_DTMF import rand_pack
-from Class_DTMF import synchroniazation
+from Class_DTMF import SEND
+
 
 
 
@@ -27,44 +26,21 @@ dtmf_freq = [[1209,697], # 0
 # DTMF Settings
 fs = 44100
 amplitude = 5000
-media = 'PyGame' # 'SD'
 fade_P = 0.02
 baud_rate = 10
 
 
 
 # Initialization
-dtmf = DTMF(fs, amplitude, fade_P, baud_rate, media)
+dtmf = SEND(fs, amplitude, fade_P, baud_rate)
 
 
 
-dtmf.send_package(synchroniazation(10))
-dtmf.send_package(rand_pack(10))
-
-
-
-
-
-
-
-# Plot FFT
-    #data_P.send_package([0xC])
-    #data_P.plot_fft()
-
-# Send custom freq
-    #sound = data_P.makeDTMF(amplitude,1/baud_rate,dtmf_freq[0xC][1],dtmf_freq[0xC][0],fs,fade_P)
-    #data_P.play_PyGame(sound)
+dtmf.send_package([0xB,0xC,0xC])
+#dtmf.send_package(dtmf.rand_pack(10))
 
 
 
 
-#def thread_f():
-#    data_P.send_package(sync)
-#    data_P.send_package(random_data)
-
-
-#play_package = threading.Thread(target=thread_f, args=())
-
-#play_package.start()
 
 
