@@ -1,5 +1,5 @@
-from Class_DTMF import SEND
-from Threadprog import LISTEN
+from DTMF.Class_DTMF import SEND
+from DTMF.Threadprog import LISTEN
 
 class DTMF:
     def __init__(self, baud):
@@ -14,9 +14,9 @@ class DTMF:
         self.listen=LISTEN(baud_rate)
 
 
-robot=DTMF(10)
-robot.listen.startListen()
-robot.send.send_package([0xc,0xa,0xa,0xa,0xa,0xb])
+#robot=DTMF(10)
+#robot.listen.startListen()
+#robot.send.send_package([0xc,0xa,0xa,0xa,0xa,0xb])
 
     
 
