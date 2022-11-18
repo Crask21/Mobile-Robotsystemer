@@ -1,5 +1,5 @@
-from signalProcessing.Threadprog import LISTEN
-from Send_DTMF.Class_DTMF import SEND
+from Class_DTMF import SEND
+from Threadprog import LISTEN
 
 class DTMF:
 
@@ -9,5 +9,14 @@ class DTMF:
     media = 'PyGame' # 'SD'
     fade_P = 0.02
     baud_rate = 10
+
+    send = SEND(fs, amplitude, fade_P, baud_rate, media)
+    listen=LISTEN(baud_rate)
+
+
+robot=DTMF()
+robot.listen.startListen()
+robot.send.send_package([0xc,0xa,0xa,0xa,0xa,0xb])
+
     
 

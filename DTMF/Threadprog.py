@@ -126,8 +126,8 @@ class LISTEN():
         return output
         
     def startListen(rec):
-        threading.Thread(target=rec.listenThread, args=())
-
+        thr=threading.Thread(target=rec.listenThread, args=())
+        thr.start()
 
     def listenThread(rec):
         while True:
