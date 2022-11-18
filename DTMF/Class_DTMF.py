@@ -230,6 +230,8 @@ class SEND:
 
 
 
+#ff
+
     def compare(data,original, recieved):
         if original == recieved:
             print('100% match')
