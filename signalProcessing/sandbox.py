@@ -77,20 +77,10 @@ def find_highest_freqs(freqMagn):
     freqmagnhigh=copy.deepcopy(freqMagn)
     freqmagnhigh[xf_below1000]=0
     highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
-    
+
     return highestFreqs
 
-#def find_highest_freqs(freqMagn):
-##find largest frequency
-#    highestFreq=np.argmax(freqMagn)
-#    #make list of neighbours
-#    delFreq=np.arange(highestFreq-variance,highestFreq+variance)
-#    #Indexes higher than 71 is sorted away, since they cause problems
-#    delFreq=np.delete(delFreq,np.where(delFreq>highestLimit))
-#    #delete the neighbours
-#    freqMagn[delFreq]=0
-#    highestFreqs=[highestFreq, np.argmax(freqMagn)]
-#    return highestFreqs
+
 
 def dtmf_to_hexa(inputFreqs):
     output =[]
@@ -98,6 +88,9 @@ def dtmf_to_hexa(inputFreqs):
     for i in range(16):
         if (inputFreqs[0]<dtmf_freq[i][1]+upperRange and inputFreqs[0]>dtmf_freq[i][1]-lowerRange)and(inputFreqs[1]<dtmf_freq[i][0]+upperRange and inputFreqs[1]>dtmf_freq[i][0]-lowerRange):
             output= [i]
+    if output==[]:
+        output=inputFreqs[0]
+
     return output
 
 #------------------------------------PYAUDIO-----------------------------------
@@ -137,11 +130,12 @@ yf=fft(data_int)
 yf=abs(yf)
 yf=np.delete(yf,delList)
 
-fig=plt.plot(xf,yf)
-plt.show()
+#fig=plt.plot(xf,yf)
+#plt.show()
 
 
 syncCounter=0
+noSignal=0
 startReading=False
 
 
@@ -161,6 +155,13 @@ while True:
     outputList+=dtmf_to_hexa(highestfreqs)
     print(xf[highestfreqs])
     end=time.time()
+    if dtmf_to_hexa(highestfreqs)==[] and startReading==True:
+        noSignal+=1
+        if noSignal>5:
+            break
+    else:
+        noSignal=0
+
     if end-start>time_per_read:
         print("ERROR: The baudrate is too fast")
 

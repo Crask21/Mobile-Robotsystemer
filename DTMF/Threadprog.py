@@ -9,6 +9,8 @@ import threading
 
 from scipy.signal import butter, lfilter
 
+import sys
+
 
 
 class LISTEN():
@@ -65,9 +67,17 @@ class LISTEN():
                     [1336,941],  # D
                     [1477,941],  # E
                     [1633,941]]  # F
+        rec.dtmf_single_freqs=[697,
+                                770,
+                                852,
+                                941,
+                                1209,
+                                1336,
+                                1477,
+                                1633]
 
-        rec.upperRange= 20
-        rec.lowerRange=20
+        rec.upperRange=10
+        rec.lowerRange=5
         rec.outputList=[]
 
         #-----------------------------------FREQUENCIES------------------------------------------
@@ -94,6 +104,7 @@ class LISTEN():
         rec.yf=np.delete(rec.yf,rec.delList)
 
         rec.syncCounter=0
+        rec.noSignal=0
         rec.startReading=False
     #--------------------------------FUNCTIONS--------------------------------
     def butter_bandpass(rec,LOWCUT, HIGHCUT, fs, order=5):
@@ -116,7 +127,8 @@ class LISTEN():
         freqmagnhigh=copy.deepcopy(freqMagn)
         freqmagnhigh[rec.xf_below1000]=0
         highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
-
+        if any(freqMagn[highestFreqs]<1000):
+            return [0,0]
         return highestFreqs
 
     def dtmf_to_hexa(rec, inputFreqs):
@@ -125,11 +137,19 @@ class LISTEN():
         for i in range(16):
             if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange):
                 output= [i]
+        if output==[] and rec.startReading:
+            print(inputFreqs)
         return output
         
     def startListen(rec):
         thr=threading.Thread(target=rec.listenThread, args=())
         thr.start()
+        #try:
+        #    thr=threading.Thread(target=rec.listenThread, args=())
+        #    thr.start()
+        #except (KeyboardInterrupt, SystemExit):
+        #    print('\n! Received keyboard interrupt, quitting threads.\n')
+        #    sys.exit()
 
     def listenThread(rec):
         while True:
@@ -148,6 +168,15 @@ class LISTEN():
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
             print(rec.outputList)
             end=time.time()
+
+            if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
+                rec.noSignal+=1
+                if rec.noSignal>5:
+                    break
+            else:
+                rec.noSignal=0
+
+
             if end-start>rec.time_per_read:
                 print("ERROR: The baudrate is too fast")
 
@@ -174,6 +203,8 @@ class LISTEN():
                     end=time.time()
             while end-start<rec.time_per_read:
                 end=time.time()
+
+
 
 #roberto = LISTEN()
 #roberto.startListen()  
