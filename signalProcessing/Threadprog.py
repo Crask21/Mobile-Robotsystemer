@@ -1,5 +1,3 @@
-#working without class
-
 import pyaudio
 import struct
 import numpy as np
@@ -11,32 +9,45 @@ import copy
 from scipy.signal import butter, lfilter
 from scipy.signal import freqz
 
+class LISTEN:
+    def __init__(rec):
 
 #--------------------------------VARIABLES--------------------------------
 
-FORMAT = pyaudio.paInt16 
-CHANNELS = 1
-RATE = 5000
-INPUT_BLOCK_TIME = 0.1
-INPUT_FRAMES_PER_BLOCK = int(RATE*INPUT_BLOCK_TIME)
+        rec.FORMAT = pyaudio.paInt16 
+        rec.CHANNELS = 1
+        rec.RATE = 5000
+        rec.INPUT_BLOCK_TIME = 0.1
+        rec.INPUT_FRAMES_PER_BLOCK = int(rec.RATE*rec.INPUT_BLOCK_TIME)
 
-LOWCUT = 200
-HIGHCUT = 3000
+        rec.LOWCUT = 200
+        rec.HIGHCUT = 3000
 
-resolution=int(1)
-baudRate=10
-time_per_read=1/baudRate
-z_pad=RATE/resolution-time_per_read*RATE
-z_pad_arr=np.zeros(int(z_pad))
+        rec.resolution=int(1)
+        rec.baudRate=10
+        rec.time_per_read=1/rec.baudRate
+        rec.z_pad=rec.RATE/rec.resolution-rec.time_per_read*rec.RATE
+        rec.z_pad_arr=np.zeros(int(rec.z_pad))
+        rec.variance=60
 
+        #------------------------------------PYAUDIO-----------------------------------
+        # pyaudio class instance
+        rec.p = pyaudio.PyAudio()
 
-variance=60
+        # stream object to get data from microphone
+        rec.stream = rec.p.open(format = rec.FORMAT,                      
+                 channels = rec.CHANNELS,                          
+                 rate = rec.RATE,                                  
+                 input = True, 
+                 # is this a good idea? I tried to not give the buffer a fixed size                                
+                 #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
+        )
 
 #found by printing yf.size
-highestLimit=2498
+        rec.highestLimit=2498
 
 #for dtmf_to_hexa
-dtmf_freq = [[1209,697], # 0
+        rec.dtmf_freq = [[1209,697], # 0
                     [1336,697],  # 1
                     [1477,697],  # 2
                     [1633,697],  # 3
@@ -53,134 +64,108 @@ dtmf_freq = [[1209,697], # 0
                     [1477,941],  # E
                     [1633,941]]  # F
 
-upperRange= 20
-lowerRange=20
-outputList=[]
+        rec.upperRange= 20
+        rec.lowerRange=20
+        rec.outputList=[]
 
-#--------------------------------FUNCTIONS--------------------------------
-def butter_bandpass(LOWCUT, HIGHCUT, fs, order=5):
-    nyq = 0.5 * fs
-    low = LOWCUT / nyq
-    high = HIGHCUT / nyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
-
-def butter_bandpass_filter(input, LOWCUT=LOWCUT, HIGHCUT=HIGHCUT, fs=RATE, order=5):
-    b, a = butter_bandpass(LOWCUT, HIGHCUT, fs, order=order)
-    y = lfilter(b, a, input)
-    return y
-
-def find_highest_freqs(freqMagn):
-#find largest frequency
-    freqmagnlow=copy.deepcopy(freqMagn)
-    freqmagnlow[xf_above1000]=0
-    freqmagnhigh=copy.deepcopy(freqMagn)
-    freqmagnhigh[xf_below1000]=0
-    highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
-    
-    return highestFreqs
-
-#def find_highest_freqs(freqMagn):
-##find largest frequency
-#    highestFreq=np.argmax(freqMagn)
-#    #make list of neighbours
-#    delFreq=np.arange(highestFreq-variance,highestFreq+variance)
-#    #Indexes higher than 71 is sorted away, since they cause problems
-#    delFreq=np.delete(delFreq,np.where(delFreq>highestLimit))
-#    #delete the neighbours
-#    freqMagn[delFreq]=0
-#    highestFreqs=[highestFreq, np.argmax(freqMagn)]
-#    return highestFreqs
-
-def dtmf_to_hexa(inputFreqs):
-    output =[]
-    inputFreqs.sort()
-    for i in range(16):
-        if (inputFreqs[0]<dtmf_freq[i][1]+upperRange and inputFreqs[0]>dtmf_freq[i][1]-lowerRange)and(inputFreqs[1]<dtmf_freq[i][0]+upperRange and inputFreqs[1]>dtmf_freq[i][0]-lowerRange):
-            output= [i]
-    return output
-
-#------------------------------------PYAUDIO-----------------------------------
-# pyaudio class instance
-p = pyaudio.PyAudio()
-
-# stream object to get data from microphone
-stream = p.open(format = FORMAT,                      
-         channels = CHANNELS,                          
-         rate = RATE,                                  
-         input = True, 
-         # is this a good idea? I tried to not give the buffer a fixed size                                
-         #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
-)
-
-#-----------------------------------FREQUENCIES------------------------------------------
-#resolution is defined as fs/(points worked on)
-#To improve resolution zeropadding can be used
-xf = np.linspace(0, RATE, int(time_per_read*RATE+z_pad))
-delList=np.arange(int(-xf.size/2),0)
-xf=np.delete(xf,delList)
-xf_below1000=np.where(xf<1000)
-xf_above1000=np.where(xf>=1000)
+        #-----------------------------------FREQUENCIES------------------------------------------
+        #resolution is defined as fs/(points worked on)
+        #To improve resolution zeropadding can be used
+        rec.xf = np.linspace(0, rec.RATE, int(rec.time_per_read*rec.RATE+rec.z_pad))
+        rec.delList=np.arange(int(-rec.xf.size/2),0)
+        rec.xf=np.delete(rec.xf,rec.delList)
+        rec.xf_below1000=np.where(rec.xf<1000)
+        rec.xf_above1000=np.where(rec.xf>=1000)
 
 
-#------------------------------GET THE FORMAT
-#divided by resolution to get the fft in resolution of choice in hz
-data=stream.read(int(RATE*time_per_read))
-count = len(data)/2
-format = "%dh"%(count)
-data_int = np.array(struct.unpack(format, data))
-data_int=np.append(data_int,z_pad_arr)
-#--------------------------------FFT-----------------------
-yf=fft(data_int)
-yf=abs(yf)
-yf=np.delete(yf,delList)
+        #------------------------------GET THE FORMAT
+        #divided by resolution to get the fft in resolution of choice in hz
+        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read))
+        rec.count = len(rec.data)/2
+        rec.format = "%dh"%(rec.count)
+        rec.data_int = np.array(struct.unpack(rec.format, rec.data))
+        rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
+        #--------------------------------FFT-----------------------
+        rec.yf=fft(rec.data_int)
+        rec.yf=abs(rec.yf)
+        rec.yf=np.delete(rec.yf,rec.delList)
 
-syncCounter=0
-startReading=False
+        rec.syncCounter=0
+        rec.startReading=False
+    #--------------------------------FUNCTIONS--------------------------------
+    def butter_bandpass(rec,LOWCUT, HIGHCUT, fs, order=5):
+        nyq = 0.5 * fs
+        low = LOWCUT / nyq
+        high = HIGHCUT / nyq
+        b, a = butter(order, [low, high], btype='band')
+        return b, a
+
+    def butter_bandpass_filter(rec,input, LOWCUT, HIGHCUT, fs, order=5):
+        b, a = rec.butter_bandpass(LOWCUT, HIGHCUT, fs, order=order)
+        y = lfilter(b, a, input)
+        return y
+
+    def find_highest_freqs(rec, freqMagn):
+    #find largest frequency
+        freqmagnlow=copy.deepcopy(freqMagn)
+        freqmagnlow[rec.xf_above1000]=0
+        freqmagnhigh=copy.deepcopy(freqMagn)
+        freqmagnhigh[rec.xf_below1000]=0
+        highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
+
+        return highestFreqs
+
+    def dtmf_to_hexa(rec, inputFreqs):
+        output =[]
+        inputFreqs.sort()
+        for i in range(16):
+            if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange):
+                output= [i]
+        return output
+        
+    def startListen(rec):
+        while True:
+            start=time.time()
+            #divided by baudRate too to get the movement of the window
+            data = rec.stream.read(int(rec.RATE*rec.time_per_read))
+            data_int = np.array(struct.unpack(rec.format, data))
+            data_int = np.append(data_int, rec.z_pad_arr)
 
 
-while True:
-    start=time.time()
-    #divided by baudRate too to get the movement of the window
-    data = stream.read(int(RATE*time_per_read))
-    data_int = np.array(struct.unpack(format, data))
-    data_int = np.append(data_int, z_pad_arr)
+            #data_int=butter_bandpass_filter(data_int)
 
-    
-    #data_int=butter_bandpass_filter(data_int)
-
-    yf=fft(data_int)
-    yf=np.delete(yf,delList)
-    highestfreqs=find_highest_freqs(abs(yf))
-    outputList+=dtmf_to_hexa(highestfreqs)
-    print(outputList)
-    end=time.time()
-    if end-start>time_per_read:
-        print("ERROR: The baudrate is too fast")
-
-    if outputList==[0xC,0xC] and syncCounter>5:
-        startReading=True
-        outputList=[]
-
-    if len(outputList)>0 and not(startReading):
-        if outputList[0]!=0xa and outputList[0]!=0xC :
-            outputList=[]
-
-    if outputList==[0xa,0xb]and not(startReading):
-        print("Synchronized")
-        outputList=[]
-        syncCounter+=1
-        print("Times synchronized: " +str(syncCounter))
-    
-
-    if outputList!=[0xa,0xb] and len(outputList)==2 and not(startReading):
-        print("Sync failed, delaying with 10 percent")
-        outputList=[]
-        syncCounter=0
-        while end-start<time_per_read+time_per_read*0.1:
+            yf=fft(data_int)
+            yf=np.delete(yf,rec.delList)
+            highestfreqs=rec.find_highest_freqs(abs(yf))
+            rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
+            print(rec.outputList)
             end=time.time()
-    while end-start<time_per_read:
-        end=time.time()
+            if end-start>rec.time_per_read:
+                print("ERROR: The baudrate is too fast")
 
-    
-    
+            if rec.outputList==[0xC,0xC] and rec.syncCounter>5:
+                rec.startReading=True
+                rec.outputList=[]
+
+            if len(rec.outputList)>0 and not(rec.startReading):
+                if rec.outputList[0]!=0xa and rec.outputList[0]!=0xC :
+                    rec.outputList=[]
+
+            if rec.outputList==[0xa,0xb]and not(rec.startReading):
+                print("Synchronized")
+                rec.outputList=[]
+                syncCounter+=1
+                print("Times synchronized: " +str(rec.syncCounter))
+
+
+            if rec.outputList!=[0xa,0xb] and len(rec.outputList)==2 and not(rec.startReading):
+                print("Sync failed, delaying with 10 percent")
+                rec.outputList=[]
+                syncCounter=0
+                while end-start<rec.time_per_read+rec.time_per_read*0.1:
+                    end=time.time()
+            while end-start<rec.time_per_read:
+                end=time.time()
+
+roberto = LISTEN()
+roberto.startListen()  
