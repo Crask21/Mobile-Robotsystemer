@@ -153,13 +153,23 @@ def movement(input_List):
             move.append(input_List[i])
     return move
 
+def add_CRC(list):
+   
+
+#def add_address(input_List):
+
+
 #Add protocol
 input_list=convert_to_hexa(input_list)
 input_list=hexa_devide(input_list)
 input_list=add_esc(input_list)
 input_list=add_seq(input_list)
-input_list=add_StartStop(input_list)
-input_list=one_list(input_list)
+input_list=add_CRC(input_list)
+#input_list=add_StartStop(input_list)
+#input_list=one_list(input_list)
+print(input_list)
+'''
+#Decode protocol
 input_list=organize(input_list)
 input_list=esc_check(input_list)
 input_list=remove_seq(input_list)
@@ -167,54 +177,4 @@ input_list=convert_to_decimal(input_list)
 print(input_list)
 print(hexa_to_msg(input_list))
 print(movement(input_list))
-
-#Decode protocol
-
-
-''' 
-def protocol_Out(hexaList):
-    output = []
-    move = []
-    output2 = []
-    message = []
-    tempOut=[]
-    check = 0
-
-    for i in range(len(output2)):
-        if len(output2[i])==2:
-            move.append(output2[i])
-        else:
-            message=output2[i]
-    
-    return output2
-
-#print(protocol_In(input1))
-#print(protocol_Out(protocol_In(input1)))
-
-def translate(dtmf_signal):
-    temp_list = []
-    message = ""
-    for i in range(len(dtmf_signal)):
-        count = 0
-        if len(dtmf_signal[i])>2:
-            for j in range(len(dtmf_signal[i])-1):
-                if count % 2 == 0:
-                    temp_list.append(hex(16*int(dtmf_signal[i][j],16)+int(dtmf_signal[i][j+1],16)))
-                    count = count+1
-                else:
-                    count = count+1
-    for i in range(len(temp_list)):
-        message = message+chr(int(temp_list[i],16))
-
-    return message
-
-def movement(dtmf_signal):
-    move = []
-    for i in range(len(dtmf_signal)):
-        if len(dtmf_signal[i])==2:
-            move.append(dtmf_signal[i])
-    return move
-
-print(translate(protocol_Out(protocol_In(input1))))
-print(movement((protocol_Out(protocol_In(input1)))))
 '''
