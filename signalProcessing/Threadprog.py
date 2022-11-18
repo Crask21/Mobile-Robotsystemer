@@ -1,3 +1,5 @@
+#working without class
+
 import pyaudio
 import struct
 import numpy as np
@@ -8,6 +10,7 @@ import copy
 
 from scipy.signal import butter, lfilter
 from scipy.signal import freqz
+
 
 #--------------------------------VARIABLES--------------------------------
 
@@ -66,7 +69,6 @@ def butter_bandpass_filter(input, LOWCUT=LOWCUT, HIGHCUT=HIGHCUT, fs=RATE, order
     b, a = butter_bandpass(LOWCUT, HIGHCUT, fs, order=order)
     y = lfilter(b, a, input)
     return y
-
 
 def find_highest_freqs(freqMagn):
 #find largest frequency
