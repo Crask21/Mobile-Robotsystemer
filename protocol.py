@@ -3,6 +3,10 @@ import numpy as np
 with open('test.txt') as f:
     contents = f.read()
 
+# 0xa betyder afsender computer
+# 0xb er robotten
+# oxc er modtager computer
+
 input_list = [[20,10],[-10,30],[contents]]
 
 def convert_to_hexa(input_List):
@@ -154,27 +158,175 @@ def movement(input_List):
     return move
 
 def add_CRC(list):
+    for k in range(len(list)):
+        tempdataword=''
+        codeword=[]
+        for i in range(len(list[k])):
+            tempdata=bin(int(list[k][i],16))
+            tempdata=tempdata[2:]
+            #print(tempdata)
+
+            while(len(tempdata)<4):
+               tempdata='0'+ tempdata
+         #print(tempdata)
+            tempdataword=tempdataword+tempdata
+
+        #print(tempdataword)
+        tempdataword=tempdataword+'00000'
+        for j in range(len(tempdataword)):
+          codeword.append(int(tempdataword[j]))
+        #print(codeword)
+
+        result=[]
+        divisor=[1,0,0,1,1]
+
+    
+
+        tempres=codeword
+
+        for j in range(len(codeword)-5):
+            if(tempres[0]==1):
+               for i in range(len(divisor)):
+                  result.append(tempres[i]^divisor[i])
+               result.pop(0)
+               result.append(codeword[len(divisor)+j])
+               tempres=result
+               #print(tempres)
+               result = []
+            else:
+                for i in range(len(divisor)):
+                    result.append(tempres[i]^0)
+                result.pop(0)
+                result.append(codeword[len(divisor)+j])
+                tempres=result
+                #print(tempres)
+                result = []
+
+        remainder=[]
+
+        for i in range(len(tempres)-1):
+            remainder.append(tempres[i])
+
+
+        #print(remainder,'remainder')
+        hexremainder=''
+
+        for i in range(len(remainder)):
+            hexremainder=hexremainder+str(remainder[i])
+    
+        hexremainder=int(hexremainder,2)
    
+        hexremainder=hex(hexremainder)
+        list[k].append(hexremainder)
+    return list
 
-#def add_address(input_List):
+def decode_CRC(list):
+    for k in range(len(list)):
+        tempdataword=''
+        codeword=[]
+        for i in range(len(list[k])):
+            tempdata=bin(int(list[k][i],16))
+            tempdata=tempdata[2:]
+            #print(tempdata)
 
+            while(len(tempdata)<4):
+                tempdata='0'+ tempdata
+            #print(tempdata)
+            tempdataword=tempdataword+tempdata
+
+        #print(tempdataword)
+    
+        tempdataword=tempdataword + '0'
+        for j in range(len(tempdataword)):
+            codeword.append(int(tempdataword[j]))
+        #print(codeword)
+
+        result=[]
+        divisor=[1,0,0,1,1]
+
+    
+
+        tempres=codeword
+
+        for j in range(len(codeword)-5):
+            if(tempres[0]==1):
+                for i in range(len(divisor)):
+                    result.append(tempres[i]^divisor[i])
+                result.pop(0)
+                result.append(codeword[len(divisor)+j])
+                tempres=result
+                #print(tempres)
+                result = []
+            else:
+                for i in range(len(divisor)):
+                    result.append(tempres[i]^0)
+                result.pop(0)
+                result.append(codeword[len(divisor)+j])
+                tempres=result
+                #print(tempres)
+                result = []
+
+        remainder=[]
+
+        for i in range(len(tempres)-1):
+            remainder.append(tempres[i])
+
+
+        #print(remainder,'syndrome')
+        hexremainder=''
+
+        for i in range(len(remainder)):
+            hexremainder=hexremainder+str(remainder[i])
+    
+        hexremainder=int(hexremainder,2)
+   
+        hexremainder=hex(hexremainder)
+
+        if hexremainder == '0x0':
+            list[k].pop(len(list[k])-1)
+        else:
+            print("Error in data")
+    return list
+
+def add_address(input_List):
+    sender = '0xa'
+    medium = '0xb'
+    receiver = '0xc'
+    for i in range(len(input_List)):
+        input_List[i].insert(0,receiver)
+        input_List[i].insert(0,medium)
+        input_List[i].insert(0,sender)
+    
+    return input_List
+
+def decode_address(input_List):
+    for i in range(len(input_List)):
+        if input_List[i][0]=='0xa' and input_List[i][1]=='0xb' and input_List[i][2]=='0xc':
+            for j in range(3):
+                input_List[i].pop(0)
+        else:
+            print('This message is not for me')
+
+    return input_List
 
 #Add protocol
 input_list=convert_to_hexa(input_list)
 input_list=hexa_devide(input_list)
 input_list=add_esc(input_list)
 input_list=add_seq(input_list)
+input_list=add_address(input_list)
 input_list=add_CRC(input_list)
-#input_list=add_StartStop(input_list)
-#input_list=one_list(input_list)
-print(input_list)
-'''
+input_list=add_StartStop(input_list)
+input_list=one_list(input_list)
+#print(input_list)
+
 #Decode protocol
 input_list=organize(input_list)
-input_list=esc_check(input_list)
-input_list=remove_seq(input_list)
-input_list=convert_to_decimal(input_list)
+#input_list=decode_CRC(input_list)
+#input_list=esc_check(input_list)
+#input_list=decode_address(input_list)
+#input_list=remove_seq(input_list)
+#input_list=convert_to_decimal(input_list)
 print(input_list)
-print(hexa_to_msg(input_list))
-print(movement(input_list))
-'''
+#print(hexa_to_msg(input_list))
+#print(movement(input_list))
