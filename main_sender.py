@@ -50,9 +50,10 @@ play_package = threading.Thread(target=thread_f, args=())
 
 
 def thread_dtmf():
+
     play_package.start()
 
 #from main_sender import thread_dtmf
-#thread_dtmf()
-
+thread_dtmf()
+dtmf.plot_fft()
 
