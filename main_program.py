@@ -2,4 +2,6 @@ from DTMF.DTMF_overclass import DTMF
 
 robot=DTMF(10)
 robot.listen.startListen()
-robot.send.send_package([0xa,0xa])
+pack=robot.send.rand_pack(10)
+
+robot.send.send_package([*robot.send.synchroniazation(10),*pack])
