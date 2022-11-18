@@ -130,7 +130,13 @@ class LISTEN():
 
 
     def listenThread(rec):
-        while True:
+        data = rec.stream.read(int(rec.RATE*rec.time_per_read))
+        data_int = np.array(struct.unpack(rec.format, data))
+        data_int = np.append(data_int, rec.z_pad_arr)
+        
+
+    
+        while False:
             start=time.time()
             #divided by baudRate too to get the movement of the window
             data = rec.stream.read(int(rec.RATE*rec.time_per_read))

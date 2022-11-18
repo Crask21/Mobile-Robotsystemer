@@ -78,7 +78,7 @@ class SEND:
 
 
 # Send package of hexi decimals
-    def package(data, package, mute = False):
+    def send_package(data, package, mute = False):
 
 
         data.soundwave = np.arange(0,1)
@@ -100,10 +100,8 @@ class SEND:
             data.play_SD(data.soundwave)
 
 
-    def send_package(data, package, mute = False):
-        play_package = threading.Thread(target=data.package, args=(package, mute))
-        play_package.start()
-        
+    
+
 
 # Plot the package as DTMF tones
     def plot_last_package(data):
@@ -217,7 +215,7 @@ class SEND:
             sync.append(0xB)
         sync.append(0xC)
         sync.append(0xC)
-        data.send_package(sync,mute)
+        #data.send_package(sync,mute)
         return sync
 
         # Random package
@@ -228,6 +226,35 @@ class SEND:
             random_data.append(randrange(size))
         print(random_data)
         return random_data
+
+    def compare(data,original, recieved):
+        if original == recieved:
+            print('100% match')
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+
+
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,'% count match')
+            print(original)
+            print(recieved)
+
+
 
 
 

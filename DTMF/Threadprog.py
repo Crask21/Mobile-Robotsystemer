@@ -8,7 +8,7 @@ import copy
 import threading
 
 from scipy.signal import butter, lfilter
-from scipy.signal import freqz
+
 
 
 class LISTEN():
@@ -78,6 +78,7 @@ class LISTEN():
         rec.xf=np.delete(rec.xf,rec.delList)
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
+        rec.xf_noise=np.where(rec.xf<650)
 
 
         #------------------------------GET THE FORMAT
@@ -111,6 +112,7 @@ class LISTEN():
     #find largest frequency
         freqmagnlow=copy.deepcopy(freqMagn)
         freqmagnlow[rec.xf_above1000]=0
+        freqmagnlow[rec.xf_noise]=0
         freqmagnhigh=copy.deepcopy(freqMagn)
         freqmagnhigh[rec.xf_below1000]=0
         highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
@@ -160,14 +162,14 @@ class LISTEN():
             if rec.outputList==[0xa,0xb]and not(rec.startReading):
                 print("Synchronized")
                 rec.outputList=[]
-                syncCounter+=1
+                rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
 
 
             if rec.outputList!=[0xa,0xb] and len(rec.outputList)==2 and not(rec.startReading):
                 print("Sync failed, delaying with 10 percent")
                 rec.outputList=[]
-                syncCounter=0
+                rec.syncCounter=0
                 while end-start<rec.time_per_read+rec.time_per_read*0.1:
                     end=time.time()
             while end-start<rec.time_per_read:
