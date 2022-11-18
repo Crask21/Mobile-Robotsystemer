@@ -11,4 +11,4 @@ robot.listen.startListen()
 print(pack)
 
 time.sleep(10)
-print(robot.listen.outputList==pack)
+robot.send.compare(pack,robot.listen.outputList)
