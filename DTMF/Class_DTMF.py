@@ -216,7 +216,7 @@ class SEND:
             sync.append(0xB)
         sync.append(0xC)
         sync.append(0xC)
-        data.send_package(sync,mute)
+        #data.send_package(sync,mute)
         return sync
 
         # Random package
@@ -235,6 +235,8 @@ class SEND:
     def compare(data,original, recieved):
         if original == recieved:
             print('100% match')
+        elif set(original).issubset(recieved):
+            print('100% match, original package inside recieved package')
         else:
             send_count =[]
             for i in range(16):
