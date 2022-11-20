@@ -134,12 +134,13 @@ yf=np.delete(yf,delList)
 #plt.show()
 
 
+
 syncCounter=0
 noSignal=0
 startReading=False
 
 
-while True:
+while False:
     start=time.time()
     #divided by baudRate too to get the movement of the window
     data = stream.read(int(RATE*time_per_read))
