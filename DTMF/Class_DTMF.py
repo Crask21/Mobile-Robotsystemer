@@ -54,7 +54,7 @@ def CharListToInt(list):
 ###gg
 class SEND:
 
-    def __init__(data, fs, amplitude, p_fade, baud, sound_media = 'PyGame'):
+    def __init__(data, fs, amplitude, p_fade, baud,syn, sound_media = 'PyGame'):
 
         # DTMF setup
         data.fs = fs
@@ -65,6 +65,7 @@ class SEND:
         data.baud = baud
         data.duration = 1/baud
         data.sound_media = sound_media
+        data.sync = syn
 
         
         
@@ -232,20 +233,36 @@ class SEND:
 
 #ff
 
-    def compare(data,original, recieved):
+    def compare(original, recieved, compare = True):
+
+        dif = len(recieved) - len(original)
+
         if len(recieved) > len(original):
-            dif = len(recieved) - len(original)
-            recieved = recieved[:len(recieved) - dif]
+                recieved = recieved[:len(recieved) - dif]
 
         if original == recieved:
             print('100% match')
+        
+
+
+        elif compare:
+            count = 0
+
+            length = len(original) if dif >= 0 else len(recieved)
+
+            for i in range(length):
+                if recieved[i] == original[i]:
+                    count += 1
+            
+            print(count/len(original)*100,'% match.', len(original) - count, 'errors')
+            print('Original:',original)
+            print('Recieved:',recieved)
+
+
         else:
             send_count =[]
             for i in range(16):
                 send_count.append(original.count(i))
-
-
-
 
             recieved_count = []
             for i in range(16):
@@ -259,7 +276,7 @@ class SEND:
 
 
 
-            print(count/16*100,'% count match')
+            print(count/16*100,'% count match. ', count, 'errors')
             print(original)
             print(recieved)
 
