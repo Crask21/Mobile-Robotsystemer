@@ -1,5 +1,3 @@
-from Class_DTMF import SEND
-
 
 
 
@@ -31,8 +29,7 @@ baud_rate = 20
 
 
 
-# Initialization
-dtmf = SEND(fs, amplitude, fade_P, baud_rate)
+
 
 #dtmf.package([0xB,0xB,0xB,0xC])
 #
@@ -63,9 +60,13 @@ dtmf = SEND(fs, amplitude, fade_P, baud_rate)
 #list_send = dtmf.rand_pack(16)
 
 list_send = [11, 8, 5, 1, 15, 2, 5, 6, 14, 14, 11, 2, 2, 6, 15, 13]
-list_recieved = [10, 8, 5, 1, 12, 2, 5, 13, 14, 11, 2, 2, 6, 15, 13]
+list_recieved = [11, 8, 5, 1, 15, 2, 5, 6, 14, 14, 11, 2, 2, 6, 15, 13,0,1,1]
 
 def compare(original, recieved):
+    if len(recieved) > len(original):
+            dif = len(recieved) - len(original)
+            recieved = recieved[:len(recieved) - dif]
+
     if original == recieved:
         print('100% match')
     else:
