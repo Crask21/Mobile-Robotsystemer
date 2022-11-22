@@ -22,7 +22,7 @@ def main():
     list = protocol.add_StartStop(list)
     list = protocol.one_list(list)
     
-    robot.send.send_package([*robot.send.synchroniazation(150,'mute'),*pack])
+    robot.send.send_package([*robot.send.synchroniazation(150,'mute'),*list])
     
     #moveObj.move(ang, dist)
     #moveObj.stop()
