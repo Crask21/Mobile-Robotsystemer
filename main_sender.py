@@ -1,7 +1,7 @@
 from Send_DTMF.Class_DTMF import DTMF 
 from Send_DTMF.Class_DTMF import CharListToInt
-from protocol import protocol_In 
-from protocol import protocol_Out
+from signalProcessing.protocol import protocol_In 
+from signalProcessing.protocol import protocol_Out
 import threading
 
 with open('test.txt') as f:
