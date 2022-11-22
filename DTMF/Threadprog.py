@@ -20,7 +20,7 @@ class LISTEN():
 
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
-        rec.RATE = 5000
+        rec.RATE = 44100
         rec.INPUT_BLOCK_TIME = 0.1
         rec.INPUT_FRAMES_PER_BLOCK = int(rec.RATE*rec.INPUT_BLOCK_TIME)
 
@@ -88,6 +88,7 @@ class LISTEN():
         rec.xf=np.delete(rec.xf,rec.delList)
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
+        rec.xf_above1000=np.delete(rec.xf_above1000,-1)
         rec.xf_noise=np.where(rec.xf<650)
 
         rec.cheatfilter=[]
@@ -163,23 +164,27 @@ class LISTEN():
 
     def listenThread(rec):
         #print(*rec.cheatfilter, sep = ", ")
+        print(rec.time_per_read)
         while True:
             start=time.time()
             #divided by baudRate too to get the movement of the window
             data = rec.stream.read(int(rec.RATE*rec.time_per_read))
             data_int = np.array(struct.unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
-            
-
+            end1 = time.time()
+            print("read")
+            print(end1-start)
             #data_int=butter_bandpass_filter(data_int)
             
             yf=fft(data_int)
-            #end=time.time()
-            #print(end-start)
+            print("fft")
+            end2=time.time()
+            print(end2-end1)
             yf=np.delete(yf,rec.delList)
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
-            print(rec.outputList)
+
+            #print(rec.outputList)
             
 
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
@@ -204,6 +209,9 @@ class LISTEN():
                 rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
 
+            end3=time.time()
+            print("conditionals")
+            print(end3-end2)
             end=time.time()
             if end-start>rec.time_per_read:
                 print("ERROR: The baudrate is too fast")
@@ -219,5 +227,7 @@ class LISTEN():
 
 
 
-#roberto = LISTEN(40)
-#roberto.startListen()  
+#
+roberto = LISTEN(10)
+#
+roberto.listenThread()  
