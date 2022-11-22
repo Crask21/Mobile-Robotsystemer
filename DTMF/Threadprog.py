@@ -20,7 +20,7 @@ class LISTEN():
 
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
-        rec.RATE = 3600
+        rec.RATE = 44100
         rec.INPUT_BLOCK_TIME = 0.1
         rec.INPUT_FRAMES_PER_BLOCK = int(rec.RATE*rec.INPUT_BLOCK_TIME)
 
@@ -88,6 +88,7 @@ class LISTEN():
         rec.xf=np.delete(rec.xf,rec.delList)
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
+        rec.xf_above1000=np.delete(rec.xf_above1000,-1)
         rec.xf_noise=np.where(rec.xf<650)
 
         rec.cheatfilter=[]
@@ -227,6 +228,6 @@ class LISTEN():
 
 
 #
-roberto = LISTEN(40)
+roberto = LISTEN(10)
 #
 roberto.listenThread()  
