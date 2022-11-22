@@ -32,7 +32,7 @@ class LISTEN():
         rec.time_per_read=1/rec.baudRate
         rec.z_pad=rec.RATE/rec.resolution-rec.time_per_read*rec.RATE
         rec.z_pad_arr=np.zeros(int(rec.z_pad))
-        rec.variance=60
+        #rec.variance=60
 
         #------------------------------------PYAUDIO-----------------------------------
         # pyaudio class instance
@@ -76,8 +76,8 @@ class LISTEN():
                                 1477,
                                 1633]
 
-        rec.upperRange=10
-        rec.lowerRange=5
+        rec.upperRange=20
+        rec.lowerRange=20
         rec.outputList=[]
 
         #-----------------------------------FREQUENCIES------------------------------------------
@@ -89,6 +89,13 @@ class LISTEN():
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
         rec.xf_noise=np.where(rec.xf<650)
+
+        rec.cheatfilter=[]
+        for i in rec.dtmf_single_freqs:
+            rec.cheatfilter+=range(i-rec.lowerRange, i+rec.upperRange)
+        rec.xf_indices=np.arange(rec.xf.size-1)
+        rec.cheatfilter=np.delete(rec.xf_indices,rec.cheatfilter)
+        #rec.cheatfilter=np.where(rec.xf<rec.dtmf_single_freqs[0] and rec.xf<rec.dtmf_single_freqs[0])
 
 
         #------------------------------GET THE FORMAT
@@ -121,6 +128,9 @@ class LISTEN():
 
     def find_highest_freqs(rec, freqMagn):
     #find largest frequency
+        #cheat filter
+        freqMagn[rec.cheatfilter]=0
+
         freqmagnlow=copy.deepcopy(freqMagn)
         freqmagnlow[rec.xf_above1000]=0
         freqmagnlow[rec.xf_noise]=0
@@ -135,7 +145,7 @@ class LISTEN():
         output =[]
         inputFreqs.sort()
         for i in range(16):
-            if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange):
+            if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange+1 and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange-1)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange+1 and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange-1):
                 output= [i]
         if output==[] and rec.startReading:
             print(inputFreqs)
@@ -152,22 +162,25 @@ class LISTEN():
         #    sys.exit()
 
     def listenThread(rec):
+        #print(*rec.cheatfilter, sep = ", ")
         while True:
             start=time.time()
             #divided by baudRate too to get the movement of the window
             data = rec.stream.read(int(rec.RATE*rec.time_per_read))
             data_int = np.array(struct.unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
-
+            
 
             #data_int=butter_bandpass_filter(data_int)
-
+            
             yf=fft(data_int)
+            #end=time.time()
+            #print(end-start)
             yf=np.delete(yf,rec.delList)
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
             print(rec.outputList)
-            end=time.time()
+            
 
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
                 rec.noSignal+=1
@@ -176,9 +189,6 @@ class LISTEN():
             else:
                 rec.noSignal=0
 
-
-            if end-start>rec.time_per_read:
-                print("ERROR: The baudrate is too fast")
 
             if rec.outputList==[0xC,0xC] and rec.syncCounter>5:
                 rec.startReading=True
@@ -194,6 +204,9 @@ class LISTEN():
                 rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
 
+            end=time.time()
+            if end-start>rec.time_per_read:
+                print("ERROR: The baudrate is too fast")
 
             if rec.outputList!=[0xa,0xb] and len(rec.outputList)==2 and not(rec.startReading):
                 print("Sync failed, delaying with 10 percent")
@@ -206,5 +219,5 @@ class LISTEN():
 
 
 
-#roberto = LISTEN()
+#roberto = LISTEN(40)
 #roberto.startListen()  
