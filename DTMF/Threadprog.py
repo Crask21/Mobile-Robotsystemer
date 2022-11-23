@@ -42,7 +42,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 input_device_index=1 
+                 input_device_index=3 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -101,7 +101,7 @@ class LISTEN():
 
         #------------------------------GET THE FORMAT
         #divided by resolution to get the fft in resolution of choice in hz
-        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read))
+        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
         rec.count = len(rec.data)/2
         rec.format = "%dh"%(rec.count)
         rec.data_int = np.array(struct.unpack(rec.format, rec.data))
@@ -183,7 +183,7 @@ class LISTEN():
         while True:
             start=time.time()
             #divided by baudRate too to get the movement of the window
-            data = rec.stream.read(int(rec.RATE*rec.time_per_read))
+            data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             data_int = np.array(struct.unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
             #end1 = time.time()
@@ -244,6 +244,6 @@ class LISTEN():
 
 
 #
-roberto = LISTEN(10)
+#roberto = LISTEN(10)
 #
-roberto.listenThread()  
+#roberto.listenThread()  
