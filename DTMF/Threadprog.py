@@ -8,7 +8,6 @@ import threading
 
 from scipy.signal import butter, lfilter
 
-import sys
 
 
 
@@ -20,12 +19,6 @@ class LISTEN():
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
         rec.RATE = 4000
-        rec.INPUT_BLOCK_TIME = 0.1
-        rec.INPUT_FRAMES_PER_BLOCK = int(rec.RATE*rec.INPUT_BLOCK_TIME)
-
-        rec.LOWCUT = 200
-        rec.HIGHCUT = 3000
-
         rec.resolution=int(1)
         rec.baudRate=baud
         rec.time_per_read=1/rec.baudRate
@@ -42,7 +35,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 input_device_index=1 
+                 input_device_index=3 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -101,7 +94,7 @@ class LISTEN():
 
         #------------------------------GET THE FORMAT
         #divided by resolution to get the fft in resolution of choice in hz
-        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read))
+        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
         rec.count = len(rec.data)/2
         rec.format = "%dh"%(rec.count)
         rec.data_int = np.array(struct.unpack(rec.format, rec.data))
@@ -179,11 +172,12 @@ class LISTEN():
 
     def listenThread(rec):
         #print(*rec.cheatfilter, sep = ", ")
-        rec.pack=input("Enter sent package")
+
+        #rec.pack=input("Enter sent package")
         while True:
             start=time.time()
             #divided by baudRate too to get the movement of the window
-            data = rec.stream.read(int(rec.RATE*rec.time_per_read))
+            data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             data_int = np.array(struct.unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
             #end1 = time.time()
@@ -205,7 +199,7 @@ class LISTEN():
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
-                    rec.compare(rec.pack,rec.outputList)
+                    #rec.compare(rec.pack,rec.outputList)
                     break
             else:
                 rec.noSignal=0
@@ -244,6 +238,6 @@ class LISTEN():
 
 
 #
-roberto = LISTEN(10)
+#roberto = LISTEN(10)
 #
-roberto.listenThread()  
+#roberto.listenThread()  

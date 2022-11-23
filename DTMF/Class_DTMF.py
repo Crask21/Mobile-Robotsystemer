@@ -8,7 +8,7 @@ import threading
 
 
 
-#dtmf_freq = [[1209,697], # 0
+#dtmf_freq =         [[1209,697], # 0
 #                    [1336,697],  # 1
 #                    [1477,697],  # 2
 #                    [1633,697],  # 3
@@ -24,6 +24,11 @@ import threading
 #                    [1336,941],  # D
 #                    [1477,941],  # E
 #                    [1633,941]]  # F
+
+
+
+
+
 
 def CharListToInt(list):
     hex_dict = {
@@ -51,7 +56,7 @@ def CharListToInt(list):
     
     return res
 
-###gg
+
 class SEND:
 
     def __init__(data, fs, amplitude, p_fade, baud,syn, sound_media = 'PyGame'):
@@ -79,10 +84,13 @@ class SEND:
 
 
 # Send package of hexi decimals
-    def package(data, package, mute = False):
+    def send_package(data, package, mute = False):
 
 
         data.soundwave = np.arange(0,1)
+        
+        package = data.synchroniazation(data.sync) + package
+
 
         # Convert package into sound array
         for i in package:
@@ -101,9 +109,9 @@ class SEND:
             data.play_SD(data.soundwave)
 
 
-    def send_package(data, package, mute = False):
-        play_package = threading.Thread(target=data.package, args=(package, mute))
-        play_package.start()
+    #def send_package(data, package, mute = False):
+    #    play_package = threading.Thread(target=data.package, args=(package, mute))
+    #    play_package.start()
 
 # Plot the package as DTMF tones
     def plot_last_package(data):
