@@ -30,13 +30,15 @@ baud_rate = 10
 send = SEND(fs, amplitude, fade_P, baud_rate,10)
 pack = [0, 1, 1, 10, 2, 0, 3, 0, 1, 0, 1, 2, 13, 4, 7, 0, 0, 1, 0, 1, 3, 9, 13, 10, 4, 0, 1, 0, 1, 4, 7, 0, 6, 9, 2, 0, 3, 13, 2, 0, 3, 3, 0, 1]
 
-send.send_package([*send.synchroniazation(10),*pack])
+send.send_package(pack)
 print(pack)
 
 
 
 list_send =     [11, 8, 5, 1, 15, 2, 5, 6, 14, 14, 11, 2, 2, 6, 15, 12]
 list_recieved = [11, 8, 5, 1, 15, 2, 4, 6, 14, 13, 11, 2, 2, 6, 15,1,1]
+
+
 
 def compare(original, recieved, compare = True):
 

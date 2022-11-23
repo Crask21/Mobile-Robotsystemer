@@ -3,13 +3,11 @@ import struct
 import numpy as np
 import time
 from scipy.fftpack import fft
-import matplotlib.pyplot as plt
 import copy
 import threading
 
 from scipy.signal import butter, lfilter
 
-import sys
 
 
 
@@ -20,13 +18,7 @@ class LISTEN():
 
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
-        rec.RATE = 44100
-        rec.INPUT_BLOCK_TIME = 0.1
-        rec.INPUT_FRAMES_PER_BLOCK = int(rec.RATE*rec.INPUT_BLOCK_TIME)
-
-        rec.LOWCUT = 200
-        rec.HIGHCUT = 3000
-
+        rec.RATE = 4000
         rec.resolution=int(1)
         rec.baudRate=baud
         rec.time_per_read=1/rec.baudRate
@@ -42,7 +34,8 @@ class LISTEN():
         rec.stream = rec.p.open(format = rec.FORMAT,                      
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
-                 input = True, 
+                 input = True,
+                 input_device_index=3 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -101,7 +94,7 @@ class LISTEN():
 
         #------------------------------GET THE FORMAT
         #divided by resolution to get the fft in resolution of choice in hz
-        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read))
+        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
         rec.count = len(rec.data)/2
         rec.format = "%dh"%(rec.count)
         rec.data_int = np.array(struct.unpack(rec.format, rec.data))
@@ -115,17 +108,6 @@ class LISTEN():
         rec.noSignal=0
         rec.startReading=False
     #--------------------------------FUNCTIONS--------------------------------
-    def butter_bandpass(rec,LOWCUT, HIGHCUT, fs, order=5):
-        nyq = 0.5 * fs
-        low = LOWCUT / nyq
-        high = HIGHCUT / nyq
-        b, a = butter(order, [low, high], btype='band')
-        return b, a
-
-    def butter_bandpass_filter(rec,input, LOWCUT, HIGHCUT, fs, order=5):
-        b, a = rec.butter_bandpass(LOWCUT, HIGHCUT, fs, order=order)
-        y = lfilter(b, a, input)
-        return y
 
     def find_highest_freqs(rec, freqMagn):
     #find largest frequency
@@ -155,41 +137,69 @@ class LISTEN():
     def startListen(rec):
         thr=threading.Thread(target=rec.listenThread, args=())
         thr.start()
-        #try:
-        #    thr=threading.Thread(target=rec.listenThread, args=())
-        #    thr.start()
-        #except (KeyboardInterrupt, SystemExit):
-        #    print('\n! Received keyboard interrupt, quitting threads.\n')
-        #    sys.exit()
+
+    
+    def compare(data,original, recieved, compare=True):
+        if len(recieved) > len(original):
+            dif = len(recieved) - len(original)
+            recieved = recieved[:len(recieved) - dif]
+
+        if original == recieved:
+            print('100% match')
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+
+
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,'% count match')
+            print(original)
+            print(recieved)
 
     def listenThread(rec):
         #print(*rec.cheatfilter, sep = ", ")
-        print(rec.time_per_read)
+
+        #rec.pack=input("Enter sent package")
         while True:
             start=time.time()
             #divided by baudRate too to get the movement of the window
-            data = rec.stream.read(int(rec.RATE*rec.time_per_read))
+            data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             data_int = np.array(struct.unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
-            end1 = time.time()
-            print("read")
-            print(end1-start)
+            #end1 = time.time()
+            #print("read")
+            #print(end1-start)
             #data_int=butter_bandpass_filter(data_int)
             
             yf=fft(data_int)
-            print("fft")
-            end2=time.time()
-            print(end2-end1)
+            #print("fft")
+            #end2=time.time()
+            #print(end2-end1)
             yf=np.delete(yf,rec.delList)
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
 
-            #print(rec.outputList)
+            print(rec.outputList)
             
 
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
+                    #rec.compare(rec.pack,rec.outputList)
                     break
             else:
                 rec.noSignal=0
@@ -209,9 +219,9 @@ class LISTEN():
                 rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
 
-            end3=time.time()
-            print("conditionals")
-            print(end3-end2)
+            #end3=time.time()
+            #print("conditionals")
+            #print(end3-end2)
             end=time.time()
             if end-start>rec.time_per_read:
                 print("ERROR: The baudrate is too fast")
@@ -228,6 +238,6 @@ class LISTEN():
 
 
 #
-roberto = LISTEN(10)
+#roberto = LISTEN(10)
 #
-roberto.listenThread()  
+#roberto.listenThread()  
