@@ -1,13 +1,8 @@
 import numpy as np
 
-with open('test.txt') as f:
-    contents = f.read()
-
 # 0xa betyder afsender computer
 # 0xb er robotten
 # oxc er modtager computer
-
-input_list = [[20,10],[-10,30],[contents]]
 
 def convert_to_hexa(input_List):
     temp_main = []
@@ -308,25 +303,3 @@ def decode_address(input_List):
             print('This message is not for me')
 
     return input_List
-
-#Add protocol
-input_list=convert_to_hexa(input_list)
-input_list=hexa_devide(input_list)
-input_list=add_esc(input_list)
-input_list=add_seq(input_list)
-input_list=add_address(input_list)
-input_list=add_CRC(input_list)
-input_list=add_StartStop(input_list)
-input_list=one_list(input_list)
-#print(input_list)
-
-#Decode protocol
-input_list=organize(input_list)
-#input_list=decode_CRC(input_list)
-#input_list=esc_check(input_list)
-#input_list=decode_address(input_list)
-#input_list=remove_seq(input_list)
-#input_list=convert_to_decimal(input_list)
-print(input_list)
-#print(hexa_to_msg(input_list))
-#print(movement(input_list))
