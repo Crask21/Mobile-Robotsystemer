@@ -12,7 +12,7 @@ def main():
         contents = f.read()
     move = [[20,10],[-10,30]]
     list = move + [[contents]]
-    
+    #[[20,10],[-10,30],["Dees large Nuts"]]
     list = protocol.convert_to_hexa(list)
     list = protocol.hexa_devide(list)
     list = protocol.add_seq(list)
