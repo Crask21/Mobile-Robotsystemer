@@ -8,7 +8,7 @@ import threading
 
 
 
-#dtmf_freq = [[1209,697], # 0
+#dtmf_freq =         [[1209,697], # 0
 #                    [1336,697],  # 1
 #                    [1477,697],  # 2
 #                    [1633,697],  # 3
@@ -24,6 +24,11 @@ import threading
 #                    [1336,941],  # D
 #                    [1477,941],  # E
 #                    [1633,941]]  # F
+
+
+
+
+
 
 def CharListToInt(list):
     hex_dict = {
@@ -52,9 +57,9 @@ def CharListToInt(list):
     return res
 
 
-class DTMF:
+class SEND:
 
-    def __init__(data, fs, amplitude, p_fade, baud, sound_media = 'PyGame'):
+    def __init__(data, fs, amplitude, p_fade, baud,syn, sound_media = 'PyGame'):
 
         # DTMF setup
         data.fs = fs
@@ -65,11 +70,12 @@ class DTMF:
         data.baud = baud
         data.duration = 1/baud
         data.sound_media = sound_media
+        data.sync = syn
 
         
         
        
-        data.FFT = 0
+        data.FFT = []
 
         # Initialize DMTF tone list
         data.dtmf = []
@@ -82,6 +88,9 @@ class DTMF:
 
 
         data.soundwave = np.arange(0,1)
+        
+        package = data.synchroniazation(data.sync) + package
+
 
         # Convert package into sound array
         for i in package:
@@ -98,7 +107,11 @@ class DTMF:
             # Play through Sounddevice
         elif not mute and data.sound_media == 'SD':
             data.play_SD(data.soundwave)
-           
+
+
+    #def send_package(data, package, mute = False):
+    #    play_package = threading.Thread(target=data.package, args=(package, mute))
+    #    play_package.start()
 
 # Plot the package as DTMF tones
     def plot_last_package(data):
@@ -142,7 +155,7 @@ class DTMF:
             fade = np.linspace(0,1,num=number_of_faded_points)
             fade_end = np.linspace(1,0,num=number_of_faded_points)
 
-            data.FFT = np.fft.fft(xi)
+            data.FFT.append(np.fft.fft(xi))
 
             for j in np.arange(number_of_faded_points):
                 xi[j] = xi[j] * fade[j]
@@ -212,7 +225,7 @@ class DTMF:
             sync.append(0xB)
         sync.append(0xC)
         sync.append(0xC)
-        data.send_package(sync,mute)
+        #data.send_package(sync,mute)
         return sync
 
         # Random package
@@ -223,6 +236,57 @@ class DTMF:
             random_data.append(randrange(size))
         print(random_data)
         return random_data
+
+
+
+#ff
+
+    def compare(original, recieved, compare = True):
+
+        dif = len(recieved) - len(original)
+
+        if len(recieved) > len(original):
+                recieved = recieved[:len(recieved) - dif]
+
+        if original == recieved:
+            print('100% match')
+        
+
+
+        elif compare:
+            count = 0
+
+            length = len(original) if dif >= 0 else len(recieved)
+
+            for i in range(length):
+                if recieved[i] == original[i]:
+                    count += 1
+            
+            print(count/len(original)*100,'% match.', len(original) - count, 'errors')
+            print('Original:',original)
+            print('Recieved:',recieved)
+
+
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,'% count match. ', count, 'errors')
+            print(original)
+            print(recieved)
 
 
 
