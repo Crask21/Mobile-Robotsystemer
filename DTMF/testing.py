@@ -18,14 +18,14 @@ dtmf_freq = [[1209,697], # 0
             [1477,941],  # E
             [1633,941]]  # F
 
-input()
+
 
 
 # DTMF Settings
 fs = 44100
 amplitude = 10000
 fade_P = 0.05
-baud_rate = 20
+baud_rate = 10
 
 send = SEND(fs, amplitude, fade_P, baud_rate,10)
 pack = [0, 1, 1, 10, 2, 0, 3, 0, 1, 0, 1, 2, 13, 4, 7, 0, 0, 1, 0, 1, 3, 9, 13, 10, 4, 0, 1, 0, 1, 4, 7, 0, 6, 9, 2, 0, 3, 13, 2, 0, 3, 3, 0, 1]
