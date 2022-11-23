@@ -1,28 +1,19 @@
 import sys
 #import Turtlebot.Turtlebot_Python.moveClass as moveClass
-import signalProcessing.protocol as protocol
+from protocol_class import protocolClass
 from DTMF.DTMF_overclass import DTMF
 import time
 
 def main():
-    robot=DTMF(20)
+    robot=DTMF(20,10)
     #moveObj = moveClass.bot()
     
-    with open('file.txt') as f:
-        contents = f.read()
     move = [[20,10],[-10,30]]
-    list = move + [[contents]]
     #[[20,10],[-10,30],["Dees large Nuts"]]
-    list = protocol.convert_to_hexa(list)
-    list = protocol.hexa_devide(list)
-    list = protocol.add_seq(list)
-    list = protocol.add_address(list)
-    list = protocol.add_CRC(list)
-    list = protocol.add_esc(list)
-    list = protocol.add_StartStop(list)
-    list = protocol.one_list(list)
+    pack = protocolClass(move,'file.txt')
+    pack.DataLinkDown()
     
-    robot.send.send_package([*robot.send.synchroniazation(150,'mute'),*list])
+    robot.send.send_package(*pack.data_list)
     
     #moveObj.move(ang, dist)
     #moveObj.stop()

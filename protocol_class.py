@@ -12,6 +12,8 @@ class protocolClass:
             for i in range(len(moves)):
                 self.data_list.append(moves[i])
 
+        
+
     def DataLinkDown(self):
         self.data_list=protocol.convert_to_hexa(self.data_list)
         self.data_list=protocol.hexa_devide(self.data_list)
@@ -24,8 +26,8 @@ class protocolClass:
     
     def DataLinkUp(self):
         self.data_list=protocol.organize(self.data_list)
-        self.data_list=protocol.decode_CRC(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
+        self.data_list=protocol.decode_CRC(self.data_list)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)

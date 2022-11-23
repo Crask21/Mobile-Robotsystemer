@@ -2,7 +2,7 @@ from DTMF.Class_DTMF import SEND
 from DTMF.Threadprog import LISTEN
 
 class DTMF:
-    def __init__(self, baud, sync):
+    def __init__(self, baud, sync=10):
         # DTMF Settings
         fs = 44100
         amplitude = 5000
