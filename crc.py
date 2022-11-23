@@ -66,12 +66,13 @@ def sendercrc(list):
 
 
 def receivercrc(list):
+    seqno=[]
 
-     for j in range(len(list)):
+    for k in range(len(list)):
         tempdataword=''
         codeword=[]
-        for i in range(len(list[j])):
-            tempdata=bin(int(list[j][i],16))
+        for i in range(len(list[k])):
+            tempdata=bin(int(list[k][i],16))
             tempdata=tempdata[2:]
             #print(tempdata)
 
@@ -125,10 +126,14 @@ def receivercrc(list):
             hexremainder=hexremainder+str(remainder[i])
     
         hexremainder=int(hexremainder,2)
+        
+        if hexremainder!=0x0:
+            seqno.append(list[k][0])
    
         hexremainder=hex(hexremainder)
         print(hexremainder, 'hexsyndrome')
+    print(seqno)
 
 sendercrc([['0xa','0xa'],['0x1','0x5']])
 
-receivercrc([['0x1','0x5','0xa'],['0xa','0xa','0x9']])
+receivercrc([['0x1','0x5','0xb'],['0xa','0xa','0x9']])
