@@ -13,7 +13,8 @@ def main():
     pack = protocolClass(move,'file.txt')
     pack.DataLinkDown()
     
-    robot.send.send_package(*pack.data_list)
+    #print(pack.data_list)
+    robot.send.send_package(pack.data_list)
     
     #moveObj.move(ang, dist)
     #moveObj.stop()
