@@ -13,7 +13,7 @@ class DTMF:
         # SYNC
 
 
-        self.send = SEND(fs, amplitude, fade_P, baud_rate, media)
+        self.send = SEND(fs, amplitude, fade_P, baud_rate,syn, media)
         self.listen=LISTEN(baud_rate)
 
 
