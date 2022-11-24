@@ -7,7 +7,7 @@ import time
 def main():
     #robot=DTMF(20)
     moveObj = moveClass.bot()
-    
+    list = robot.listen.startListen()
     list = protocol.organize(list)
     list = protocol.esc_check(list)
     list = protocol.decode_CRC(list)
