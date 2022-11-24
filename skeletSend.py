@@ -5,7 +5,7 @@ from DTMF.DTMF_overclass import DTMF
 import time
 
 def main():
-    robot=DTMF(20,10)
+    robot=DTMF(10,10)
     #moveObj = moveClass.bot()
     
     move = [[20,10],[-10,30]]

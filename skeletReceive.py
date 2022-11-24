@@ -1,11 +1,11 @@
 import sys
 import moveClass
 import protocol
-import DTMF_overclass
+#import DTMF_overclass
 import time
 
 def main():
-    robot=DTMF(20)
+    #robot=DTMF(20)
     moveObj = moveClass.bot()
     
     list = protocol.organize(list)
@@ -15,7 +15,7 @@ def main():
     list = protocol.convert_to_decimal(list)
     print(list)
     for i in range(len(list)-1):
-        moveObj.move(list[i,0],list[i,1])
+        moveObj.move(list[i][0],list[i][1])
     moveObj.stop()
 
 if __name__ == "__main__":
