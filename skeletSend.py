@@ -12,6 +12,7 @@ def main():
     #[[20,10],[-10,30],["Dees large Nuts"]]
     pack = protocolClass(move,'file.txt')
     pack.DataLinkDown()
+    pack.print()
     
     #print(pack.data_list)
     robot.send.send_package(pack.data_list)
