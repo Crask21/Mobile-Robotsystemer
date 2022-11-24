@@ -1,5 +1,5 @@
-from DTMF.Class_DTMF import SEND
-from DTMF.Threadprog import LISTEN
+from Class_DTMF import SEND
+from Threadprog import LISTEN
 
 class DTMF:
     def __init__(self, baud, sync=10):

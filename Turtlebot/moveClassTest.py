@@ -9,7 +9,7 @@
 
 
 import sys
-import moveClass
+import Turtlebot.Source.moveClass as moveClass
 
 def main():
     ang = sys.argv[1]
