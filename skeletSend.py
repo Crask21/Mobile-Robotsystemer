@@ -5,7 +5,7 @@ from DTMF.DTMF_overclass import DTMF
 import time
 
 def main():
-    robot=DTMF(10,10)
+    robot=DTMF(20,10)
     #moveObj = moveClass.bot()
     
     move = [[20,10],[-10,30]]
@@ -14,8 +14,12 @@ def main():
     pack.DataLinkDown()
     pack.print()
     
-    #print(pack.data_list)
-    robot.send.send_package(pack.data_list)
+    print(pack.data_list)
+
+    hej=[7,7,7,7,7,7,7,7,7,7,7,15]
+
+    robot.send.send_package(hej, False)
+    #robot.send.send_package(pack.data_list)
     
     #moveObj.move(ang, dist)
     #moveObj.stop()
