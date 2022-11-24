@@ -1,13 +1,8 @@
 import numpy as np
 
-with open('test.txt') as f:
-    contents = f.read()
-
 # 0xa betyder afsender computer
 # 0xb er robotten
 # oxc er modtager computer
-
-input_list = [[20,10],[-10,30],[contents]]
 
 def convert_to_hexa(input_List):
     temp_main = []
@@ -68,29 +63,37 @@ def add_StartStop(Input_List):
 
 def one_list(input_List):
     output = []
+    output2 = []
     for i in range(len(input_List)):
         for j in range(len(input_List[i])):
             output.append(input_List[i][j])
-    return output
+    for i in range(len(output)):
+        output2.append(int(output[i],16))
+    return output2
+    
 
 def organize(input_List):
     check = 0
     output = []
-    for i in range(len(input_List)-1):
-        if input_List[i]=='0x0' and input_List[i+1]=='0x1':
-            if input_List[i-1]!='0xF' and input_List[i-2]!='0xf':
+    tempA = []
+    for i in range(len(input_List)):
+        tempA.append(hex(input_List[i]))
+    
+    for i in range(len(tempA)-1):
+        if tempA[i]=='0x0' and tempA[i+1]=='0x1':
+            if tempA[i-1]!='0xF' and tempA[i-2]!='0xf':
                 check = check+1
                 if check % 2 == 1:
                     temp = []
-                    for j in np.arange(i+2,len(input_List)):
-                        if input_List[j]=='0x0' and input_List[j+1]=='0x1':
-                            if input_List[j-1]=='0xf' and input_List[j-2]=='0xf':
-                                temp.append(input_List[j])
+                    for j in np.arange(i+2,len(tempA)):
+                        if tempA[j]=='0x0' and tempA[j+1]=='0x1':
+                            if tempA[j-1]=='0xf' and tempA[j-2]=='0xf':
+                                temp.append(tempA[j])
                             else:
                                 output.append(temp)
                                 break
                         else:
-                            temp.append(input_List[j])
+                            temp.append(tempA[j])
     return output
 
 def esc_check(inpt_List):
@@ -308,25 +311,3 @@ def decode_address(input_List):
             print('This message is not for me')
 
     return input_List
-
-#Add protocol
-input_list=convert_to_hexa(input_list)
-input_list=hexa_devide(input_list)
-input_list=add_esc(input_list)
-input_list=add_seq(input_list)
-input_list=add_address(input_list)
-input_list=add_CRC(input_list)
-input_list=add_StartStop(input_list)
-input_list=one_list(input_list)
-#print(input_list)
-
-#Decode protocol
-input_list=organize(input_list)
-#input_list=decode_CRC(input_list)
-#input_list=esc_check(input_list)
-#input_list=decode_address(input_list)
-#input_list=remove_seq(input_list)
-#input_list=convert_to_decimal(input_list)
-print(input_list)
-#print(hexa_to_msg(input_list))
-#print(movement(input_list))
