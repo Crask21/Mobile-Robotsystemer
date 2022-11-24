@@ -4,11 +4,9 @@ import numpy as np
 import time
 from scipy.fftpack import fft
 import copy
-import threading
 
-from scipy.signal import butter, lfilter
+#fix so that outpulist is outputted
 
-import sys
 
 
 
@@ -20,12 +18,6 @@ class LISTEN():
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
         rec.RATE = 4000
-        rec.INPUT_BLOCK_TIME = 0.1
-        rec.INPUT_FRAMES_PER_BLOCK = int(rec.RATE*rec.INPUT_BLOCK_TIME)
-
-        rec.LOWCUT = 200
-        rec.HIGHCUT = 3000
-
         rec.resolution=int(1)
         rec.baudRate=baud
         rec.time_per_read=1/rec.baudRate
@@ -141,9 +133,9 @@ class LISTEN():
             print(inputFreqs)
         return output
         
-    def startListen(rec):
-        thr=threading.Thread(target=rec.listenThread, args=())
-        thr.start()
+    #def startListen(rec):
+    #    thr=threading.Thread(target=rec.listenThread, args=())
+    #    thr.start()
 
     
     def compare(data,original, recieved, compare=True):
@@ -177,9 +169,10 @@ class LISTEN():
             print(original)
             print(recieved)
 
-    def listenThread(rec):
+    def startListen(rec):
         #print(*rec.cheatfilter, sep = ", ")
-        rec.pack=input("Enter sent package")
+
+        #rec.pack=input("Enter sent package")
         while True:
             start=time.time()
             #divided by baudRate too to get the movement of the window
@@ -205,7 +198,7 @@ class LISTEN():
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
-                    rec.compare(rec.pack,rec.outputList)
+                    #rec.compare(rec.pack,rec.outputList)
                     break
             else:
                 rec.noSignal=0
@@ -240,6 +233,8 @@ class LISTEN():
                     end=time.time()
             while end-start<rec.time_per_read:
                 end=time.time()
+        
+        return rec.outputList
 
 
 

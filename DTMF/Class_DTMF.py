@@ -59,7 +59,7 @@ def CharListToInt(list):
 
 class SEND:
 
-    def __init__(data, fs, amplitude, p_fade, baud,syn, sound_media = 'PyGame'):
+    def __init__(data, fs, amplitude, p_fade, baud, syn, sound_media = 'PyGame'):
 
         # DTMF setup
         data.fs = fs
