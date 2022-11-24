@@ -83,13 +83,16 @@ class SEND:
 
 
 
+
 # Send package of hexi decimals
-    def send_package(data, package, mute = False):
+    def send_package(data, package, mute = True):
 
 
         data.soundwave = np.arange(0,1)
         
-        package = data.synchroniazation(data.sync) + package
+        if mute:
+            package = data.synchroniazation(data.sync) + package
+
 
 
         # Convert package into sound array
@@ -100,12 +103,12 @@ class SEND:
             data.soundwave[-1] = 0
 
 
-        if not mute and data.sound_media == 'PyGame':
+        if data.sound_media == 'PyGame':
             # Play through PyGame
             data.play_PyGame(data.soundwave)
 
             # Play through Sounddevice
-        elif not mute and data.sound_media == 'SD':
+        elif data.sound_media == 'SD':
             data.play_SD(data.soundwave)
 
 
@@ -114,17 +117,20 @@ class SEND:
     #    play_package.start()
 
 # Plot the package as DTMF tones
-    def plot_last_package(data):
+    def plot_last_package(data, dur = False, custom = False):
 
         package_size = round(len(data.soundwave)/data.fs/data.duration)
-
-        time = np.arange(0, data.duration * package_size, 1/data.fs)
-        for i in range(34):
-            data.soundwave = np.delete(data.soundwave,-1)
-
+        
+        time = np.arange(0, data.duration * package_size, 1/data.fs) if not dur else np.arange(0, dur , 1/data.fs)
         
 
-        plt.plot(time,data.soundwave,'r--')
+
+        data.soundwave = np.delete(data.soundwave,-1)
+
+        
+        if custom:
+            data.soundwave = 5000 * np.sin(2*np.pi*1209*time) + 5000 * np.sin(2*np.pi*697*time)
+        plt.plot(time,data.soundwave,'o')#'r--'
         plt.ylabel('some numbers')
         plt.show()
 
