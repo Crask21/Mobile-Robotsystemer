@@ -22,16 +22,16 @@ dtmf_freq = [[1209,697], # 0
 
 
 # DTMF Settings
-fs = 15000
+fs = 3266
 amplitude = 5000
 fade_P = 0.00
-baud_rate = 40
+baud_rate = 120
 
 send = SEND(fs, amplitude, fade_P, baud_rate,10)
 pack = [0, 1, 1, 10, 2, 0, 3, 0, 1, 0, 1, 2, 13, 4, 7, 0, 0, 1, 0, 1, 3, 9, 13, 10, 4, 0, 1, 0, 1, 4, 7, 0, 6, 9, 2, 0, 3, 13, 2, 0, 3, 3, 0, 1]
 
-send.send_package(pack)
-#send.plot_last_package()
+send.send_package([0x0],False)
+send.plot_last_package()
 print(pack)
 
 

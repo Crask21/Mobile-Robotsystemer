@@ -247,7 +247,7 @@ class SEND:
 
 #ff
 
-    def compare(original, recieved, compare = True):
+    def compare(data, original, recieved, compare = True):
 
         dif = len(recieved) - len(original)
 
