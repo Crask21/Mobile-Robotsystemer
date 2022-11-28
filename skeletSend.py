@@ -8,13 +8,13 @@ def main():
     robot=DTMF(50,30)
     #moveObj = moveClass.bot()
     
-    move = [[20,10],[-10,30],[20,10],[-10,30],[20,10],[-10,30]]
+    move = [[0,100],[90,100]]
     #[[20,10],[-10,30],["Dees large Nuts"]]
     pack = protocolClass(move,'output.txt')
     pack.DataLinkDown()
     pack.print()
     
-    print(pack.data_list)
+    #print(pack.data_list)
 
     #hej=[7,7,7,7,7,7,7,7,7,7,7,15,15,15]
 
