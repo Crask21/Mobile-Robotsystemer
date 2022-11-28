@@ -137,38 +137,6 @@ class LISTEN():
     #    thr=threading.Thread(target=rec.listenThread, args=())
     #    thr.start()
 
-    
-    def compare(data,original, recieved, compare=True):
-        if len(recieved) > len(original):
-            dif = len(recieved) - len(original)
-            recieved = recieved[:len(recieved) - dif]
-
-        if original == recieved:
-            print('100% match')
-        else:
-            send_count =[]
-            for i in range(16):
-                send_count.append(original.count(i))
-
-
-
-
-            recieved_count = []
-            for i in range(16):
-                recieved_count.append(recieved.count(i))
-
-            count = 0
-            for i in range(16):
-                
-                if recieved_count[i] == send_count[i]:
-                    count += 1
-
-
-
-            print(count/16*100,'% count match')
-            print(original)
-            print(recieved)
-
     def startListen(rec):
         #print(*rec.cheatfilter, sep = ", ")
 
