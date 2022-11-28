@@ -22,16 +22,21 @@ dtmf_freq = [[1209,697], # 0
 
 
 # DTMF Settings
-fs = 3266
+fs = 44100
 amplitude = 5000
-fade_P = 0.00
-baud_rate = 120
+fade_P = 0.4
+baud_rate = 50
+sync = 30
 
-send = SEND(fs, amplitude, fade_P, baud_rate,10)
-pack = [0, 1, 1, 10, 2, 0, 3, 0, 1, 0, 1, 2, 13, 4, 7, 0, 0, 1, 0, 1, 3, 9, 13, 10, 4, 0, 1, 0, 1, 4, 7, 0, 6, 9, 2, 0, 3, 13, 2, 0, 3, 3, 0, 1]
+send = SEND(fs, amplitude, fade_P, baud_rate,sync)
+pack = [14, 14, 1, 12, 0, 0, 12, 9, 9, 15, 11, 10, 7, 12, 9, 13, 14, 14, 12, 0, 15, 12, 11, 1, 7, 6, 6, 7, 0, 1, 12, 8, 6, 13, 8, 3, 1, 1, 0, 6]
+
+pack = [*pack,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
 
 send.send_package([0x0],False)
-send.plot_last_package()
+send.send_package(pack)
+
 print(pack)
 
 
@@ -95,19 +100,4 @@ def compare(original, recieved, compare = True):
         print(recieved)
 
 compare(list_send,list_recieved)
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
 
