@@ -8,7 +8,7 @@ import threading
 
 
 
-#dtmf_freq = [[1209,697], # 0
+#dtmf_freq =         [[1209,697], # 0
 #                    [1336,697],  # 1
 #                    [1477,697],  # 2
 #                    [1633,697],  # 3
@@ -24,6 +24,11 @@ import threading
 #                    [1336,941],  # D
 #                    [1477,941],  # E
 #                    [1633,941]]  # F
+
+
+
+
+
 
 def CharListToInt(list):
     hex_dict = {
@@ -51,10 +56,10 @@ def CharListToInt(list):
     
     return res
 
-###gg
+
 class SEND:
 
-    def __init__(data, fs, amplitude, p_fade, baud, sound_media = 'PyGame'):
+    def __init__(data, fs, amplitude, p_fade, baud, syn, sound_media = 'PyGame'):
 
         # DTMF setup
         data.fs = fs
@@ -65,6 +70,7 @@ class SEND:
         data.baud = baud
         data.duration = 1/baud
         data.sound_media = sound_media
+        data.sync = syn
 
         
         
@@ -77,11 +83,17 @@ class SEND:
 
 
 
+
 # Send package of hexi decimals
-    def package(data, package, mute = False):
+    def send_package(data, package, mute = True):
 
 
         data.soundwave = np.arange(0,1)
+        
+        if mute:
+            package = data.synchroniazation(data.sync) + package
+
+
 
         # Convert package into sound array
         for i in package:
@@ -91,31 +103,35 @@ class SEND:
             data.soundwave[-1] = 0
 
 
-        if not mute and data.sound_media == 'PyGame':
+        if data.sound_media == 'PyGame':
             # Play through PyGame
             data.play_PyGame(data.soundwave)
 
             # Play through Sounddevice
-        elif not mute and data.sound_media == 'SD':
+        elif data.sound_media == 'SD':
             data.play_SD(data.soundwave)
 
 
-    def send_package(data, package, mute = False):
-        play_package = threading.Thread(target=data.package, args=(package, mute))
-        play_package.start()
+    #def send_package(data, package, mute = False):
+    #    play_package = threading.Thread(target=data.package, args=(package, mute))
+    #    play_package.start()
 
 # Plot the package as DTMF tones
-    def plot_last_package(data):
+    def plot_last_package(data, dur = False, custom = False):
 
         package_size = round(len(data.soundwave)/data.fs/data.duration)
-
-        time = np.arange(0, data.duration * package_size, 1/data.fs)
-        for i in range(34):
-            data.soundwave = np.delete(data.soundwave,-1)
-
+        
+        time = np.arange(0, data.duration * package_size, 1/data.fs) if not dur else np.arange(0, dur , 1/data.fs)
         
 
-        plt.plot(time,data.soundwave,'r--')
+
+        data.soundwave = np.delete(data.soundwave,-1)
+        data.soundwave = np.delete(data.soundwave,-1)
+
+        
+        if custom:
+            data.soundwave = 5000 * np.sin(2*np.pi*1209*time) + 5000 * np.sin(2*np.pi*697*time)
+        plt.plot(time,data.soundwave,'r--')#'r--'
         plt.ylabel('some numbers')
         plt.show()
 
@@ -216,7 +232,7 @@ class SEND:
             sync.append(0xB)
         sync.append(0xC)
         sync.append(0xC)
-        data.send_package(sync,mute)
+        #data.send_package(sync,mute)
         return sync
 
         # Random package
@@ -227,6 +243,57 @@ class SEND:
             random_data.append(randrange(size))
         print(random_data)
         return random_data
+
+
+
+#ff
+
+    def compare(data, original, recieved, compare = True):
+
+        dif = len(recieved) - len(original)
+
+        if len(recieved) > len(original):
+                recieved = recieved[:len(recieved) - dif]
+
+        if original == recieved:
+            print('100% match')
+        
+
+
+        elif compare:
+            count = 0
+
+            length = len(original) if dif >= 0 else len(recieved)
+
+            for i in range(length):
+                if recieved[i] == original[i]:
+                    count += 1
+            
+            print(count/len(original)*100,'% match.', len(original) - count, 'errors')
+            print('Original:',original)
+            print('Recieved:',recieved)
+
+
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,'% count match. ', count, 'errors')
+            print(original)
+            print(recieved)
 
 
 

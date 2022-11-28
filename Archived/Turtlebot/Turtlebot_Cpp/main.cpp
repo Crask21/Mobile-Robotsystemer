@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
     json forward = {
         {"linear", {{"x", 0.0}, {"y", 0}, {"z", 0}}},
         {"angular", {{"x", 0}, {"y", 0}, {"z", 0}}}
-    };
+    }; //x = 0.2 max speed
     json back = {
         {"linear", {{"x", -0.0}, {"y", 0}, {"z", 0}}},
         {"angular", {{"x", 0}, {"y", 0}, {"z", 0}}}

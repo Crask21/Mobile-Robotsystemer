@@ -46,5 +46,9 @@
         "typeinfo": "cpp",
         "thread": "cpp"
     },
+<<<<<<< HEAD
+    "cmake.configureOnOpen": true
+=======
     "cmake.configureOnOpen": false
+>>>>>>> 5cb66523a50bab0e0d7f7c0fd311446e63e5bd7e
 }
