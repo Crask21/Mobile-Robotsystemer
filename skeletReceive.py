@@ -1,6 +1,6 @@
 import sys
 from Turtlebot.Turtlebot_Python.moveClass import bot
-import protocol
+from protocol_class import protocolClass
 from DTMF.DTMF_overclass import DTMF
 import time
 
@@ -10,18 +10,13 @@ def main():
     #print(len(pack))
     robot=DTMF(40,10)
     moveObj = bot()
-    list = robot.listen.startListen()
+    data = robot.listen.startListen()
     robot.send.compare(pack, robot.listen.outputList)
-    list = protocol.organize(list)
-    print(list)
-    list = protocol.esc_check(list)
-    list = protocol.decode_CRC(list)
-    list = protocol.remove_seq(list)
-    list = protocol.convert_to_decimal(list)
-    
-    print(list)
-    for i in range(len(list)-1):
-        moveObj.move(list[i][0],list[i][1])
+    data_prot = protocolClass(data)
+    data_prot.DataLinkUp()  
+    data_prot.print()
+    for i in range(len(data_prot.data_list)-1):
+        moveObj.move(data_prot.data_list[i][0],data_prot.data_list[i][1])
     moveObj.stop()
 
 if __name__ == "__main__":
