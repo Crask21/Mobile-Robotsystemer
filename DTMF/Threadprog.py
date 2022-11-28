@@ -4,9 +4,8 @@ import numpy as np
 import time
 from scipy.fftpack import fft
 import copy
-import threading
 
-from scipy.signal import butter, lfilter
+#fix so that outpulist is outputted
 
 
 
@@ -35,7 +34,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 input_device_index=3 
+                 #input_device_index=3 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -134,9 +133,9 @@ class LISTEN():
             print(inputFreqs)
         return output
         
-    def startListen(rec):
-        thr=threading.Thread(target=rec.listenThread, args=())
-        thr.start()
+    #def startListen(rec):
+    #    thr=threading.Thread(target=rec.listenThread, args=())
+    #    thr.start()
 
     
     def compare(data,original, recieved, compare=True):
@@ -170,7 +169,7 @@ class LISTEN():
             print(original)
             print(recieved)
 
-    def listenThread(rec):
+    def startListen(rec):
         #print(*rec.cheatfilter, sep = ", ")
 
         #rec.pack=input("Enter sent package")
@@ -234,6 +233,8 @@ class LISTEN():
                     end=time.time()
             while end-start<rec.time_per_read:
                 end=time.time()
+        
+        return rec.outputList
 
 
 

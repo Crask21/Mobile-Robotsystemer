@@ -63,29 +63,37 @@ def add_StartStop(Input_List):
 
 def one_list(input_List):
     output = []
+    output2 = []
     for i in range(len(input_List)):
         for j in range(len(input_List[i])):
             output.append(input_List[i][j])
-    return output
+    for i in range(len(output)):
+        output2.append(int(output[i],16))
+    return output2
+    
 
 def organize(input_List):
     check = 0
     output = []
-    for i in range(len(input_List)-1):
-        if input_List[i]=='0x0' and input_List[i+1]=='0x1':
-            if input_List[i-1]!='0xF' and input_List[i-2]!='0xf':
+    tempA = []
+    for i in range(len(input_List)):
+        tempA.append(hex(input_List[i]))
+    
+    for i in range(len(tempA)-1):
+        if tempA[i]=='0x0' and tempA[i+1]=='0x1':
+            if tempA[i-1]!='0xF' and tempA[i-2]!='0xf':
                 check = check+1
                 if check % 2 == 1:
                     temp = []
-                    for j in np.arange(i+2,len(input_List)):
-                        if input_List[j]=='0x0' and input_List[j+1]=='0x1':
-                            if input_List[j-1]=='0xf' and input_List[j-2]=='0xf':
-                                temp.append(input_List[j])
+                    for j in np.arange(i+2,len(tempA)):
+                        if tempA[j]=='0x0' and tempA[j+1]=='0x1':
+                            if tempA[j-1]=='0xf' and tempA[j-2]=='0xf':
+                                temp.append(tempA[j])
                             else:
                                 output.append(temp)
                                 break
                         else:
-                            temp.append(input_List[j])
+                            temp.append(tempA[j])
     return output
 
 def esc_check(inpt_List):
