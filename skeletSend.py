@@ -14,7 +14,7 @@ def main():
     pack.DataLinkDown()
     pack.print()
     
-    print(pack.data_list)
+    #print(pack.data_list)
 
     #hej=[7,7,7,7,7,7,7,7,7,7,7,15,15,15]
 
