@@ -16,7 +16,7 @@ def main():
     list = protocol.remove_seq(list)
     list = protocol.convert_to_decimal(list)
     robot.send.compare(pack, robot.listen.outputList)
-    print()
+    print(list)
     for i in range(len(list)-1):
         moveObj.move(list[i][0],list[i][1])
     moveObj.stop()
