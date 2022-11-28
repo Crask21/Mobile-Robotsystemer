@@ -11,6 +11,7 @@ def main():
     moveObj = bot()
     list = robot.listen.startListen()
     list = protocol.organize(list)
+    print(list)
     list = protocol.esc_check(list)
     list = protocol.decode_CRC(list)
     list = protocol.remove_seq(list)
