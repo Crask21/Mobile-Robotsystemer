@@ -82,7 +82,7 @@ def organize(input_List):
     
     for i in range(len(tempA)-1):
         if tempA[i]=='0x0' and tempA[i+1]=='0x1':
-            if tempA[i-1]!='0xf' and tempA[i-2]!='0xf':
+            if tempA[i-1]!='0xf' or tempA[i-2]!='0xf':
                 check = check+1
                 if check % 2 == 1:
                     temp = []
@@ -95,6 +95,7 @@ def organize(input_List):
                                 break
                         else:
                             temp.append(tempA[j])
+            
     return output
 
 def esc_check(inpt_List):
