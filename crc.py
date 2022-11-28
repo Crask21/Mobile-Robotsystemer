@@ -88,18 +88,10 @@ def sendercrc(list):
         #print(tempremainder)
         #hexremainder=int(hexremainder,2)
    
-<<<<<<< HEAD
         #hexremainder=hex(hexremainder)
         #print(hexremainder)
         #list[k].append(hexremainder)
     print(list)
-=======
-        hexremainder=hex(hexremainder)
-        print(hexremainder)
-<<<<<<< HEAD
->>>>>>> 95f2354bddd593d95250bc71f15211f5e5442283
-=======
->>>>>>> 95f2354bddd593d95250bc71f15211f5e5442283
     
 
 
