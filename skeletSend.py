@@ -16,9 +16,9 @@ def main():
     
     print(pack.data_list)
 
-    hej=[7,7,7,7,7,7,7,7,7,7,7,15,15,15]
+    #hej=[7,7,7,7,7,7,7,7,7,7,7,15,15,15]
 
-    robot.send.send_package(hej, False)
+    robot.send.send_package(pack, False)
     #robot.send.send_package(pack.data_list)
     
     #moveObj.move(ang, dist)
