@@ -110,7 +110,7 @@ def esc_check(inpt_List):
                     temp.append(inpt_List[k][l])
             else:
                 temp.append(inpt_List[k][l])
-        temp.append(inpt_List[k][len(inpt_List[k])-1])
+        temp.append(inpt_List[k][-1])
         output.append(temp)
     return output
 
