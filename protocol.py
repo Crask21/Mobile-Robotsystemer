@@ -78,6 +78,7 @@ def organize(input_List):
     tempA = []
     for i in range(len(input_List)):
         tempA.append(hex(input_List[i]))
+    print(tempA)
     
     for i in range(len(tempA)-1):
         if tempA[i]=='0x0' and tempA[i+1]=='0x1':
