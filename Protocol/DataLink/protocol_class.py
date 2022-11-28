@@ -37,9 +37,14 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
+        #for i in range(len(self.data_list)):
+            #remove
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
+    
+    def SendBack(self):
+        print()
     
     def PhysicalDown(self):
         self.dtmf.send.send_package(self.data_list)
