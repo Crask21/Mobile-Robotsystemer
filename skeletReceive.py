@@ -13,11 +13,12 @@ def main():
     list = robot.listen.startListen()
     list = protocol.organize(list)
     print(list)
+    robot.send.compare(pack, robot.listen.outputList)
     list = protocol.esc_check(list)
     list = protocol.decode_CRC(list)
     list = protocol.remove_seq(list)
     list = protocol.convert_to_decimal(list)
-    robot.send.compare(pack, robot.listen.outputList)
+    
     print(list)
     for i in range(len(list)-1):
         moveObj.move(list[i][0],list[i][1])
