@@ -24,8 +24,8 @@ dtmf_freq = [[1209,697], # 0
 # DTMF Settings
 fs = 44100
 amplitude = 5000
-fade_P = 10
-baud_rate = 30
+fade_P = 1000
+baud_rate = 20
 sync = 20
 send = SEND(fs, amplitude, fade_P, baud_rate,sync)
 pack = [0, 1, 10, 11, 12, 1, 8, 0, 14, 4, 3, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 14, 4, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 7, 5, 7, 4, 7, 3, 0, 0, 1]
