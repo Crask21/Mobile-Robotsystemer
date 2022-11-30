@@ -161,7 +161,7 @@ class LISTEN():
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
 
-            print(rec.xf[highestfreqs])
+            print(rec.outputList)
             
 
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
