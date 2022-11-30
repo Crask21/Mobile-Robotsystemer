@@ -116,6 +116,7 @@ def esc_check(inpt_List):
 
 def remove_seq(input_List):
     for i in range(len(input_List)):
+        
         input_List[i].pop(0)
     return input_List
 

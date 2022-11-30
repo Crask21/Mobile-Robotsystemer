@@ -1,10 +1,12 @@
 import numpy as np
 import Protocol.DataLink.protocol as protocol
 from Protocol.Physical.DTMF_overclass import DTMF
+import Protocol.DataLink.ErrorCorrection as ec
 move = [[10,20],[-10,30]]
 
 class protocolClass:
     data_list = []
+    dataListEC= []
     dtmf = DTMF(40)
     def __init__(self, baud, sync = 10, moves = [], filename=0):
         self.dtmf = DTMF(baud,sync)
@@ -31,14 +33,14 @@ class protocolClass:
         self.data_list=protocol.add_CRC(self.data_list)
         self.data_list=protocol.add_esc(self.data_list)
         self.data_list=protocol.add_StartStop(self.data_list)
+        self.dataListEC = self.data_list
         self.data_list=protocol.one_list(self.data_list)
     
     def DataLinkUp(self):
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        #for i in range(len(self.data_list)):
-            #remove
+        
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
@@ -48,6 +50,8 @@ class protocolClass:
     
     def PhysicalDown(self):
         self.dtmf.send.send_package(self.data_list)
+        ec.errorCorrectionDown(self.dataListEC,40)
+        
         
     def PhysicalUp(self):
         self.data_list = self.dtmf.listen.startListen()
