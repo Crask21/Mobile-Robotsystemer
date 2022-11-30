@@ -9,7 +9,7 @@ class protocolClass:
     dataListEC= []
     #dtmf = DTMF(40)
     def __init__(self, baud, sync = 10, moves = [], filename=0):
-        self.dtmf = DTMF(baud,sync)
+        self.dtmf = DTMF(int(baud),sync)
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
