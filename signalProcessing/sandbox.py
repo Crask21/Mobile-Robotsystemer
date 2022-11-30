@@ -124,14 +124,16 @@ for i in range(50):
     count = len(data)/2
     format = "%dh"%(count)
     data_int = np.array(struct.unpack(format, data))
-    data_int=np.append(data_int,z_pad_arr)
+    data_intz=np.append(data_int,z_pad_arr)
 #--------------------------------FFT-----------------------
-yf=fft(data_int)
+yf=fft(data_intz)
 yf=abs(yf)
 yf=np.delete(yf,delList)
 
-#fig=plt.plot(xf,yf)
-#plt.show()
+fig1=plt.plot(data_int)
+plt.show()
+fig2=plt.plot(xf,yf)
+plt.show()
 
 
 
