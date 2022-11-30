@@ -5,7 +5,7 @@ import json
 from time import sleep
 import sys, select, tty, termios
 
-class bot:
+class moveClass:
     def __init__(self) -> None:
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
