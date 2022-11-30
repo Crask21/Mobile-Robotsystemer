@@ -159,16 +159,24 @@ class SEND:
             
             # Fadeeeeeee #
             number_of_faded_points = int(dur * percentage_fade * f_sample)
-            fade = np.linspace(0,1,num=number_of_faded_points)
+            if percentage_fade > 1:
+                number_of_faded_points = int((percentage_fade/1000000) / dur * f_sample)
+
+            
             fade_end = np.linspace(1,0,num=number_of_faded_points)
 
             data.FFT.append(np.fft.fft(xi))
 
-            for j in np.arange(number_of_faded_points):
-                xi[j] = xi[j] * fade[j]
+            #for j in np.arange(number_of_faded_points):
+            #    xi[j] = xi[j] * fade[j]
+
+            print(xi[-1*number_of_faded_points:])
 
             for j in np.arange(-1*number_of_faded_points,-1):    
                 xi[j] = xi[j] * fade_end[j]    
+
+            print(xi[:-1*number_of_faded_points])
+
             # Fadeeeeeee #
             
 
@@ -246,7 +254,7 @@ class SEND:
 
 
 
-#ff
+
 
     def compare(data, original, recieved, compare = True):
 
