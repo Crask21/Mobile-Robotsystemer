@@ -34,7 +34,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 input_device_index=3 
+                 #input_device_index=3 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -161,7 +161,7 @@ class LISTEN():
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
 
-            print(rec.outputList)
+            print(rec.xf[highestfreqs])
             
 
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
@@ -208,6 +208,6 @@ class LISTEN():
 
 
 #
-#roberto = LISTEN(10)
+#oberto = LISTEN(10)
 
 #roberto.listenThread()  

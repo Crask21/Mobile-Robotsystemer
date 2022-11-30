@@ -1,6 +1,6 @@
 import sys
 #import Turtlebot.Turtlebot_Python.moveClass as moveClass
-from protocol_class import protocolClass
+from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 import time
 

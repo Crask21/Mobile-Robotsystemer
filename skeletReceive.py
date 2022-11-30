@@ -1,8 +1,8 @@
-import sys
-from Turtlebot.Turtlebot_Python.moveClass import bot
-from protocol_class import protocolClass
-from DTMF.DTMF_overclass import DTMF
-import time
+
+from Turtlebot.moveClass import moveClass
+from Protocol.DataLink.protocol_class import protocolClass
+from Protocol.Physical.DTMF_overclass import DTMF
+
 
 def main():
     pack= [0, 1, 10, 11, 12, 1, 8, 10, 9, 4, 7, 0, 1, 0, 1, 10, 11, 12, 2, 7, 6, 9, 14, 5, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 
