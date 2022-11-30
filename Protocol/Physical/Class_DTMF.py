@@ -175,7 +175,7 @@ class SEND:
             for j in np.arange(-1*number_of_faded_points,-1):    
                 xi[j] = xi[j] * fade_end[j]    
 
-            print(xi[:-1*number_of_faded_points])
+            print(xi[-1*number_of_faded_points:-1])
 
             # Fadeeeeeee #
             

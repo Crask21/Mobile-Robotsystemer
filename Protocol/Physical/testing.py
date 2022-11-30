@@ -24,7 +24,7 @@ dtmf_freq = [[1209,697], # 0
 # DTMF Settings
 fs = 44100
 amplitude = 5000
-fade_P = 1000
+fade_P = 0.05
 baud_rate = 20
 sync = 20
 send = SEND(fs, amplitude, fade_P, baud_rate,sync)
