@@ -126,11 +126,12 @@ class SEND:
 
 
         data.soundwave = np.delete(data.soundwave,-1)
+        data.soundwave = np.delete(data.soundwave,-1)
 
         
         if custom:
             data.soundwave = 5000 * np.sin(2*np.pi*1209*time) + 5000 * np.sin(2*np.pi*697*time)
-        plt.plot(time,data.soundwave,'o')#'r--'
+        plt.plot(time,data.soundwave,'r--')#'r--'
         plt.ylabel('some numbers')
         plt.show()
 
@@ -247,7 +248,7 @@ class SEND:
 
 #ff
 
-    def compare(original, recieved, compare = True):
+    def compare(data, original, recieved, compare = True):
 
         dif = len(recieved) - len(original)
 

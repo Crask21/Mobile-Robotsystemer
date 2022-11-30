@@ -78,14 +78,15 @@ def organize(input_List):
     tempA = []
     for i in range(len(input_List)):
         tempA.append(hex(input_List[i]))
+    print(tempA)
     
     for i in range(len(tempA)-1):
         if tempA[i]=='0x0' and tempA[i+1]=='0x1':
-            if tempA[i-1]!='0xF' and tempA[i-2]!='0xf':
+            if tempA[i-1]!='0xf' or tempA[i-2]!='0xf':
                 check = check+1
                 if check % 2 == 1:
                     temp = []
-                    for j in np.arange(i+2,len(tempA)):
+                    for j in np.arange(i+2,len(tempA)-1):
                         if tempA[j]=='0x0' and tempA[j+1]=='0x1':
                             if tempA[j-1]=='0xf' and tempA[j-2]=='0xf':
                                 temp.append(tempA[j])
@@ -94,6 +95,7 @@ def organize(input_List):
                                 break
                         else:
                             temp.append(tempA[j])
+            
     return output
 
 def esc_check(inpt_List):
@@ -110,7 +112,7 @@ def esc_check(inpt_List):
                     temp.append(inpt_List[k][l])
             else:
                 temp.append(inpt_List[k][l])
-        temp.append(inpt_List[k][len(inpt_List[k])-1])
+        temp.append(inpt_List[k][-1])
         output.append(temp)
     return output
 
