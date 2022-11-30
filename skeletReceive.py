@@ -9,7 +9,7 @@ def main():
 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 7, 5, 7, 4, 7, 3, 0, 0, 1]
     #print(len(pack))
     robot=DTMF(20,10)
-    moveObj = bot()
+    moveObj = moveClass()
     data = robot.listen.startListen()
     robot.send.compare(pack, robot.listen.outputList)
     data_prot = protocolClass(data)
