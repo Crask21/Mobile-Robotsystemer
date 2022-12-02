@@ -34,7 +34,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 input_device_index=3 
+                 #input_device_index=3 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -208,6 +208,6 @@ class LISTEN():
 
 
 #
-#roberto = LISTEN(10)
+#oberto = LISTEN(10)
 
 #roberto.listenThread()  
