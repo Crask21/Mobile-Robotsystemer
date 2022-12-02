@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def sendercrc(list):
     for k in range(len(list)):
         tempdataword=''
@@ -57,15 +56,7 @@ def sendercrc(list):
         
         tempremainder=''
         temptempremainder=''
-        
-        #for h in range(len(remainder)):
-        #    for x in range(4):
-        #        tempremainder[h][x].append(remainder[x+h*4])
-        
-        #for x in range(3):
-         #   for y in range(4):
-          #      tempremainder[x][y]=remainder[0]
-
+            
         for i in range(len(remainder)):
             hexremainder=hexremainder+str(remainder[i])
         
@@ -172,5 +163,6 @@ sendercrc([['0x1','0x5','0xb'],['0xa','0xa','0x9']])
 
 
 receivercrc([['0x1', '0x5', '0xb', '0xf', '0x9', '0x9'], ['0xa', '0xa', '0x9', '0x1', '0xd', '0x0']])
+
 
 
