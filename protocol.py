@@ -177,19 +177,19 @@ def add_CRC(list):
             tempdataword=tempdataword+tempdata
 
         #print(tempdataword)
-        tempdataword=tempdataword+'00000'
+        tempdataword=tempdataword+'0000000000000'
         for j in range(len(tempdataword)):
           codeword.append(int(tempdataword[j]))
         #print(codeword)
 
         result=[]
-        divisor=[1,0,0,1,1]
+        divisor=[1,1,1,1,0,0,1,1,1,1,0,1,1]
 
     
 
         tempres=codeword
 
-        for j in range(len(codeword)-5):
+        for j in range(len(codeword)-13):
             if(tempres[0]==1):
                for i in range(len(divisor)):
                   result.append(tempres[i]^divisor[i])
@@ -215,14 +215,25 @@ def add_CRC(list):
 
         #print(remainder,'remainder')
         hexremainder=''
-
+        
+        tempremainder=''
+        temptempremainder=''
+            
         for i in range(len(remainder)):
             hexremainder=hexremainder+str(remainder[i])
-    
-        hexremainder=int(hexremainder,2)
-   
-        hexremainder=hex(hexremainder)
-        list[k].append(hexremainder)
+        
+        for x in range(0,3):
+            for y in range(4):
+                tempremainder += hexremainder[y+4*(x)]
+                
+            #print(tempremainder[x*4:])
+            temptempremainder=tempremainder[x*4:]
+
+            tttr=int(temptempremainder,2)
+            tttr=hex(tttr)
+            #print(tttr)
+            #tempremainder=''
+            list[k].append(tttr)
     return list
 
 def decode_CRC(list):
@@ -247,13 +258,13 @@ def decode_CRC(list):
         #print(codeword)
 
         result=[]
-        divisor=[1,0,0,1,1]
+        divisor=[1,1,1,1,0,0,1,1,1,1,0,1,1]
 
     
 
         tempres=codeword
 
-        for j in range(len(codeword)-5):
+        for j in range(len(codeword)-13):
             if(tempres[0]==1):
                 for i in range(len(divisor)):
                     result.append(tempres[i]^divisor[i])
