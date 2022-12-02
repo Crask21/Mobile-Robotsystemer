@@ -118,6 +118,7 @@ def esc_check(inpt_List):
 
 def remove_seq(input_List):
     for i in range(len(input_List)):
+        
         input_List[i].pop(0)
     return input_List
 
@@ -301,6 +302,7 @@ def decode_CRC(list):
         if hexremainder == '0x0':
             list[k].pop(len(list[k])-1)
         else:
+            list[k]= "error"
             print("Error in data")
     return list
 
