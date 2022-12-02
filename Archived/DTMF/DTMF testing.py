@@ -32,57 +32,6 @@ baud_rate = 20
 
 
 
-list_send =     [11, 8, 5, 1, 15, 2, 5, 6, 14, 14, 11, 2, 2, 6, 15, 12]
-list_recieved = [11, 8, 5, 1, 15, 2, 4, 6, 14, 13, 11, 2, 2, 6, 15,1,1]
-
-def compare(original, recieved, compare = True):
-
-    dif = len(recieved) - len(original)
-
-    if len(recieved) > len(original):
-            recieved = recieved[:len(recieved) - dif]
-
-    if original == recieved:
-        print('100% match')
-    
-
-
-    elif compare:
-        count = 0
-
-        length = len(original) if dif >= 0 else len(recieved)
-
-        for i in range(length):
-            if recieved[i] == original[i]:
-                count += 1
-        
-        print(count/len(original)*100,'% match.', len(original) - count, 'errors')
-        print('Original:',original)
-        print('Recieved:',recieved)
-
-
-    else:
-        send_count =[]
-        for i in range(16):
-            send_count.append(original.count(i))
-
-        recieved_count = []
-        for i in range(16):
-            recieved_count.append(recieved.count(i))
-
-        count = 0
-        for i in range(16):
-            
-            if recieved_count[i] == send_count[i]:
-                count += 1
-
-
-
-        print(count/16*100,'% count match. ', count, 'errors')
-        print(original)
-        print(recieved)
-
-compare(list_send,list_recieved)
 
 
 
