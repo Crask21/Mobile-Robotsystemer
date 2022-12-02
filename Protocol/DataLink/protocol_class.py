@@ -2,7 +2,7 @@ import numpy as np
 import Protocol.DataLink.protocol as protocol
 from Protocol.Physical.DTMF_overclass import DTMF
 import Protocol.DataLink.ErrorCorrection as ec
-import ErrorCorrection
+import Protocol.DataLink.ErrorCorrection as ErrorCorrection
 move = [[10,20],[-10,30]]
 
 class protocolClass:
