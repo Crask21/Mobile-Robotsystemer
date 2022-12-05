@@ -92,6 +92,7 @@ class SEND:
         
         if mute:
             package = data.synchroniazation(data.sync) + package
+            data.silentDTMF()
 
 
 
@@ -105,6 +106,7 @@ class SEND:
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
+            
             data.play_PyGame(data.soundwave)
 
             # Play through Sounddevice
@@ -147,6 +149,14 @@ class SEND:
         plt.ylabel('some numbers')
         plt.show()
     
+
+    def silentDTMF(data,dur = 1):
+        silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
+        
+        data.play_PyGame(silence)
+
+
+        
 
 
         
