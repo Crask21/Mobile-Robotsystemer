@@ -8,12 +8,13 @@ move = [[10,20],[-10,30]]
 class protocolClass:
     data_list = []
     n = 4  #Data package size
-    def __init__(self, moves, filename=0):
+    def __init__(self, moves, robot, filename=0):
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
             for i in range(len(moves)):
                 self.data_list.append(moves[i])
+        self.robot=robot
         
 
 
@@ -52,12 +53,12 @@ class protocolClass:
         print()
     
     def PhysicalDown(self):
-        robot.send.send_package(self.data_list)
+        self.robot.send.send_package(self.data_list)
         ec.errorCorrectionDown(self.dataListEC,40)
         
         
     def PhysicalUp(self):
-        self.data_list = robot.listen.startListen()
+        self.data_list = self.robot.listen.startListen()
     
     
     def print(self):
