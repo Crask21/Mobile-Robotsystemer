@@ -52,6 +52,14 @@ dtmf_freq = [[1209,697], # 0
                     [1477,941],  # E
                     [1633,941]]  # F
 
+dtmf_single_freqs=[697,
+                                770,
+                                852,
+                                941,
+                                1209,
+                                1336,
+                                1477,
+                                1633]
 upperRange= 20
 lowerRange=20
 outputList=[]
@@ -116,7 +124,11 @@ xf_below1000=np.where(xf<1000)
 xf_above1000=np.where(xf>=1000)
 xf_noise=np.where(xf<650)
 
-
+cheatfilter=[]
+for i in dtmf_single_freqs:
+    cheatfilter+=range(i-lowerRange, i+upperRange)
+xf_indices=np.arange(xf.size-1)
+cheatfilter=np.delete(xf_indices,cheatfilter)
 #------------------------------GET THE FORMAT
 #divided by resolution to get the fft in resolution of choice in hz
 for i in range(50):
@@ -130,8 +142,10 @@ yf=fft(data_intz)
 yf=abs(yf)
 yf=np.delete(yf,delList)
 
-fig1=plt.plot(data_int)
-plt.show()
+#yf[cheatfilter]=0
+
+#fig1=plt.plot(data_int)
+#plt.show()
 fig2=plt.plot(xf,yf)
 plt.show()
 

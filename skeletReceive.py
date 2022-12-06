@@ -14,7 +14,7 @@ def main():
     moveObj = moveClass()
     data = robot.listen.startListen()
     robot.send.compare(pack, robot.listen.outputList)
-    data_prot = protocolClass(baud=20,moves=data)
+    data_prot = protocolClass(baud=50,moves=data)
     data_prot.DataLinkUp()  
     data_prot.print()
     for i in range(len(data_prot.data_list)-1):
