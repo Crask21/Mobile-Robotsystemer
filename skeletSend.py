@@ -14,7 +14,7 @@ def main():
     
     move = [[0,100],[90,100]]
     #[[20,10],[-10,30],["Dees large Nuts"]]
-    pack = protocolClass(baudrate,sync,move,'output.txt')
+    pack = protocolClass(move,'output.txt')
     pack.DataLinkDown()
     pack.print()
     
