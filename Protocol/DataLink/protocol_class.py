@@ -8,12 +8,13 @@ move = [[10,20],[-10,30]]
 class protocolClass:
     data_list = []
     n = 4  #Data package size
-    def __init__(self, moves, filename=0):
+    def __init__(self, moves, robot, filename=0):
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
             for i in range(len(moves)):
                 self.data_list.append(moves[i])
+        self.robot=robot
         
 
 
@@ -42,7 +43,7 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list)
+        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
@@ -52,12 +53,14 @@ class protocolClass:
         print()
     
     def PhysicalDown(self):
-        robot.send.send_package(self.data_list)
-        ec.errorCorrectionDown(self.dataListEC,40)
+        self.robot.send.send_package(self.data_list)
+        ec.errorCorrectionDown(self.dataListEC,self.robot)
+        #ved ikke hvad det er eller hvad 40 kommer fra
+        #ec.errorCorrectionDown(self.dataListEC,40)
         
         
     def PhysicalUp(self):
-        self.data_list = robot.listen.startListen()
+        self.data_list = self.robot.listen.startListen()
     
     
     def print(self):
