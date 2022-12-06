@@ -17,6 +17,16 @@ def convert_to_hexa(input_List):
         temp_main.append(temp)
     return temp_main
 
+def data_seg(input_List, n):
+    temp = []
+    for i in range(len(input_List)):
+        if len(input_List[i]) > 2:
+            for j in range(0, len(input_List[i]), n):
+                temp.append(input_List[i][j:j+n])
+        else:
+            temp.append(input_List[i])
+    return temp          
+
 def hexa_devide(input_List):
     temp_main = []
     for i in range(len(input_List)):
@@ -26,6 +36,14 @@ def hexa_devide(input_List):
                 temp.append(hex(int(input_List[i][j][2],16)))
                 temp.append(hex(int(input_List[i][j][3],16)))
             temp_main.append(temp)
+            
+        elif len(input_List[i])<2:
+            temp = []
+            for j in range(len(input_List[i])):
+                temp.append(hex(int(input_List[i][j][2],16)))
+                temp.append(hex(int(input_List[i][j][3],16)))
+            temp_main.append(temp)
+
         elif len(input_List[i])==2:
             temp1 = []
             for j in range(len(input_List[i])):
@@ -124,7 +142,7 @@ def convert_to_decimal(input_List):
     for i in range(len(input_List)):
         count = 0
         temp = []
-        if len(input_List[i])<=4:
+        if len(input_List[i])==4:
             for j in range(len(input_List[i])-1):
                 if count % 2 == 0:
                     temp.append((16*int(input_List[i][j],16)+int(input_List[i][j+1],16))-128)
@@ -311,3 +329,29 @@ def decode_address(input_List):
             print('This message is not for me')
 
     return input_List
+
+def data_comb(input_List):
+    output = []
+    temp = []
+    for i in range(len(input_List)):
+        if len(input_List[i])!=4:
+            for j in range(len(input_List[i])):
+                temp.append(input_List[i][j])
+        elif i!=0 and len(input_List[i-1])!=4:
+            print(input_List[i])
+            for j in range(len(input_List[i])):
+                temp.append(input_List[i][j])
+        else:
+            output.append(input_List[i])
+    output.append(temp)
+    return output
+
+
+"""
+list1 = []
+for i in range(1000):
+    list1.append(i+1)
+for i in range(0, len(list1), 100):
+    chunk = list1[i:i+100]
+    print(chunk)
+"""
