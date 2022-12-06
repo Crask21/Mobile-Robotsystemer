@@ -308,6 +308,9 @@ def decode_CRC(list):
             list[k].pop(len(list[k])-1)
             list[k].pop(len(list[k])-1)
         else:
+            list[k].pop(len(list[k])-1)
+            list[k].pop(len(list[k])-1)
+            list[k].pop(len(list[k])-1)
             print("Error in data")
     return list
 
