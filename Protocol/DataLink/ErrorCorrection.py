@@ -34,6 +34,7 @@ def errorCorrectionUp(pack):
                 pack[errorList[i]] = dataNew[i]
         else:
             print("Fatal error at error correction")
+        return pack
     
 def errorCorrectionDown(pack):
     #dtmf = DTMF(baud)

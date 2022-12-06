@@ -82,7 +82,12 @@ class SEND:
         data.DTMF_init()
 
 
-
+    def silentDTMF(data,mute = False,dur = 2):
+            silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
+            
+            if not mute: 
+                data.play_PyGame(silence)
+            return silence
 
 # Send package of hexi decimals
     def send_package(data, package, mute = True):
@@ -92,6 +97,7 @@ class SEND:
         
         if mute:
             package = data.synchroniazation(data.sync) + package
+            #data.silentDTMF()
 
 
 
@@ -102,9 +108,11 @@ class SEND:
             # Delete end spike
             data.soundwave[-1] = 0
 
+        data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
+            data.silentDTMF()
             data.play_PyGame(data.soundwave)
 
             # Play through Sounddevice
@@ -147,6 +155,11 @@ class SEND:
         plt.ylabel('some numbers')
         plt.show()
     
+
+    
+
+
+        
 
 
         

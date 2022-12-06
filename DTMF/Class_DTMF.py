@@ -82,7 +82,12 @@ class SEND:
         data.DTMF_init()
 
 
-
+    def silentDTMF(data,mute = False,dur = 2):
+            silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
+            
+            if not mute: 
+                data.play_PyGame(silence)
+            return silence
 
 # Send package of hexi decimals
     def send_package(data, package, mute = True):
@@ -92,6 +97,7 @@ class SEND:
         
         if mute:
             package = data.synchroniazation(data.sync) + package
+            #data.silentDTMF()
 
 
 
@@ -102,9 +108,11 @@ class SEND:
             # Delete end spike
             data.soundwave[-1] = 0
 
+        data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
+            data.silentDTMF()
             data.play_PyGame(data.soundwave)
 
             # Play through Sounddevice
@@ -124,9 +132,9 @@ class SEND:
         time = np.arange(0, data.duration * package_size, 1/data.fs) if not dur else np.arange(0, dur , 1/data.fs)
         
 
-
-        data.soundwave = np.delete(data.soundwave,-1)
-        data.soundwave = np.delete(data.soundwave,-1)
+        for ig in range((len(data.soundwave) - len(time))):
+            data.soundwave = np.delete(data.soundwave,-1)
+        #data.soundwave = np.delete(data.soundwave,-1)
 
         
         if custom:
@@ -148,6 +156,11 @@ class SEND:
         plt.show()
     
 
+    
+
+
+        
+
 
         
 # Make a DTMF tone
@@ -162,20 +175,20 @@ class SEND:
             if percentage_fade > 1:
                 number_of_faded_points = int((percentage_fade/1000000) / dur * f_sample)
 
-            
+            fade = np.linspace(0,1,num=number_of_faded_points)
             fade_end = np.linspace(1,0,num=number_of_faded_points)
 
             data.FFT.append(np.fft.fft(xi))
 
-            #for j in np.arange(number_of_faded_points):
-            #    xi[j] = xi[j] * fade[j]
+            for j in np.arange(number_of_faded_points):
+                xi[j] = xi[j] * fade[j]
 
-            print(xi[-1*number_of_faded_points:])
+            #print(xi[-1*number_of_faded_points:])
 
             for j in np.arange(-1*number_of_faded_points,-1):    
                 xi[j] = xi[j] * fade_end[j]    
 
-            print(xi[:-1*number_of_faded_points])
+            #print(xi[-1*number_of_faded_points:-1])
 
             # Fadeeeeeee #
             
