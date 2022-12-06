@@ -35,6 +35,8 @@ def errorCorrectionUp(pack):
         else:
             print("Fatal error at error correction")
         return pack
+    else:
+        return pack
     
 def errorCorrectionDown(pack):
     #dtmf = DTMF(baud)
