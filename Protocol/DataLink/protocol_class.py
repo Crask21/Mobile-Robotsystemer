@@ -2,14 +2,13 @@ import numpy as np
 import Protocol.DataLink.protocol as protocol
 from Protocol.Physical.DTMF_overclass import DTMF
 import Protocol.DataLink.ErrorCorrection as ec
+import Protocol.DataLink.ErrorCorrection as ErrorCorrection
 move = [[10,20],[-10,30]]
 
 class protocolClass:
     data_list = []
-    dataListEC= []
-    #dtmf = DTMF(40)
-    def __init__(self, baud, sync = 10, moves = [], filename=0):
-        self.dtmf = DTMF(int(baud),sync)
+    n = 4  #Data package size
+    def __init__(self, moves, filename=0):
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
@@ -27,6 +26,7 @@ class protocolClass:
 
     def DataLinkDown(self):
         self.data_list=protocol.convert_to_hexa(self.data_list)
+        self.data_list=protocol.data_seg(self.data_list,6)
         self.data_list=protocol.hexa_devide(self.data_list)
         self.data_list=protocol.add_seq(self.data_list)
         self.data_list=protocol.add_address(self.data_list)
@@ -40,9 +40,10 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        
+        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
+        self.data_list=protocol.data_comb(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
     
     def SendBack(self):
