@@ -46,7 +46,9 @@ class protocolClass:
         self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
+        print(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
+        print(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
     
     def SendBack(self):
