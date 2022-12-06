@@ -7,20 +7,15 @@ move = [[10,20],[-10,30]]
 
 class protocolClass:
     data_list = []
-<<<<<<< HEAD:protocol_class.py
     n = 4  #Data package size
     def __init__(self, moves, filename=0):
-=======
-    dataListEC= []
-    #dtmf = DTMF(40)
-    def __init__(self, baud, sync = 10, moves = [], filename=0):
-        self.dtmf = DTMF(int(baud),sync)
->>>>>>> be6d5aa4e7ef76ea77dd1a582f5a96fea946d556:Protocol/DataLink/protocol_class.py
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
             for i in range(len(moves)):
                 self.data_list.append(moves[i])
+        
+
 
     def setMoves(self, moves):
          self.data_list=moves
@@ -57,27 +52,32 @@ class protocolClass:
         print()
     
     def PhysicalDown(self):
-        self.dtmf.send.send_package(self.data_list)
+        robot.send.send_package(self.data_list)
         ec.errorCorrectionDown(self.dataListEC,40)
         
         
     def PhysicalUp(self):
-        self.data_list = self.dtmf.listen.startListen()
+        self.data_list = robot.listen.startListen()
     
     
     def print(self):
         print(self.data_list)
 
-<<<<<<< HEAD:protocol_class.py
-l1=protocolClass(move,'test.txt')
-l1.DataLinkDown()
-l1.DataLinkUp()
-=======
 #l1=protocolClass(move,'test.txt')
 #l1.DataLinkDown()
 ##l1.DataLinkUp()
->>>>>>> be6d5aa4e7ef76ea77dd1a582f5a96fea946d556:Protocol/DataLink/protocol_class.py
 #l1.print()
 #l2=protocolClass(['0x0', '0x1', '0xa', '0xb', '0xc', '0x1', '0x8', '0xa', '0x9', '0x4', '0x7', '0x0', '0x1', '0x0', '0x1', '0xa', '0xb', '0xc', '0x2', '0x7', '0x6', '0x9', '0xe', '0x5', '0x0', '0x1', '0x0', '0x1', '0xa', '0xb', '0xc', '0x3', '0x4', '0x4', '0x6', '0x5', '0x6', '0x5', '0x7', '0xa', '0x2', '0x0', '0x6', '0xe', '0x7', '0x5', '0x7', '0x4', '0x7', '0x3', '0x0', '0x0', '0x1'])
 #l2.DataLinkUp()
 #l2.print()
+#
+#idk
+#<<<<<<< HEAD:protocol_class.py
+#    n = 4  #Data package size
+#    def __init__(self, moves, filename=0):
+#=======
+#    dataListEC= []
+#    #dtmf = DTMF(40)
+#    def __init__(self, baud, sync = 10, moves = [], filename=0):
+#        self.dtmf = DTMF(int(baud),sync)
+#>>>>>>> be6d5aa4e7ef76ea77dd1a582f5a96fea946d556:Protocol/DataLink/protocol_class.py
