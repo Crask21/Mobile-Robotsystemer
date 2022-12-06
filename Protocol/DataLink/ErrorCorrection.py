@@ -9,7 +9,7 @@ import numpy as np
 #Der skal kommenteres alle SeqNo skal have samme hexadecimal længde
 #Errorhandle: 0x96
 
-def errorCorrectionUp(pack):
+def errorCorrectionUp(pack, robot):
     #dtmf = DTMF(baud)
     errorList = []
     for i in range(len(pack)):
@@ -38,7 +38,7 @@ def errorCorrectionUp(pack):
     else:
         return pack
     
-def errorCorrectionDown(pack):
+def errorCorrectionDown(pack, robot):
     #dtmf = DTMF(baud)
     resend = []
     errorMessage = robot.listen.startListen()

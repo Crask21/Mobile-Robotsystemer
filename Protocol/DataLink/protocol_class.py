@@ -43,7 +43,7 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list)
+        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
@@ -54,7 +54,9 @@ class protocolClass:
     
     def PhysicalDown(self):
         self.robot.send.send_package(self.data_list)
-        ec.errorCorrectionDown(self.dataListEC,40)
+        ec.errorCorrectionDown(self.dataListEC,self.robot)
+        #ved ikke hvad det er eller hvad 40 kommer fra
+        #ec.errorCorrectionDown(self.dataListEC,40)
         
         
     def PhysicalUp(self):
