@@ -1,5 +1,5 @@
 import time
-#from Turtlebot.moveClass import moveClass
+from Turtlebot.moveClass import moveClass
 from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 
@@ -10,10 +10,10 @@ def main():
     global robot
     robot=DTMF(50,10)
     # for testing
-    data_prot = protocolClass(moves=pack,robot=robot)
-    data_prot.DataLinkUp()  
+    #data_prot = protocolClass(moves=pack,robot=robot)
+    #data_prot.DataLinkUp()  
     #data_prot.print()
-    time.sleep(100)
+    #time.sleep(100)
     
     moveObj = moveClass()
     data = robot.listen.startListen()
