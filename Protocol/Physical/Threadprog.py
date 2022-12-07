@@ -54,7 +54,7 @@ class LISTEN():
         rec.upperRange=20
         rec.lowerRange=20
         rec.outputList=np.array([])
-        rec.noise_level=2000
+        rec.noise_level=1500
 
         #-----------------------------------FREQUENCIES------------------------------------------
         #resolution is defined as fs/(points worked on)
