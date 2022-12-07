@@ -1,14 +1,9 @@
 import pyaudio
-import struct
+from struct import unpack
 import numpy as np
-import time
+from time import time
 from scipy.fftpack import fft
-import copy
-
-#fix so that outpulist is outputted
-
-
-
+from copy import deepcopy
 
 class LISTEN():
     def __init__(rec,baud):
@@ -23,7 +18,6 @@ class LISTEN():
         rec.time_per_read=1/rec.baudRate
         rec.z_pad=rec.RATE/rec.resolution-rec.time_per_read*rec.RATE
         rec.z_pad_arr=np.zeros(int(rec.z_pad))
-        #rec.variance=60
 
         #------------------------------------PYAUDIO-----------------------------------
         # pyaudio class instance
@@ -94,7 +88,7 @@ class LISTEN():
         rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
         rec.count = len(rec.data)/2
         rec.format = "%dh"%(rec.count)
-        rec.data_int = np.array(struct.unpack(rec.format, rec.data))
+        rec.data_int = np.array(unpack(rec.format, rec.data))
         rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
         #--------------------------------FFT-----------------------
         rec.yf=fft(rec.data_int)
@@ -109,10 +103,10 @@ class LISTEN():
     def find_highest_freqs(rec, freqMagn):
         #cheat filter
         freqMagn[rec.cheatfilter]=0
-        freqmagnlow=copy.deepcopy(freqMagn)
+        freqmagnlow=deepcopy(freqMagn)
         freqmagnlow[rec.xf_above1000]=0
         freqmagnlow[rec.xf_noise]=0
-        freqmagnhigh=copy.deepcopy(freqMagn)
+        freqmagnhigh=deepcopy(freqMagn)
         freqmagnhigh[rec.xf_below1000]=0
         highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
         if any(freqMagn[highestFreqs]<rec.noise_level):
@@ -133,10 +127,10 @@ class LISTEN():
         print("started listening!")
         while True:
             #-----------------------------reading-----------------------------
-            start=time.time()
+            start=time()
             #divided by baudRate too to get the movement of the window
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
-            data_int = np.array(struct.unpack(rec.format, data))
+            data_int = np.array(unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
             
             #-------------------------------FFT-------------------------------
@@ -173,7 +167,7 @@ class LISTEN():
                 rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
             #-----------------------Check if Baudrate is too fast--------------
-            end=time.time()
+            end=time()
             if end-start>rec.time_per_read:
                 print("ERROR: The baudrate is too fast:"+str(rec.time_per_read)+","+str(end-start-rec.time_per_read))
 
@@ -183,10 +177,10 @@ class LISTEN():
                 rec.outputList=[]
                 rec.syncCounter=0
                 while end-start<rec.time_per_read+rec.time_per_read*0.1:
-                    end=time.time()
+                    end=time()
             #-----------------------Delay until proper baudrate----------------
             while end-start<rec.time_per_read:
-                end=time.time()
+                end=time()
         
         return rec.outputList
 
