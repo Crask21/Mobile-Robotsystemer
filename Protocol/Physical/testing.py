@@ -36,7 +36,7 @@ pack = [*pack,0,0]
 
 
 send.send_package(pack)
-
+print("hey")
 print(pack)
 
 

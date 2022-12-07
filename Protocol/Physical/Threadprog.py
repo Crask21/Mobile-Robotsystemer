@@ -133,6 +133,7 @@ class LISTEN():
             highestfreqs=rec.find_highest_freqs(np.absolute(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
 
+
             print(rec.outputList)
             
             #-----------------------Check if no signal------------------------
