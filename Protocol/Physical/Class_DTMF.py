@@ -243,6 +243,7 @@ class SEND:
 
         # Delay for the duration of the sound
         pygame.time.wait(int(sound.get_length() * 1000)) 
+        
     #def play_SD(data, soundwave):
     #    wav_wave = np.array(soundwave, dtype=np.int16)
     #    sd.play(wav_wave, blocking=True)

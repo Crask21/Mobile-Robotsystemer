@@ -5,6 +5,7 @@ import Protocol.DataLink.ErrorCorrection as ec
 import Protocol.DataLink.ErrorCorrection as ErrorCorrection
 move = [[10,20],[-10,30]]
 
+
 class protocolClass:
     data_list = []
     n = 4  #Data package size
@@ -59,6 +60,7 @@ class protocolClass:
         
     def PhysicalUp(self):
         self.data_list = self.robot.listen.startListen()
+        return self.data_list
     
     
     def print(self):
