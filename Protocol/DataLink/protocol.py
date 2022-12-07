@@ -154,7 +154,11 @@ def convert_to_decimal(input_List):
                     count=count+1
             output.append(temp)
         else:
-            output.append(input_List[i])
+            string = ""
+            for j in range(len(input_List[i])):
+                string += chr(int(input_List[i][j],16))
+            stringL = [string]
+            output.append(stringL)
     return output
 
 def hexa_to_msg(dtmf_signal):
