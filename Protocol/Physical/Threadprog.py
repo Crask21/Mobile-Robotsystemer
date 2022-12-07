@@ -139,8 +139,8 @@ class LISTEN():
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
 
-            if(len(rec.outputList)>0):
-                print(rec.outputList)
+            #if(len(rec.outputList)>0):
+            print(rec.outputList)
             
             #-----------------------Check if no signal------------------------
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:

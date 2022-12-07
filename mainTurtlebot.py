@@ -6,7 +6,6 @@ import time
 
 def main():
     baud = 50
-    global robot
     robot=DTMF(baud,10, mono_robot = True)
     
     moveObj = moveClass()
