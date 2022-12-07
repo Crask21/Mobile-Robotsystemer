@@ -9,7 +9,11 @@ def main():
     pack = protocolClass(40)
     
     pack.PhysicalUp()
+    print("After physicalUp: ")
+    pack.print()
+    
     pack.DataLinkUp()
+    print("After DataLinkUp:")
     
     for i in range(len(pack.data_list)-1):
         moveObj.move(pack.data_list[i][0],pack.data_list[i][1])
