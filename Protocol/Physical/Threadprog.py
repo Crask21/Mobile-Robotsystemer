@@ -192,7 +192,7 @@ class LISTEN():
             #print(end3-end2)
             end=time.time()
             if end-start>rec.time_per_read:
-                print("ERROR: The baudrate is too fast")
+                print("ERROR: The baudrate is too fast:"+str(rec.time_per_read)+","+str(end-start-rec.time_per_read))
 
             if rec.outputList!=[0xa,0xb] and len(rec.outputList)==2 and not(rec.startReading):
                 print("Sync failed, delaying with 10 percent")
