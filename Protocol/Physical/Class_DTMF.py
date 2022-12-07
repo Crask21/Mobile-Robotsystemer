@@ -112,7 +112,7 @@ class SEND:
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
-            data.silentDTMF()
+            data.silentDTMF(dur=0.5)
             data.play_PyGame(data.soundwave)
 
             # Play through Sounddevice

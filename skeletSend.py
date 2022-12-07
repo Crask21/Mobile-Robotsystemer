@@ -4,6 +4,7 @@ from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 import time
 
+
 def main():
     baudrate = 50
     sync = 30
