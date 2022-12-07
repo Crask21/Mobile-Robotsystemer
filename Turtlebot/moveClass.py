@@ -48,7 +48,7 @@ class moveClass:
         if(ang !=0):
             for i in range(int(abs(ang)/45)):
                 self.drive(0,ang/abs(ang)*1.6,0.5)
-            self.drive(0,(abs(ang)%45)/45*1.6*abs/abs(ang),0.5)
+            self.drive(0,(abs(ang)%45)/45*1.6*ang/abs(ang),0.5)
         else:
             print("An angle was 0")
     

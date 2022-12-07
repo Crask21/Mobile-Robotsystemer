@@ -1,6 +1,6 @@
 import sys
 #import Turtlebot.Turtlebot_Python.moveClass as moveClass
-from protocol_class import protocolClass
+from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 import time
 
@@ -15,15 +15,15 @@ def main():
     
     move = [[0,80],[90,80]]
 
-    pack = protocolClass(move,'output.txt')
+    pack = protocolClass(move,robot,'output.txt')
 
     pack.DataLinkDown()
     #pack.print()
-    
+    #pack.DataLinkUp()
     print(pack.data_list)
-
-
+    
     robot.send.send_package(pack.data_list)
+
 
     
     #moveObj.move(ang, dist)
