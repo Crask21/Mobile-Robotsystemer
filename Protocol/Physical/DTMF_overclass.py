@@ -5,7 +5,7 @@ class DTMF:
     def __init__(self, baud, sync=10, mono_robot=False):
         # DTMF Settings
         fs = 44100
-        amplitude = 5000
+        amplitude = 15000
         media = 'PyGame' # 'SD'
         fade_P = 0.15
         baud_rate = baud
