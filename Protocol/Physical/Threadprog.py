@@ -89,7 +89,7 @@ class LISTEN():
         #rec.cheatfilter=np.where(rec.xf<rec.dtmf_single_freqs[0] and rec.xf<rec.dtmf_single_freqs[0])
 
 
-        #------------------------------GET THE FORMAT
+        #------------------------------GET THE FORMAT--------------------------
         #divided by resolution to get the fft in resolution of choice in hz
         rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
         rec.count = len(rec.data)/2
@@ -132,12 +132,14 @@ class LISTEN():
     def startListen(rec):
         print("started listening!")
         while True:
+            #-----------------------------reading-----------------------------
             start=time.time()
             #divided by baudRate too to get the movement of the window
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             data_int = np.array(struct.unpack(rec.format, data))
             data_int = np.append(data_int, rec.z_pad_arr)
             
+            #-------------------------------FFT-------------------------------
             yf=fft(data_int)
             yf=np.delete(yf,rec.delList)
             highestfreqs=rec.find_highest_freqs(abs(yf))
@@ -145,43 +147,44 @@ class LISTEN():
 
             if(len(rec.outputList)>0):
                 print(rec.outputList)
-
+            
+            #-----------------------Check if no signal------------------------
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
-                    #rec.compare(rec.pack,rec.outputList)
                     break
             else:
                 rec.noSignal=0
 
-
+            #-----------------------Check if finished--------------------------
             if rec.outputList==[0xC,0xC] and rec.syncCounter>5:
                 rec.startReading=True
                 rec.outputList=[]
 
+            #-----------------------Clear if not right first bit---------------
             if len(rec.outputList)>0 and not(rec.startReading):
                 if rec.outputList[0]!=0xa and rec.outputList[0]!=0xC :
                     rec.outputList=[]
 
+            #-----------------------Check if succesful-------------------------
             if rec.outputList==[0xa,0xb]and not(rec.startReading):
                 print("Synchronized")
                 rec.outputList=[]
                 rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
-
-            #end3=time.time()
-            #print("conditionals")
-            #print(end3-end2)
+            #-----------------------Check if Baudrate is too fast--------------
             end=time.time()
             if end-start>rec.time_per_read:
                 print("ERROR: The baudrate is too fast:"+str(rec.time_per_read)+","+str(end-start-rec.time_per_read))
 
+            #-----------------------Check if failure--------------------------
             if rec.outputList!=[0xa,0xb] and len(rec.outputList)==2 and not(rec.startReading):
                 print("Sync failed, delaying with 10 percent")
                 rec.outputList=[]
                 rec.syncCounter=0
                 while end-start<rec.time_per_read+rec.time_per_read*0.1:
                     end=time.time()
+            #-----------------------Delay until proper baudrate----------------
             while end-start<rec.time_per_read:
                 end=time.time()
         
