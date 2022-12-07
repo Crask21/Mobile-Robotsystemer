@@ -19,10 +19,15 @@ class protocolClass:
 
 
     def setMoves(self, moves):
-         self.data_list=moves
+        self.data_list = []
+        for i in range(len(moves)):
+            self.data_list.append(moves[i])
     
     def setPackage(self, value):
         self.data_list = value
+    
+    def getPackage(self):
+        return self.data_list 
 
     def set(self, fileName):
         self.data_list += [[open(fileName).read()]]
