@@ -87,7 +87,7 @@ class SEND:
             silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
             
             if not mute: 
-                data.play_PyGame(silence)
+                data.play_PyGame(silence,data.mono)
             return silence
 
 # Send package of hexi decimals
