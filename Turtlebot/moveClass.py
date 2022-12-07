@@ -45,14 +45,19 @@ class moveClass:
         #posibly need to take into account negative movement
         dist = float(dist)
         ang = float(ang)
-        
-        for i in range(int(abs(ang)/45)):
-            self.drive(0,ang/abs(ang)*1.6,0.5)
-        self.drive(0,(abs(ang)%45)/45*1.6*ang/abs(ang),0.5)
-        
-        for i in range(int(abs(dist)/10)):
-            self.drive(dist/abs(dist)*0.2,0,0.5)
-        self.drive((dist%10)*0.02*dist/abs(dist))
+        if(ang !=0):
+            for i in range(int(abs(ang)/45)):
+                self.drive(0,ang/abs(ang)*1.6,0.5)
+            self.drive(0,(abs(ang)%45)/45*1.6*abs/abs(ang),0.5)
+        else:
+            print("An angle was 0")
+    
+        if(dist != 0):
+            for i in range(int(abs(dist)/10)):
+                self.drive(dist/abs(dist)*0.2,0,0.5)
+            self.drive((dist%10)*0.02*dist/abs(dist))
+        else:
+            print("A distance was 0")
 
     def stop(self, delay = 0.02):
         self.drive(0,0,delay)
