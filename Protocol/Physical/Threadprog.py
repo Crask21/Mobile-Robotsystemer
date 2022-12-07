@@ -8,8 +8,7 @@ from copy import deepcopy
 class LISTEN():
     def __init__(rec,baud):
 
-#--------------------------------VARIABLES--------------------------------
-
+        #--------------------------------VARIABLES--------------------------------
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
         rec.RATE = 4000
@@ -33,8 +32,8 @@ class LISTEN():
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
 
-#for dtmf_to_hexa
-        rec.dtmf_freq = [[1209,697], # 0
+        #for dtmf_to_hexa
+        rec.dtmf_freq = np.array([[1209,697], # 0
                     [1336,697],  # 1
                     [1477,697],  # 2
                     [1633,697],  # 3
@@ -49,20 +48,13 @@ class LISTEN():
                     [1209,941],  # C
                     [1336,941],  # D
                     [1477,941],  # E
-                    [1633,941]]  # F
-        rec.dtmf_single_freqs=[697,
-                                770,
-                                852,
-                                941,
-                                1209,
-                                1336,
-                                1477,
-                                1633]
+                    [1633,941]])  # F
+        rec.dtmf_single_freqs=np.array([697, 770, 852, 941, 1209, 1336, 1477, 1633])
 
         rec.upperRange=20
         rec.lowerRange=20
-        rec.outputList=[]
-        rec.noise_level=1000
+        rec.outputList=np.array([])
+        rec.noise_level=2000
 
         #-----------------------------------FREQUENCIES------------------------------------------
         #resolution is defined as fs/(points worked on)
@@ -75,13 +67,13 @@ class LISTEN():
         rec.xf_above1000=np.delete(rec.xf_above1000,-1)
         rec.xf_noise=np.where(rec.xf<650)
 
-        rec.cheatfilter=[]
+        rec.cheatfilter=np.array([],dtype=int)
         for i in rec.dtmf_single_freqs:
-            rec.cheatfilter+=range(i-rec.lowerRange, i+rec.upperRange)
+            rec.cheatfilter=np.append(rec.cheatfilter,np.arange(i-rec.lowerRange, i+rec.upperRange))
         rec.xf_indices=np.arange(rec.xf.size-1)
+        print(rec.cheatfilter)
         rec.cheatfilter=np.delete(rec.xf_indices,rec.cheatfilter)
         #rec.cheatfilter=np.where(rec.xf<rec.dtmf_single_freqs[0] and rec.xf<rec.dtmf_single_freqs[0])
-
 
         #------------------------------GET THE FORMAT--------------------------
         #divided by resolution to get the fft in resolution of choice in hz
@@ -90,16 +82,17 @@ class LISTEN():
         rec.format = "%dh"%(rec.count)
         rec.data_int = np.array(unpack(rec.format, rec.data))
         rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
+
         #--------------------------------FFT-----------------------
         rec.yf=fft(rec.data_int)
-        rec.yf=abs(rec.yf)
+        rec.yf=np.absolute(rec.yf)
         rec.yf=np.delete(rec.yf,rec.delList)
 
         rec.syncCounter=0
         rec.noSignal=0
         rec.startReading=False
-    #--------------------------------FUNCTIONS--------------------------------
 
+    #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
         #cheat filter
         freqMagn[rec.cheatfilter]=0
@@ -110,23 +103,24 @@ class LISTEN():
         freqmagnhigh[rec.xf_below1000]=0
         highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
         if any(freqMagn[highestFreqs]<rec.noise_level):
-            return [0,0]
+            return np.array([0,0])
         return highestFreqs
 
     def dtmf_to_hexa(rec, inputFreqs):
-        output =[]
+        output=0
         inputFreqs.sort()
-        for i in range(16):
+        for i in np.arange(16):
             if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange+1 and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange-1)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange+1 and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange-1):
-                output= [i]
-        if output==[] and rec.startReading:
+                output= i
+                break
+        if output==0 and rec.startReading:
             print(inputFreqs)
-        return output
+        return np.array([output])
 
     def startListen(rec):
         print("started listening!")
         while True:
-            #-----------------------------reading-----------------------------
+            #-----------------------------Reading-----------------------------
             start=time()
             #divided by baudRate too to get the movement of the window
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
@@ -136,11 +130,10 @@ class LISTEN():
             #-------------------------------FFT-------------------------------
             yf=fft(data_int)
             yf=np.delete(yf,rec.delList)
-            highestfreqs=rec.find_highest_freqs(abs(yf))
+            highestfreqs=rec.find_highest_freqs(np.absolute(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
 
-            if(len(rec.outputList)>0):
-                print(rec.outputList)
+            print(rec.outputList)
             
             #-----------------------Check if no signal------------------------
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
@@ -184,9 +177,5 @@ class LISTEN():
         
         return rec.outputList
 
-
-
-#
-#oberto = LISTEN(10)
-
-#roberto.listenThread()  
+roberto = LISTEN(50)
+roberto.startListen()
