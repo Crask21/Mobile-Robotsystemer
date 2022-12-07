@@ -28,7 +28,6 @@ class protocolClass:
     
     def DataLinkUp(self):
         self.data_list=protocol.organize(self.data_list)
-        print(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
         self.data_list=protocol.decode_address(self.data_list)
