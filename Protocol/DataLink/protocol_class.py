@@ -15,8 +15,6 @@ class protocolClass:
             for i in range(len(moves)):
                 self.data_list.append(moves[i])
         self.robot=robot
-        
-
 
     def setMoves(self, moves):
          self.data_list=moves
