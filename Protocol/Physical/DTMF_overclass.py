@@ -2,7 +2,7 @@ from Protocol.Physical.Class_DTMF import SEND
 from Protocol.Physical.Threadprog import LISTEN
 
 class DTMF:
-    def __init__(self, baud, sync=10):
+    def __init__(self, baud, sync=10, mono_robot=False):
         # DTMF Settings
         fs = 44100
         amplitude = 5000
@@ -12,8 +12,8 @@ class DTMF:
         syn = sync
         # SYNC
 
-        #heyo
-        self.send = SEND(fs, amplitude, fade_P, baud_rate,syn, media)
+        
+        self.send = SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=mono_robot)
         self.listen=LISTEN(baud_rate)
 
 
