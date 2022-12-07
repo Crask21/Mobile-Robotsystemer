@@ -158,6 +158,7 @@ def convert_to_decimal(input_List):
             for j in range(len(input_List[i])-1):
                 if count % 2 == 0:
                     string += chr(16*int(input_List[i][j],16)+int(input_List[i][j+1],16))
+                    count = count+1
                 else:
                     count=count+1
             stringL = [string]
