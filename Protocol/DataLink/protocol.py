@@ -154,7 +154,15 @@ def convert_to_decimal(input_List):
                     count=count+1
             output.append(temp)
         else:
-            output.append(input_List[i])
+            string = ""
+            for j in range(len(input_List[i])-1):
+                if count % 2 == 0:
+                    string += chr(16*int(input_List[i][j],16)+int(input_List[i][j+1],16))
+                    count = count+1
+                else:
+                    count=count+1
+            stringL = [string]
+            output.append(stringL)
     return output
 
 
@@ -363,6 +371,7 @@ def data_comb(input_List):
             output.append(input_List[i])
     output.append(temp)
     return output
+
 
 
 """
