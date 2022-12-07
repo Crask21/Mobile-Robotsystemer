@@ -4,6 +4,7 @@ from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 import time
 
+
 def main():
     baudrate = 50
     sync = 30
@@ -12,18 +13,18 @@ def main():
     
     #moveObj = moveClass.bot()
     
-    move = [[0,100],[90,100]]
-    #[[20,10],[-10,30],["Dees large Nuts"]]
-    pack = protocolClass(move,'output.txt')
+    move = [[0,20],[90,15]]
+
+    pack = protocolClass(move,robot,'output.txt')
+
     pack.DataLinkDown()
-    pack.print()
+    #pack.print()
+    #pack.DataLinkUp()
+    print(pack.data_list)
     
-    #print(pack.data_list)
-
-    #hej=[7,7,7,7,7,7,7,7,7,7,7,15,15,15]
-
     robot.send.send_package(pack.data_list)
-    #robot.send.send_package(pack.data_list)
+
+
     
     #moveObj.move(ang, dist)
     #moveObj.stop()

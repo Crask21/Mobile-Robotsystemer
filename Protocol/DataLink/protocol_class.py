@@ -5,6 +5,7 @@ import Protocol.DataLink.ErrorCorrection as ec
 import Protocol.DataLink.ErrorCorrection as ErrorCorrection
 move = [[10,20],[-10,30]]
 
+
 class protocolClass:
     data_list = []
     n = 4  #Data package size
@@ -15,14 +16,16 @@ class protocolClass:
             for i in range(len(moves)):
                 self.data_list.append(moves[i])
         self.robot=robot
+
+    def setMoves(self, moves, msg = False):
+        if not msg:
+            self.data_list = moves
+        else:
+            self.data_list = []
+            for i in range(len(moves)):
+                self.data_list.append(moves[i])
+            self.data_list =self.data_list +[[msg]]
         
-
-
-    def setMoves(self, moves):
-        self.data_list = []
-        for i in range(len(moves)):
-            self.data_list.append(moves[i])
-    
     def setPackage(self, value):
         self.data_list = value
     
@@ -41,14 +44,14 @@ class protocolClass:
         self.data_list=protocol.add_CRC(self.data_list)
         self.data_list=protocol.add_esc(self.data_list)
         self.data_list=protocol.add_StartStop(self.data_list)
-        self.dataListEC = self.data_list
+        self.dataListEC = self.data_list.copy()
         self.data_list=protocol.one_list(self.data_list)
     
     def DataLinkUp(self):
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
+        self.data_list=ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
@@ -66,6 +69,7 @@ class protocolClass:
         
     def PhysicalUp(self):
         self.data_list = self.robot.listen.startListen()
+        return self.data_list
     
     
     def print(self):

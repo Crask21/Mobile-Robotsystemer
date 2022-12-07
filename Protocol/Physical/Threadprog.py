@@ -119,7 +119,7 @@ class LISTEN():
         freqmagnhigh=copy.deepcopy(freqMagn)
         freqmagnhigh[rec.xf_below1000]=0
         highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
-        if any(freqMagn[highestFreqs]<1000):
+        if any(freqMagn[highestFreqs]<1500):
             return [0,0]
         return highestFreqs
 
@@ -192,7 +192,7 @@ class LISTEN():
             #print(end3-end2)
             end=time.time()
             if end-start>rec.time_per_read:
-                print("ERROR: The baudrate is too fast")
+                print("ERROR: The baudrate is too fast:"+str(rec.time_per_read)+","+str(end-start-rec.time_per_read))
 
             if rec.outputList!=[0xa,0xb] and len(rec.outputList)==2 and not(rec.startReading):
                 print("Sync failed, delaying with 10 percent")
@@ -204,10 +204,3 @@ class LISTEN():
                 end=time.time()
         
         return rec.outputList
-
-
-
-#
-#oberto = LISTEN(10)
-
-#roberto.listenThread()  

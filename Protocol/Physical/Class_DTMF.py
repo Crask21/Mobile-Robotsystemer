@@ -7,29 +7,6 @@ from random import randrange
 import threading
 
 
-
-#dtmf_freq =         [[1209,697], # 0
-#                    [1336,697],  # 1
-#                    [1477,697],  # 2
-#                    [1633,697],  # 3
-#                    [1209,770],  # 4
-#                    [1336,770],  # 5
-#                    [1477,770],  # 6
-#                    [1633,770],  # 7
-#                    [1209,852],  # 8
-#                    [1336,852],  # 9
-#                    [1477,852],  # A
-#                    [1633,852],  # B
-#                    [1209,941],  # C
-#                    [1336,941],  # D
-#                    [1477,941],  # E
-#                    [1633,941]]  # F
-
-
-
-
-
-
 def CharListToInt(list):
     hex_dict = {
             '0' : 0x0,
@@ -59,7 +36,7 @@ def CharListToInt(list):
 
 class SEND:
 
-    def __init__(data, fs, amplitude, p_fade, baud, syn, sound_media = 'PyGame'):
+    def __init__(data, fs, amplitude, p_fade, baud, syn, sound_media = 'PyGame', mono=False):
 
         # DTMF setup
         data.fs = fs
@@ -72,6 +49,7 @@ class SEND:
         data.sound_media = sound_media
         data.sync = syn
 
+        data.mono = mono
         
         
        
@@ -86,7 +64,7 @@ class SEND:
             silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
             
             if not mute: 
-                data.play_PyGame(silence)
+                data.play_PyGame(silence,data.mono)
             return silence
 
 # Send package of hexi decimals
@@ -108,21 +86,19 @@ class SEND:
             # Delete end spike
             data.soundwave[-1] = 0
 
-        data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
+        #data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
-            data.silentDTMF()
-            data.play_PyGame(data.soundwave)
+            #data.silentDTMF(dur=0.5)
+            data.play_PyGame(data.soundwave, data.mono)
 
             # Play through Sounddevice
         elif data.sound_media == 'SD':
             data.play_SD(data.soundwave)
 
 
-    #def send_package(data, package, mute = False):
-    #    play_package = threading.Thread(target=data.package, args=(package, mute))
-    #    play_package.start()
+    
 
 # Plot the package as DTMF tones
     def plot_last_package(data, dur = False, custom = False):
@@ -157,11 +133,6 @@ class SEND:
     
 
     
-
-
-        
-
-
         
 # Make a DTMF tone
     def makeDTMF(data,amplitude,dur,freq1,freq2,f_sample, percentage_fade):
@@ -223,7 +194,7 @@ class SEND:
             data.dtmf.append(data.makeDTMF(data.amplitude, data.duration, dtmf_freq[i][0], dtmf_freq[i][1], data.fs, data.p_fade))
 
 # Play the sound through either PyGame or Sounddevice
-    def play_PyGame(data, soundwave):
+    def play_PyGame(data, soundwave, mono = False):
         # Initialize PyGame mixer
         pygame.mixer.init(frequency=data.fs, size=-16, channels=1)
 
@@ -231,7 +202,8 @@ class SEND:
         buffer = np.array(soundwave,dtype=np.int16)
 
         # (Fixes and error) dublicate sound channel or something (it makes it work)
-        buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
+        if not mono:
+            buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
 
         # Create sound object
         sound = pygame.sndarray.make_sound(buffer)
@@ -241,6 +213,7 @@ class SEND:
 
         # Delay for the duration of the sound
         pygame.time.wait(int(sound.get_length() * 1000)) 
+        
     #def play_SD(data, soundwave):
     #    wav_wave = np.array(soundwave, dtype=np.int16)
     #    sd.play(wav_wave, blocking=True)

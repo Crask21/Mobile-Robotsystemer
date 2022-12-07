@@ -96,7 +96,7 @@ def organize(input_List):
     tempA = []
     for i in range(len(input_List)):
         tempA.append(hex(input_List[i]))
-    print(tempA)
+    #print(tempA)
     
     for i in range(len(tempA)-1):
         if tempA[i]=='0x0' and tempA[i+1]=='0x1':
@@ -154,8 +154,17 @@ def convert_to_decimal(input_List):
                     count=count+1
             output.append(temp)
         else:
-            output.append(input_List[i])
+            string = ""
+            for j in range(len(input_List[i])-1):
+                if count % 2 == 0:
+                    string += chr(16*int(input_List[i][j],16)+int(input_List[i][j+1],16))
+                    count = count+1
+                else:
+                    count=count+1
+            stringL = [string]
+            output.append(stringL)
     return output
+
 
 def hexa_to_msg(dtmf_signal):
     temp_list = []
@@ -362,6 +371,7 @@ def data_comb(input_List):
             output.append(input_List[i])
     output.append(temp)
     return output
+
 
 
 """

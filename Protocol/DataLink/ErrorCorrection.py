@@ -4,6 +4,7 @@ import Protocol.DataLink.crc as crc
 import Protocol.DataLink.protocol as protocol
 from Protocol.Physical.DTMF_overclass import DTMF
 import numpy as np
+import time
 
 
 #Der skal kommenteres alle SeqNo skal have samme hexadecimal længde
@@ -21,8 +22,10 @@ def errorCorrectionUp(pack, robot):
         for i in range(len(errorList)):
             errorMessage += [0, 1, 9, 6, errorList[i], errorList[i], errorList[i], 0, 1]
             print([0, 1, 9, 6, errorList[i], errorList[i], errorList[i], 0, 1])
+        print("ECUP errorMessage: ")
+        print(errorMessage)
         robot.send.send_package(errorMessage)
-        
+        time.sleep(5000)
         
         dataNew = robot.listen.startListen()
         dataNew = protocol.organize(dataNew)
