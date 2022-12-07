@@ -13,7 +13,7 @@ def main():
     
     #moveObj = moveClass.bot()
     
-    move = [[0,80],[90,80]]
+    move = [[0,20],[90,15]]
 
     pack = protocolClass(move,robot,'output.txt')
 
