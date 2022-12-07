@@ -319,6 +319,8 @@ def decode_CRC(list):
 
         if hexremainder == '0x0':
             list[k].pop(len(list[k])-1)
+            list[k].pop(len(list[k])-1)
+            list[k].pop(len(list[k])-1)
         else:
             list[k]= "error"
             print("Error in data")
