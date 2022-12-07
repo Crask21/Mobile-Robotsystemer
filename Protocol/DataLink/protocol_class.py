@@ -35,7 +35,7 @@ class protocolClass:
         self.data_list=protocol.add_CRC(self.data_list)
         self.data_list=protocol.add_esc(self.data_list)
         self.data_list=protocol.add_StartStop(self.data_list)
-        self.dataListEC = self.data_list
+        self.dataListEC = self.data_list.copy()
         self.data_list=protocol.one_list(self.data_list)
     
     def DataLinkUp(self):
