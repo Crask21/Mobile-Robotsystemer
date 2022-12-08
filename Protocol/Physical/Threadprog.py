@@ -119,7 +119,7 @@ class LISTEN():
         freqmagnhigh=copy.deepcopy(freqMagn)
         freqmagnhigh[rec.xf_below1000]=0
         highestFreqs=[np.argmax(freqmagnlow),np.argmax(freqmagnhigh)]
-        if any(freqMagn[highestFreqs]<1000):
+        if any(freqMagn[highestFreqs]<1500):
             return [0,0]
         return highestFreqs
 
@@ -204,10 +204,3 @@ class LISTEN():
                 end=time.time()
         
         return rec.outputList
-
-
-
-#
-#oberto = LISTEN(10)
-
-#roberto.listenThread()  
