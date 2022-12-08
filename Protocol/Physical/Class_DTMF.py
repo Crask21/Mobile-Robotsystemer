@@ -109,11 +109,11 @@ class SEND:
             # Delete end spike
             data.soundwave[-1] = 0
 
-        data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
+        #data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
-            data.silentDTMF(dur=0.5)
+            #data.silentDTMF(dur=0.5)
             data.play_PyGame(data.soundwave, data.mono)
 
             # Play through Sounddevice
@@ -243,7 +243,7 @@ class SEND:
 
         # Delay for the duration of the sound
         pygame.time.wait(int(sound.get_length() * 1000)) 
-        
+
     #def play_SD(data, soundwave):
     #    wav_wave = np.array(soundwave, dtype=np.int16)
     #    sd.play(wav_wave, blocking=True)
