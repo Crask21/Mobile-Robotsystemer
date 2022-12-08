@@ -59,7 +59,7 @@ def CharListToInt(list):
 
 class SEND:
 
-    def __init__(data, fs, amplitude, p_fade, baud, syn, sound_media = 'PyGame'):
+    def __init__(data, fs, amplitude, p_fade, baud, syn, sound_media = 'PyGame', mono=False):
 
         # DTMF setup
         data.fs = fs
@@ -72,6 +72,7 @@ class SEND:
         data.sound_media = sound_media
         data.sync = syn
 
+        data.mono = mono
         
         
        
@@ -82,7 +83,12 @@ class SEND:
         data.DTMF_init()
 
 
-
+    def silentDTMF(data,mute = False,dur = 2):
+            silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
+            
+            if not mute: 
+                data.play_PyGame(silence,data.mono)
+            return silence
 
 # Send package of hexi decimals
     def send_package(data, package, mute = True):
@@ -92,6 +98,7 @@ class SEND:
         
         if mute:
             package = data.synchroniazation(data.sync) + package
+            #data.silentDTMF()
 
 
 
@@ -102,10 +109,12 @@ class SEND:
             # Delete end spike
             data.soundwave[-1] = 0
 
+        data.soundwave = [*data.silentDTMF(mute=True),*data.soundwave]
 
         if data.sound_media == 'PyGame':
             # Play through PyGame
-            data.play_PyGame(data.soundwave)
+            data.silentDTMF(dur=0.5)
+            data.play_PyGame(data.soundwave, data.mono)
 
             # Play through Sounddevice
         elif data.sound_media == 'SD':
@@ -147,6 +156,11 @@ class SEND:
         plt.ylabel('some numbers')
         plt.show()
     
+
+    
+
+
+        
 
 
         
@@ -210,7 +224,7 @@ class SEND:
             data.dtmf.append(data.makeDTMF(data.amplitude, data.duration, dtmf_freq[i][0], dtmf_freq[i][1], data.fs, data.p_fade))
 
 # Play the sound through either PyGame or Sounddevice
-    def play_PyGame(data, soundwave):
+    def play_PyGame(data, soundwave, mono = False):
         # Initialize PyGame mixer
         pygame.mixer.init(frequency=data.fs, size=-16, channels=1)
 
@@ -218,7 +232,8 @@ class SEND:
         buffer = np.array(soundwave,dtype=np.int16)
 
         # (Fixes and error) dublicate sound channel or something (it makes it work)
-        buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
+        if not mono:
+            buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
 
         # Create sound object
         sound = pygame.sndarray.make_sound(buffer)

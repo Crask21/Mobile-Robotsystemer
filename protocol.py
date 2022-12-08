@@ -96,15 +96,14 @@ def organize(input_List):
     tempA = []
     for i in range(len(input_List)):
         tempA.append(hex(input_List[i]))
-    print(tempA)
     
     for i in range(len(tempA)-1):
         if tempA[i]=='0x0' and tempA[i+1]=='0x1':
-            if tempA[i-1]!='0xf' or tempA[i-2]!='0xf':
+            if tempA[i-1]!='0xF' and tempA[i-2]!='0xf':
                 check = check+1
                 if check % 2 == 1:
                     temp = []
-                    for j in np.arange(i+2,len(tempA)-1):
+                    for j in np.arange(i+2,len(tempA)):
                         if tempA[j]=='0x0' and tempA[j+1]=='0x1':
                             if tempA[j-1]=='0xf' and tempA[j-2]=='0xf':
                                 temp.append(tempA[j])
@@ -113,7 +112,6 @@ def organize(input_List):
                                 break
                         else:
                             temp.append(tempA[j])
-            
     return output
 
 def esc_check(inpt_List):
@@ -130,13 +128,12 @@ def esc_check(inpt_List):
                     temp.append(inpt_List[k][l])
             else:
                 temp.append(inpt_List[k][l])
-        temp.append(inpt_List[k][-1])
+        temp.append(inpt_List[k][len(inpt_List[k])-1])
         output.append(temp)
     return output
 
 def remove_seq(input_List):
     for i in range(len(input_List)):
-        
         input_List[i].pop(0)
     return input_List
 
@@ -196,19 +193,19 @@ def add_CRC(list):
             tempdataword=tempdataword+tempdata
 
         #print(tempdataword)
-        tempdataword=tempdataword+'0000000000000'
+        tempdataword=tempdataword+'00000'
         for j in range(len(tempdataword)):
           codeword.append(int(tempdataword[j]))
         #print(codeword)
 
         result=[]
-        divisor=[1,1,1,1,0,0,1,1,1,1,0,1,1]
+        divisor=[1,0,0,1,1]
 
     
 
         tempres=codeword
 
-        for j in range(len(codeword)-13):
+        for j in range(len(codeword)-5):
             if(tempres[0]==1):
                for i in range(len(divisor)):
                   result.append(tempres[i]^divisor[i])
@@ -234,25 +231,14 @@ def add_CRC(list):
 
         #print(remainder,'remainder')
         hexremainder=''
-        
-        tempremainder=''
-        temptempremainder=''
-            
+
         for i in range(len(remainder)):
             hexremainder=hexremainder+str(remainder[i])
-        
-        for x in range(0,3):
-            for y in range(4):
-                tempremainder += hexremainder[y+4*(x)]
-                
-            #print(tempremainder[x*4:])
-            temptempremainder=tempremainder[x*4:]
-
-            tttr=int(temptempremainder,2)
-            tttr=hex(tttr)
-            #print(tttr)
-            #tempremainder=''
-            list[k].append(tttr)
+    
+        hexremainder=int(hexremainder,2)
+   
+        hexremainder=hex(hexremainder)
+        list[k].append(hexremainder)
     return list
 
 def decode_CRC(list):
@@ -277,13 +263,13 @@ def decode_CRC(list):
         #print(codeword)
 
         result=[]
-        divisor=[1,1,1,1,0,0,1,1,1,1,0,1,1]
+        divisor=[1,0,0,1,1]
 
     
 
         tempres=codeword
 
-        for j in range(len(codeword)-13):
+        for j in range(len(codeword)-5):
             if(tempres[0]==1):
                 for i in range(len(divisor)):
                     result.append(tempres[i]^divisor[i])
@@ -322,7 +308,9 @@ def decode_CRC(list):
             list[k].pop(len(list[k])-1)
             list[k].pop(len(list[k])-1)
         else:
-            list[k]= "error"
+            list[k].pop(len(list[k])-1)
+            list[k].pop(len(list[k])-1)
+            list[k].pop(len(list[k])-1)
             print("Error in data")
     return list
 
