@@ -8,7 +8,7 @@ import Protocol.DataLink.protocol as protocol
 def main():
     
     # Initialize DTMF receive/ send
-    robot=DTMF(50,10, mono_robot = True)
+    robot=DTMF(20,10, mono_robot = True)
 
     # Initialize protocol class
     data_prot = protocolClass(moves=[],robot=robot)
