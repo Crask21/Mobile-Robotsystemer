@@ -54,7 +54,8 @@ def errorCorrectionDown(pack, robot):
                 print("Error in error message similarity") # a minor bandaid solution
                 resend+=pack[errorMessage[i][3]]
     resend = protocol.one_list(resend)
-    robot.send.send_package(resend)
+    if len(resend) != 0:
+        robot.send.send_package(resend)
     
     
 #errorCorrection([[0x0,0x1,0x9],"error",[0x1,0xa],"error", "error", [0x1,0x4,0x9,0xf]],50)

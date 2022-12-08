@@ -9,7 +9,7 @@ def main():
     baudrate = 20
     sync = 30
 
-    robot=DTMF(baudrate,sync)
+    robot=DTMF(baudrate,sync,mono_robot=True)
     
     #moveObj = moveClass.bot()
     
