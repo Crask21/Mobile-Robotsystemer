@@ -7,29 +7,6 @@ from random import randrange
 import threading
 
 
-
-#dtmf_freq =         [[1209,697], # 0
-#                    [1336,697],  # 1
-#                    [1477,697],  # 2
-#                    [1633,697],  # 3
-#                    [1209,770],  # 4
-#                    [1336,770],  # 5
-#                    [1477,770],  # 6
-#                    [1633,770],  # 7
-#                    [1209,852],  # 8
-#                    [1336,852],  # 9
-#                    [1477,852],  # A
-#                    [1633,852],  # B
-#                    [1209,941],  # C
-#                    [1336,941],  # D
-#                    [1477,941],  # E
-#                    [1633,941]]  # F
-
-
-
-
-
-
 def CharListToInt(list):
     hex_dict = {
             '0' : 0x0,
@@ -121,9 +98,7 @@ class SEND:
             data.play_SD(data.soundwave)
 
 
-    #def send_package(data, package, mute = False):
-    #    play_package = threading.Thread(target=data.package, args=(package, mute))
-    #    play_package.start()
+    
 
 # Plot the package as DTMF tones
     def plot_last_package(data, dur = False, custom = False):
@@ -158,11 +133,6 @@ class SEND:
     
 
     
-
-
-        
-
-
         
 # Make a DTMF tone
     def makeDTMF(data,amplitude,dur,freq1,freq2,f_sample, percentage_fade):

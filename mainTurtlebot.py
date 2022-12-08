@@ -14,6 +14,7 @@ def main():
     pack.PhysicalUp()
     print("After physicalUp: ")
     pack.print()
+    print("even more after physical up")
     
     pack.DataLinkUp()
     print("After DataLinkUp:")
