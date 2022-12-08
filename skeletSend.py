@@ -6,7 +6,7 @@ import time
 
 
 def main():
-    baudrate = 20
+    baudrate = 5
     sync = 30
 
     robot=DTMF(baudrate,sync)
