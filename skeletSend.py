@@ -6,7 +6,7 @@ import time
 
 
 def main():
-    baudrate = 10
+    baudrate = 60
     sync = 30
 
     robot=DTMF(baudrate,sync)
@@ -23,7 +23,7 @@ def main():
     print(pack.data_list)
 
     robot.send.send_package(pack.data_list)
-    robot.send.send_package([0,0,0],False)
+    robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
 
 
     
