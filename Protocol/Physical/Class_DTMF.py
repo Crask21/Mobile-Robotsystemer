@@ -253,9 +253,9 @@ class SEND:
 
         if original == recieved:
             print('100% match')
-            print("Original: "+original)
+            print("Original: ",original)
             
-            print("Recieved: "+recieved2)
+            print("Recieved: ",recieved2)
         
 
 
