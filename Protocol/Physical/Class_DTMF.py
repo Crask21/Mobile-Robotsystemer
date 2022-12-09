@@ -247,10 +247,15 @@ class SEND:
         dif = len(recieved) - len(original)
 
         if len(recieved) > len(original):
+                recieved2 = recieved.copy()
                 recieved = recieved[:len(recieved) - dif]
+
 
         if original == recieved:
             print('100% match')
+            print("Original: "+original)
+            
+            print("Recieved: "+recieved2)
         
 
 
