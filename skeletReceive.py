@@ -9,7 +9,7 @@ def main():
     
     #print(len(pack))
     global robot
-    robot=DTMF(20,30, mono_robot = True)
+    robot=DTMF(10,30, mono_robot = True)
     # for testing
     #data_prot = protocolClass(moves=pack,robot=robot)
     #data_prot.DataLinkUp()  
