@@ -6,10 +6,10 @@ import time
 
 
 def main():
-    baudrate = 60
+    baudrate = 20
     sync = 30
 
-    robot=DTMF(baudrate,sync)
+    robot=DTMF(baudrate,sync,mono_robot=True)
     
     #moveObj = moveClass.bot()
     
@@ -21,9 +21,8 @@ def main():
     #pack.print()
     #pack.DataLinkUp()
     print(pack.data_list)
-
+    
     robot.send.send_package(pack.data_list)
-    robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
 
 
     

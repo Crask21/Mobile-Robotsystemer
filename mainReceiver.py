@@ -8,7 +8,7 @@ import Protocol.DataLink.protocol as protocol
 def main():
     
     # Initialize DTMF receive/ send
-    robot=DTMF(50,10, mono_robot = True)
+    robot=DTMF(20,10, mono_robot = True)
 
     # Initialize protocol class
     data_prot = protocolClass(moves=[],robot=robot)
@@ -29,3 +29,15 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
+Traceback (most recent call last):
+  File "mainReceiver.py", line 31, in <module>
+    main()
+  File "mainReceiver.py", line 19, in main
+    message = protocol.hexa_to_msg(package)
+  File "/home/ubuntu/code/Mobile-Robotsystems/Protocol/DataLink/protocol.py", line 174, in hexa_to_msg
+    if len(dtmf_signal[i])>2:
+TypeError: object of type 'int' has no len()
+"""

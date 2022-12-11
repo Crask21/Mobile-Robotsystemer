@@ -17,11 +17,20 @@ class protocolClass:
                 self.data_list.append(moves[i])
         self.robot=robot
 
-    def setMoves(self, moves):
-         self.data_list=moves
-    
+    def setMoves(self, moves, msg = False):
+        if not msg:
+            self.data_list = moves
+        else:
+            self.data_list = []
+            for i in range(len(moves)):
+                self.data_list.append(moves[i])
+            self.data_list =self.data_list +[[msg]]
+        
     def setPackage(self, value):
         self.data_list = value
+    
+    def getPackage(self):
+        return self.data_list 
 
     def set(self, fileName):
         self.data_list += [[open(fileName).read()]]
@@ -42,7 +51,7 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        self.data_list = ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
+        self.data_list=ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
         self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
@@ -52,6 +61,7 @@ class protocolClass:
         print()
     
     def PhysicalDown(self):
+        
         self.robot.send.send_package(self.data_list)
         ec.errorCorrectionDown(self.dataListEC,self.robot)
         #ved ikke hvad det er eller hvad 40 kommer fra
