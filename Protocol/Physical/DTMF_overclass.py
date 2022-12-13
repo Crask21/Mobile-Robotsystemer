@@ -7,7 +7,7 @@ class DTMF:
         fs = 44100
         amplitude = 15000
         media = 'PyGame' # 'SD'
-        fade_P = 0.15
+        fade_P = 0.40
         baud_rate = baud
         syn = sync
         # SYNC

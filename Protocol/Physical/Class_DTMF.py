@@ -252,7 +252,7 @@ class SEND:
 
         # Delay for the duration of the sound
         pygame.time.wait(int(sound.get_length() * 1000)) 
-        
+
     #def play_SD(data, soundwave):
     #    wav_wave = np.array(soundwave, dtype=np.int16)
     #    sd.play(wav_wave, blocking=True)
@@ -286,10 +286,15 @@ class SEND:
         dif = len(recieved) - len(original)
 
         if len(recieved) > len(original):
+                recieved2 = recieved.copy()
                 recieved = recieved[:len(recieved) - dif]
+
 
         if original == recieved:
             print('100% match')
+            print("Original: ",original)
+            
+            print("Recieved: ",recieved2)
         
 
 
