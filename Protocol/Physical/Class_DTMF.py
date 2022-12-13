@@ -61,7 +61,7 @@ class SEND:
 
 
     def silentDTMF(data,mute = False,dur = 2):
-            silence = data.makeDTMF(1,dur,2,2,data.fs,0.4)
+            silence = data.makeSIN(1,dur,2,2,data.fs,0.4)
             
             if not mute: 
                 data.play_PyGame(silence,data.mono)
@@ -80,8 +80,9 @@ class SEND:
 
 
         # Convert package into sound array
-        for i in package:
-            data.soundwave = [*data.soundwave, *data.dtmf[i]]
+        for hex in package:
+            #data.soundwave = [*data.soundwave, *data.dtmf[hex]]
+            data.soundwave = np.concatenate((data.soundwave,data.dtmf[hex]))
 
             # Delete end spike
             data.soundwave[-1] = 0
@@ -115,8 +116,10 @@ class SEND:
         
         if custom:
             data.soundwave = 5000 * np.sin(2*np.pi*1209*time) + 5000 * np.sin(2*np.pi*697*time)
-        plt.plot(time,data.soundwave,'r--')#'r--'
-        plt.ylabel('some numbers')
+        plt.plot(time,data.soundwave,'o')#'r--' 'o'
+        plt.title("DTMF 0x0 sampled at 44100Hz")
+        plt.xlabel("Time")
+        plt.ylabel("Amplitude")
         plt.show()
 
 
@@ -135,9 +138,45 @@ class SEND:
     
         
 # Make a DTMF tone
-    def makeDTMF(data,amplitude,dur,freq1,freq2,f_sample, percentage_fade):
-            
-            # Turn frequencies into functions 
+    def makeDTMF(data,freq1,freq2):
+        amplitude = data.amplitude
+        dur = data.duration
+        f_sample = data.fs
+        percentage_fade= data.p_fade
+
+        # Turn frequencies into functions 
+        time = np.arange(0, dur, 1/f_sample)
+        xi = amplitude * np.sin(2*np.pi*freq2*time) + amplitude * np.sin(2*np.pi*freq1*time)   
+        
+        # Fadeeeeeee #
+        number_of_faded_points = int(dur * percentage_fade * f_sample)
+        if percentage_fade > 1:
+            number_of_faded_points = int((percentage_fade/1000000) / dur * f_sample)
+
+        fade = np.linspace(0,1,num=number_of_faded_points)
+        fade_end = np.linspace(1,0,num=number_of_faded_points)
+
+        data.FFT.append(np.fft.fft(xi))
+
+        for j in np.arange(number_of_faded_points):
+            xi[j] = xi[j] * fade[j]
+
+        #print(xi[-1*number_of_faded_points:])
+
+        for j in np.arange(-1*number_of_faded_points,-1):    
+            xi[j] = xi[j] * fade_end[j]    
+
+        #print(xi[-1*number_of_faded_points:-1])
+
+        # Fadeeeeeee #
+        
+
+
+        return xi
+
+# Make double sinusoid
+    def makeSIN(data,amplitude,dur,freq1,freq2,f_sample, percentage_fade):
+         # Turn frequencies into functions 
             time = np.arange(0, dur, 1/f_sample)
             xi = amplitude * np.sin(2*np.pi*freq2*time) + amplitude * np.sin(2*np.pi*freq1*time)   
             
@@ -191,7 +230,7 @@ class SEND:
 
 
         for i in np.arange(len(dtmf_freq)):
-            data.dtmf.append(data.makeDTMF(data.amplitude, data.duration, dtmf_freq[i][0], dtmf_freq[i][1], data.fs, data.p_fade))
+            data.dtmf.append(data.makeDTMF(dtmf_freq[i][0], dtmf_freq[i][1]))
 
 # Play the sound through either PyGame or Sounddevice
     def play_PyGame(data, soundwave, mono = False):
