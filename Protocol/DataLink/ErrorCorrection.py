@@ -27,7 +27,7 @@ def errorCorrectionUp(pack, robot):
         print("ECUP errorMessage: ")
         print(errorMessage)
         robot.send.send_package(errorMessage)
-        time.sleep(5000)
+        #time.sleep(5)
         
         dataNew = robot.listen.startListen()
         dataNew = protocol.organize(dataNew)
