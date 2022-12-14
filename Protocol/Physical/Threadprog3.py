@@ -88,13 +88,9 @@ class LISTEN():
 
         #------------------------------GET THE FORMAT--------------------------
         rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
-        rec.count = len(rec.data)/2
-        rec.format = "%dh"%(rec.count)
-        rec.data_int = np.array(unpack(rec.format, rec.data))
-        rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
-
-        #--------------------------------FFT----------------------------------
         
+        
+        #------------------------------GET THE FORMAT--------------------------
         rec.syncCounter=0
         rec.noSignal=0
         rec.startReading=False
