@@ -1,5 +1,5 @@
 from Protocol.Physical.Class_DTMF import SEND
-from Protocol.Physical.Threadprog import LISTEN
+from Protocol.Physical.Threadprog3 import LISTEN
 
 class DTMF:
     def __init__(self, baud, sync=10, mono_robot=False):
@@ -7,7 +7,7 @@ class DTMF:
         fs = 44100
         amplitude = 15000
         media = 'PyGame' # 'SD'
-        fade_P = 0.15
+        fade_P = 0.006667
         baud_rate = baud
         syn = sync
         # SYNC
@@ -20,6 +20,7 @@ class DTMF:
 #robot=DTMF(10)
 #robot.listen.startListen()
 #robot.send.send_package([0xc,0xa,0xa,0xa,0xa,0xb])
+# helo
 
     
 

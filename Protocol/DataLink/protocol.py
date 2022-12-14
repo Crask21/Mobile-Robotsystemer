@@ -331,30 +331,24 @@ def decode_CRC(list):
             list[k].pop(len(list[k])-1)
             list[k].pop(len(list[k])-1)
         else:
-            list[k]= "error"
+            list[k]= [list[k][0],"error"]
             print("Error in data")
     return list
 
-def add_address(input_List):
-    sender = '0xa'
-    medium = '0xb'
-    receiver = '0xc'
-    for i in range(len(input_List)):
-        input_List[i].insert(0,receiver)
-        input_List[i].insert(0,medium)
-        input_List[i].insert(0,sender)
+def add_address(input_List, address):
+    #address = ['0xa','0x0','0xd']
+    input_List = [address] + input_List
+    return input_List
+
+def decode_address(input_List, address):
+    if input_List[2] == address : print('second true')
+    if len(input_List[0])>2 and input_List[0][2] == address:
+        return input_List
+    else:
+        print("Addressing sucks")
+        return False
+
     
-    return input_List
-
-def decode_address(input_List):
-    for i in range(len(input_List)):
-        if input_List[i][0]=='0xa' and input_List[i][1]=='0xb' and input_List[i][2]=='0xc':
-            for j in range(3):
-                input_List[i].pop(0)
-        else:
-            print('This message is not for me')
-
-    return input_List
 
 def data_comb(input_List):
     output = []

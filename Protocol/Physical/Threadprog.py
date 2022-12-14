@@ -34,7 +34,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 #input_device_index=3 
+                 #input_device_index=1 
                  # is this a good idea? I tried to not give the buffer a fixed size                                
                  #frames_per_buffer = INPUT_FRAMES_PER_BLOCK) 
         )
@@ -68,8 +68,8 @@ class LISTEN():
                                 1477,
                                 1633]
 
-        rec.upperRange=20
-        rec.lowerRange=20
+        rec.upperRange=40
+        rec.lowerRange=40
         rec.outputList=[]
 
         #-----------------------------------FREQUENCIES------------------------------------------
@@ -94,9 +94,7 @@ class LISTEN():
         #------------------------------GET THE FORMAT
         #divided by resolution to get the fft in resolution of choice in hz
         rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
-        rec.count = len(rec.data)/2
-        rec.format = "%dh"%(rec.count)
-        rec.data_int = np.array(struct.unpack(rec.format, rec.data))
+        rec.data_int = np.frombuffer(rec.data,dtype='h')
         rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
         #--------------------------------FFT-----------------------
         rec.yf=fft(rec.data_int)
@@ -112,7 +110,6 @@ class LISTEN():
     #find largest frequency
         #cheat filter
         freqMagn[rec.cheatfilter]=0
-
         freqmagnlow=copy.deepcopy(freqMagn)
         freqmagnlow[rec.xf_above1000]=0
         freqmagnlow[rec.xf_noise]=0
@@ -133,30 +130,17 @@ class LISTEN():
             print(inputFreqs)
         return output
         
-    #def startListen(rec):
-    #    thr=threading.Thread(target=rec.listenThread, args=())
-    #    thr.start()
 
     def startListen(rec):
-        #print(*rec.cheatfilter, sep = ", ")
-
-        #rec.pack=input("Enter sent package")
-        
         while True:
             start=time.time()
-            #divided by baudRate too to get the movement of the window
+
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
-            data_int = np.array(struct.unpack(rec.format, data))
+            data_int = np.frombuffer(data,dtype='h')
             data_int = np.append(data_int, rec.z_pad_arr)
-            #end1 = time.time()
-            #print("read")
-            #print(end1-start)
-            #data_int=butter_bandpass_filter(data_int)
             
             yf=fft(data_int)
-            #print("fft")
-            #end2=time.time()
-            #print(end2-end1)
+
             yf=np.delete(yf,rec.delList)
             highestfreqs=rec.find_highest_freqs(abs(yf))
             rec.outputList+=rec.dtmf_to_hexa(highestfreqs)
@@ -167,7 +151,6 @@ class LISTEN():
             if rec.dtmf_to_hexa(highestfreqs)==[] and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
-                    #rec.compare(rec.pack,rec.outputList)
                     break
             else:
                 rec.noSignal=0
@@ -187,9 +170,6 @@ class LISTEN():
                 rec.syncCounter+=1
                 print("Times synchronized: " +str(rec.syncCounter))
 
-            #end3=time.time()
-            #print("conditionals")
-            #print(end3-end2)
             end=time.time()
             if end-start>rec.time_per_read:
                 print("ERROR: The baudrate is too fast:"+str(rec.time_per_read)+","+str(end-start-rec.time_per_read))
@@ -204,3 +184,6 @@ class LISTEN():
                 end=time.time()
         
         return rec.outputList
+#
+#robot=LISTEN(30)
+#robot.startListen()

@@ -121,11 +121,15 @@ xf_noise=np.where(xf<650)
 #divided by resolution to get the fft in resolution of choice in hz
 for i in range(50):
     data=stream.read(int(RATE*time_per_read))
-    count = len(data)/2
-    format = "%dh"%(count)
-    data_int = np.array(struct.unpack(format, data))
+    #count = len(data)/2
+    #format = "%dh"%(count)
+    #data_int = np.array(struct.unpack(format, data))
+    data_int = np.frombuffer(data,dtype='h')
     data_intz=np.append(data_int,z_pad_arr)
 #--------------------------------FFT-----------------------
+print(data)
+print(data_int)
+
 yf=fft(data_intz)
 yf=abs(yf)
 yf=np.delete(yf,delList)

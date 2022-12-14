@@ -14,8 +14,6 @@ class moveClass:
         self.client.connect("localhost")
         self.client.loop_start()
         self.settings = termios.tcgetattr(sys.stdin)
-        self.lin_vel = 0.0
-        self.ang_vel = 0.0
         pass
     def on_connect(self, client, userdata, flags, rc):
         print('Connected with result code: {}'.format(rc))
@@ -34,7 +32,7 @@ class moveClass:
         else:
             print('Not a topic to react on.')
     
-    def drive(self, lin = 0.0, ang = 0.0, time = 0.02):
+    def drive(self, ang = 0.0,lin = 0.0, time = 0.5):
         pub_msg = { 'linear' : {'x':lin, 'y':0, 'z':0},
                         'angular' : {'x':0, 'y':0, 'z':ang}}
         pub_msg = json.dumps(pub_msg)
@@ -47,15 +45,15 @@ class moveClass:
         ang = float(ang)
         if(ang !=0):
             for i in range(int(abs(ang)/45)):
-                self.drive(0,ang/abs(ang)*1.6,0.5)
-            self.drive(0,(abs(ang)%45)/45*1.6*ang/abs(ang),0.5)
+                self.drive(ang/abs(ang)*1.6,0)
+            self.drive((abs(ang)%45)/45*1.6*ang/abs(ang),0)
         else:
             print("An angle was 0")
     
         if(dist != 0):
             for i in range(int(abs(dist)/10)):
-                self.drive(dist/abs(dist)*0.2,0,0.5)
-            self.drive((dist%10)*0.02*dist/abs(dist))
+                self.drive(0,dist/abs(dist)*0.2)
+            self.drive(0,(dist%10)*0.02*dist/abs(dist))
         else:
             print("A distance was 0")
 

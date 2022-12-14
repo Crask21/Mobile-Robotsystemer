@@ -9,7 +9,12 @@ move = [[10,20],[-10,30]]
 class protocolClass:
     data_list = []
     n = 4  #Data package size
-    def __init__(self, moves, robot, filename=0):
+    def __init__(self, address, moves, robot, filename=0):
+        if type(address) == type('0x0'):
+            self.address = address
+        else:
+            self.address = address[0]
+            self.addressList = address
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
@@ -39,8 +44,8 @@ class protocolClass:
         self.data_list=protocol.convert_to_hexa(self.data_list)
         self.data_list=protocol.data_seg(self.data_list,6)
         self.data_list=protocol.hexa_devide(self.data_list)
+        self.data_list=protocol.add_address(self.data_list,self.addressList)
         self.data_list=protocol.add_seq(self.data_list)
-        self.data_list=protocol.add_address(self.data_list)
         self.data_list=protocol.add_CRC(self.data_list)
         self.data_list=protocol.add_esc(self.data_list)
         self.data_list=protocol.add_StartStop(self.data_list)
@@ -51,16 +56,25 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
+        self.data_list=protocol.decode_address(self.data_list, self.address)
+        self.removeSender()
         self.data_list=ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
-        self.data_list=protocol.decode_address(self.data_list)
+        #print(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
+        print(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
+        print(self.data_list)
+    
+    def removeSender(self):
+        self.addressList = self.data_list[0][2:]
+        self.data_list.pop(0)
     
     def SendBack(self):
         print()
     
     def PhysicalDown(self):
+        
         self.robot.send.send_package(self.data_list)
         ec.errorCorrectionDown(self.dataListEC,self.robot)
         #ved ikke hvad det er eller hvad 40 kommer fra
