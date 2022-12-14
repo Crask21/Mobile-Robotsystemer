@@ -5,7 +5,8 @@ from Protocol.Physical.DTMF_overclass import DTMF
 
 
 def main():
-    pack= [0, 1, 10, 11, 12, 1, 8, 0, 14, 4, 6, 0, 13, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 14, 4, 6, 15, 15, 0, 1, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
+    pack = [0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1] 
+    
     #print(len(pack))
     robot=DTMF(50,10, mono_robot = True)
     # for testing
@@ -21,9 +22,9 @@ def main():
 
     data_prot.DataLinkUp()  
     data_prot.print()
-    for i in range(len(data_prot.data_list)-1):
-        moveObj.move(data_prot.data_list[i][0],data_prot.data_list[i][1])
-    moveObj.stop()
+    #for i in range(len(data_prot.data_list)-1):
+    #    moveObj.move(data_prot.data_list[i][0],data_prot.data_list[i][1])
+    #moveObj.stop()
 
 if __name__ == "__main__":
     main()
