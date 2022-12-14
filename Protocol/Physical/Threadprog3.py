@@ -130,7 +130,8 @@ class LISTEN():
                 output= i
                 break
         if not('output' in locals()):    
-            print(inputFreqs)
+            hej=0
+            #print(inputFreqs)
         else:    
             return output
 
