@@ -1,5 +1,4 @@
 import pyaudio
-from struct import unpack
 import numpy as np
 from time import time
 from scipy.fftpack import fft
@@ -70,13 +69,12 @@ class LISTEN():
 
         #-----------------------------------FREQUENCIES------------------------------------------
         #resolution is defined as fs/(points worked on)
-        #To improve resolution zeropadding can be used
         rec.xf = np.linspace(0, rec.RATE, int(rec.time_per_read*rec.RATE+rec.z_pad))
         rec.delList=np.arange(int(-rec.xf.size/2),0)
         rec.xf=np.delete(rec.xf,rec.delList)
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
-        rec.xf_above1000=np.delete(rec.xf_above1000,-1)
+        #rec.xf_above1000=np.delete(rec.xf_above1000,-1)
         rec.xf_noise=np.where(rec.xf<650)
 
         #-----------------------------------CHEATFILTER------------------------------------------
