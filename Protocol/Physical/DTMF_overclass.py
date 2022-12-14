@@ -1,11 +1,12 @@
 from Protocol.Physical.Class_DTMF import SEND
+
 from Protocol.Physical.Threadprog3 import LISTEN
 
 class DTMF:
     def __init__(self, baud, sync=10, mono_robot=False):
         # DTMF Settings
         fs = 44100
-        amplitude = 15000
+        amplitude = 5000
         media = 'PyGame' # 'SD'
         fade_P = 0.006667
         baud_rate = baud
