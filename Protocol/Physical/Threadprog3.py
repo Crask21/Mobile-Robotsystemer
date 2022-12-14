@@ -59,7 +59,7 @@ class LISTEN():
                     [1209,941],  # C
                     [1336,941],  # D
                     [1477,941],  # E
-                    [1633,941]])  # F
+                    [1633,941]]) # F
         rec.dtmf_single_freqs=np.array([697, 770, 852, 941, 1209, 1336, 1477, 1633])
 
         rec.upperRange=20
@@ -88,7 +88,7 @@ class LISTEN():
         rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
         
         
-        #------------------------------GET THE FORMAT--------------------------
+        #------------------------------VARAIBLES--------------------------
         rec.syncCounter=0
         rec.noSignal=0
         rec.startReading=False
@@ -263,7 +263,28 @@ class LISTEN():
         rec.outputList=rec.outputList.tolist()
         #print("Warning: times beyond recommended time")
         #print(rec.warning)
-        return rec.outputList
+
+        #-----------------------CLEANING AFTER YOURSELF-----------
+        rec.syncCounter=0
+        rec.noSignal=0
+        rec.startReading=False
+        rec.previousRead=0
+        rec.currentRead=0
+        rec.firstTime=True
+        rec.succesful=[]
+        rec.failed=[]
+        rec.displacement=0
+        rec.ABcount=0
+        rec.averageSuccess=0
+        rec.synchronised=False
+        rec.read_since_sync=0
+        rec.synctime=time()
+        rec.to_be_synchronised=False
+        rec.warning=0
+        rec.result=rec.outputList
+        rec.outputList=np.array([],dtype=int)
+
+        return rec.result
 
 #roberto = LISTEN(50)
 #output=roberto.startListen()
