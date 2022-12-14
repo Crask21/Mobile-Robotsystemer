@@ -47,16 +47,24 @@ def errorCorrectionDown(pack, robot):
     #dtmf = DTMF(baud)
     resend = []
     errorMessage = robot.listen.startListen()
+    print('ECDown listened finished')
     errorMessage = protocol.organize(errorMessage)
+    errorMessage = protocol.hexa_to_msg(errorMessage)
+    print(errorMessage)
+
     for i in range(len(errorMessage)):
         if(errorMessage[i][0:1]==[9,6]):
+            print(np.std(errorMessage[i][2:4]))
             if(np.std(errorMessage[i][2:4])==0):
                 resend+=pack[errorMessage[i][3]]
             else:
                 print("Error in error message similarity") # a minor bandaid solution
                 resend+=pack[errorMessage[i][3]]
     resend = protocol.one_list(resend)
+    print("ECDown prossessed. Resend length:")
+    print(len(resend))
     if len(resend) != 0:
+        print("ECDown sending")
         robot.send.send_package(resend)
     
     
