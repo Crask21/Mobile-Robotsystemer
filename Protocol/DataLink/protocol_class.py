@@ -8,6 +8,7 @@ move = [[10,20],[-10,30]]
 
 class protocolClass:
     data_list = []
+    addressList = []
     n = 4  #Data package size
     def __init__(self, address, moves, robot, filename=0):
         if len(address) == 1:
