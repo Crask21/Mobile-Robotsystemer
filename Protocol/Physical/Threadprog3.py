@@ -101,10 +101,10 @@ class LISTEN():
         rec.ABcount=0
         rec.averageSuccess=0
         rec.synchronised=False
-
-        
-
-        print(np.array([1,2,3]))
+        rec.read_since_sync=0
+        rec.synctime=time()
+        rec.to_be_synchronised=False
+        rec.warning=0
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -164,7 +164,6 @@ class LISTEN():
         while True:
             #-----------------------------Reading-----------------------------
             start=time()
-            #divided by baudRate too to get the movement of the window
             #print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             #print(rec.stream.get_read_available())
@@ -227,7 +226,7 @@ class LISTEN():
                 print(rec.displacement)
             if rec.displacement>0.97 and not(rec.synchronised):
                 print("synchronising:")
-                rec.synchronised=True
+                rec.to_be_synchronised=True
                 print("succesful:")
                 print(rec.succesful)
                 print("Failed:")
@@ -240,10 +239,29 @@ class LISTEN():
             
             rec.previousRead=rec.currentRead
             #-----------------------Delay until proper baudrate----------------
-            while end-start<rec.read_window:
-                end=time()
+            #-----------------synced-----------------
+            if rec.synchronised:
+               while end-rec.synctime<rec.read_window*rec.read_since_sync:
+                    end=time() 
+            #---------------not synced---------------
+            if not(rec.synchronised):
+                while end-start<rec.read_window:
+                    end=time()
+            print(end-start)
+            if (end-start>0.7 or end-start<0.3) and rec.startReading:
+                rec.warning+=1
+            #set timer if just syncronised
+            if rec.to_be_synchronised:
+                rec.synchronised=True
+                rec.synctime=time()
+                rec.to_be_synchronised=False
+            if rec.synchronised:
+                rec.read_since_sync+=1
+
         rec.outputList=np.delete(rec.outputList,0)
         rec.outputList=rec.outputList.tolist()
+        print("Warning: times beyond recommended time")
+        print(rec.warning)
         return rec.outputList
 
 roberto = LISTEN(20)
