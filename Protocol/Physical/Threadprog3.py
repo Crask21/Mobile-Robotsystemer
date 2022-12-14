@@ -63,8 +63,8 @@ class LISTEN():
                     [1633,941]])  # F
         rec.dtmf_single_freqs=np.array([697, 770, 852, 941, 1209, 1336, 1477, 1633])
 
-        rec.upperRange=40
-        rec.lowerRange=40
+        rec.upperRange=20
+        rec.lowerRange=20
         rec.outputList=np.array([],dtype=int)
         rec.noise_level=4000
 
@@ -252,10 +252,10 @@ class LISTEN():
             while end-start<rec.read_window:
                 end=time()
         rec.outputList=np.delete(rec.outputList,0)
-        rec.outputList.tolist()
+        rec.outputList=rec.outputList.tolist()
         return rec.outputList
 
-roberto = LISTEN(60)
+roberto = LISTEN(20)
 output=roberto.startListen()
 pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
 send.compare(pack,output)
