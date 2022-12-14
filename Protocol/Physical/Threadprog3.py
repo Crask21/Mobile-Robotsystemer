@@ -1,5 +1,4 @@
 import pyaudio
-from struct import unpack
 import numpy as np
 from time import time
 from scipy.fftpack import fft
@@ -70,13 +69,12 @@ class LISTEN():
 
         #-----------------------------------FREQUENCIES------------------------------------------
         #resolution is defined as fs/(points worked on)
-        #To improve resolution zeropadding can be used
         rec.xf = np.linspace(0, rec.RATE, int(rec.time_per_read*rec.RATE+rec.z_pad))
         rec.delList=np.arange(int(-rec.xf.size/2),0)
         rec.xf=np.delete(rec.xf,rec.delList)
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
-        rec.xf_above1000=np.delete(rec.xf_above1000,-1)
+        #rec.xf_above1000=np.delete(rec.xf_above1000,-1)
         rec.xf_noise=np.where(rec.xf<650)
 
         #-----------------------------------CHEATFILTER------------------------------------------
@@ -88,16 +86,9 @@ class LISTEN():
 
         #------------------------------GET THE FORMAT--------------------------
         rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
-        rec.count = len(rec.data)/2
-        rec.format = "%dh"%(rec.count)
-        rec.data_int = np.array(unpack(rec.format, rec.data))
-        rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
-
-        #--------------------------------FFT----------------------------------
-        rec.yf=fft(rec.data_int)
-        rec.yf=np.absolute(rec.yf)
-        rec.yf=np.delete(rec.yf,rec.delList)
-
+        
+        
+        #------------------------------GET THE FORMAT--------------------------
         rec.syncCounter=0
         rec.noSignal=0
         rec.startReading=False
@@ -110,10 +101,10 @@ class LISTEN():
         rec.ABcount=0
         rec.averageSuccess=0
         rec.synchronised=False
-
-        
-
-        print(np.array([1,2,3]))
+        rec.read_since_sync=0
+        rec.synctime=time()
+        rec.to_be_synchronised=False
+        rec.warning=0
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -133,15 +124,15 @@ class LISTEN():
         return highestFreqs
 
     def dtmf_to_hexa(rec, inputFreqs):
-        output=[]
         inputFreqs.sort()
         for i in np.arange(16,dtype=int):
             if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange+1 and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange-1)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange+1 and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange-1):
-                output= [i]
+                output= i
                 break
-        if output==[] and rec.startReading:
+        if not('output' in locals()):    
             print(inputFreqs)
-        return np.array(output, dtype=int)
+        else:    
+            return output
 
     def getVectors(rec, angles):
         vectors=[]
@@ -173,7 +164,6 @@ class LISTEN():
         while True:
             #-----------------------------Reading-----------------------------
             start=time()
-            #divided by baudRate too to get the movement of the window
             #print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             #print(rec.stream.get_read_available())
@@ -197,7 +187,7 @@ class LISTEN():
             
             
             #-----------------------Check if no signal------------------------
-            if rec.dtmf_to_hexa(highestfreqs).size<1 and rec.startReading==True:
+            if rec.dtmf_to_hexa(highestfreqs)==None and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
                     break
@@ -236,7 +226,7 @@ class LISTEN():
                 print(rec.displacement)
             if rec.displacement>0.97 and not(rec.synchronised):
                 print("synchronising:")
-                rec.synchronised=True
+                rec.to_be_synchronised=True
                 print("succesful:")
                 print(rec.succesful)
                 print("Failed:")
@@ -249,10 +239,29 @@ class LISTEN():
             
             rec.previousRead=rec.currentRead
             #-----------------------Delay until proper baudrate----------------
-            while end-start<rec.read_window:
-                end=time()
+            #-----------------synced-----------------
+            if rec.synchronised:
+               while end-rec.synctime<rec.read_window*rec.read_since_sync:
+                    end=time() 
+            #---------------not synced---------------
+            if not(rec.synchronised):
+                while end-start<rec.read_window:
+                    end=time()
+            print(end-start)
+            if (end-start>0.7 or end-start<0.3) and rec.startReading:
+                rec.warning+=1
+            #set timer if just syncronised
+            if rec.to_be_synchronised:
+                rec.synchronised=True
+                rec.synctime=time()
+                rec.to_be_synchronised=False
+            if rec.synchronised:
+                rec.read_since_sync+=1
+
         rec.outputList=np.delete(rec.outputList,0)
         rec.outputList=rec.outputList.tolist()
+        print("Warning: times beyond recommended time")
+        print(rec.warning)
         return rec.outputList
 
 roberto = LISTEN(20)

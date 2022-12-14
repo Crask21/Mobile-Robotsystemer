@@ -14,7 +14,7 @@ def errorCorrectionUp(pack, robot):
     #dtmf = DTMF(baud)
     errorList = []
     for i in range(len(pack)):
-        if (pack[i]=="error"):
+        if (pack[i][1]=="error"):
             errorList += [i]
     errorMessage = []
     #changed from len(errorList>0) to len(errorList)>0 this looks more right
