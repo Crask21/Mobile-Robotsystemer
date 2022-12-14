@@ -6,7 +6,7 @@ move = [[10,20],[-10,30]]
 class protocolClass:
     data_list = []
     n = 4  #Data package size
-    def __init__(self, moves, filename=0):
+    def __init__(self, moves, filename=0, address=[]):
         if filename != 0:
             self.data_list=moves+[[open(filename).read()]]
         else:
@@ -17,10 +17,10 @@ class protocolClass:
 
     def DataLinkDown(self):
         self.data_list=protocol.convert_to_hexa(self.data_list)
+        self.data_list=protocol.add_address(self.data_list)
         self.data_list=protocol.data_seg(self.data_list,6)
         self.data_list=protocol.hexa_devide(self.data_list)
         self.data_list=protocol.add_seq(self.data_list)
-        self.data_list=protocol.add_address(self.data_list)
         self.data_list=protocol.add_CRC(self.data_list)
         self.data_list=protocol.add_esc(self.data_list)
         self.data_list=protocol.add_StartStop(self.data_list)
@@ -30,8 +30,8 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
+        self.data_list=protocol.decode_address(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
     
