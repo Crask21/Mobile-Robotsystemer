@@ -10,7 +10,7 @@ class protocolClass:
     data_list = []
     n = 4  #Data package size
     def __init__(self, address, moves, robot, filename=0):
-        if len(address) == 1:
+        if type(address) == type('0x0'):
             self.address = address
         else:
             self.address = address[0]
@@ -44,7 +44,7 @@ class protocolClass:
         self.data_list=protocol.convert_to_hexa(self.data_list)
         self.data_list=protocol.data_seg(self.data_list,6)
         self.data_list=protocol.hexa_devide(self.data_list)
-        self.data_list=protocol.add_address(self.data_list,addressList)
+        self.data_list=protocol.add_address(self.data_list,self.addressList)
         self.data_list=protocol.add_seq(self.data_list)
         self.data_list=protocol.add_CRC(self.data_list)
         self.data_list=protocol.add_esc(self.data_list)
@@ -56,15 +56,18 @@ class protocolClass:
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)
         self.data_list=protocol.decode_CRC(self.data_list)
-        self.data_list=protocol.decode_address(self.data_list)
+        self.data_list=protocol.decode_address(self.data_list, self.address)
         self.removeSender()
         self.data_list=ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
+        #print(self.data_list)
         self.data_list=protocol.remove_seq(self.data_list)
         self.data_list=protocol.data_comb(self.data_list)
+        print(self.data_list)
         self.data_list=protocol.convert_to_decimal(self.data_list)
+        print(self.data_list)
     
     def removeSender(self):
-        self.addressList = self.data_list[0][2:len(self.data_list[0])]
+        self.addressList = self.data_list[0][2:]
         self.data_list.pop(0)
     
     def SendBack(self):
