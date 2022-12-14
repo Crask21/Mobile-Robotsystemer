@@ -23,9 +23,9 @@ def main():
     #pack.print()
     #pack.DataLinkUp()
     print(pack.data_list)
-
-    robot.send.send_package(pack.data_list)
-    robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
+    pack.PhysicalDown()
+    #robot.send.send_package(pack.data_list)
+    #robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
 
 
     
