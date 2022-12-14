@@ -9,7 +9,7 @@ def main():
     robot=DTMF(baud,10, mono_robot = True)
     
     moveObj = moveClass()
-    pack = protocolClass([],robot)
+    pack = protocolClass('0x0',[],robot)
     
     pack.PhysicalUp()
     print("After physicalUp: ")
