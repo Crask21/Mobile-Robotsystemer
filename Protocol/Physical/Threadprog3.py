@@ -16,7 +16,7 @@ syn = 20
 
         
      
-#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
 
 class LISTEN():
     def __init__(rec,baud):
@@ -255,7 +255,7 @@ class LISTEN():
         rec.outputList.tolist()
         return rec.outputList
 
-#roberto = LISTEN(60)
-#output=roberto.startListen()
-#pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
-#send.compare(pack,output)
+roberto = LISTEN(60)
+output=roberto.startListen()
+pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
+send.compare(pack,output)
