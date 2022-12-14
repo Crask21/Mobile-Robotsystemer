@@ -94,10 +94,7 @@ class LISTEN():
         rec.data_int=np.append(rec.data_int,rec.z_pad_arr)
 
         #--------------------------------FFT----------------------------------
-        rec.yf=fft(rec.data_int)
-        rec.yf=np.absolute(rec.yf)
-        rec.yf=np.delete(rec.yf,rec.delList)
-
+        
         rec.syncCounter=0
         rec.noSignal=0
         rec.startReading=False
