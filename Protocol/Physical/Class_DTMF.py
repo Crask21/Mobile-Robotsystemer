@@ -240,7 +240,7 @@ class SEND:
         # Convert list to numpy array
         buffer = np.array(soundwave,dtype=np.int16)
 
-        # (Fixes and error) dublicate sound channel or something (it makes it work)
+        # Dublicate sound channel for stereo
         if not mono:
             buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
 
