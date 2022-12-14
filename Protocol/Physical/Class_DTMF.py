@@ -149,7 +149,7 @@ class SEND:
         xi = amplitude * np.sin(2*np.pi*freq2*time) + amplitude * np.sin(2*np.pi*freq1*time)   
         
         # Fadeeeeeee #
-        number_of_faded_points = int(dur * percentage_fade * f_sample)
+        number_of_faded_points = int(percentage_fade * f_sample)
         if percentage_fade > 1:
             number_of_faded_points = int((percentage_fade/1000000) / dur * f_sample)
 
@@ -181,7 +181,7 @@ class SEND:
             xi = amplitude * np.sin(2*np.pi*freq2*time) + amplitude * np.sin(2*np.pi*freq1*time)   
             
             # Fadeeeeeee #
-            number_of_faded_points = int(dur * percentage_fade * f_sample)
+            number_of_faded_points = int(percentage_fade * f_sample)
             if percentage_fade > 1:
                 number_of_faded_points = int((percentage_fade/1000000) / dur * f_sample)
 

@@ -341,9 +341,11 @@ def add_address(input_List, address):
     return input_List
 
 def decode_address(input_List, address):
-    if (len(input_List[0])>2 and input_List[2] == address):
+    if input_List[2] == address : print('second true')
+    if len(input_List[0])>2 and input_List[0][2] == address:
         return input_List
     else:
+        print("Addressing sucks")
         return False
 
     

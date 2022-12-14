@@ -4,18 +4,18 @@ from time import time
 from scipy.fftpack import fft
 from copy import deepcopy
 import math
-from Class_DTMF import SEND 
-fs = 44100
-amplitude = 15000
-media = 'PyGame' # 'SD'
-fade_P = 0.15
-baud_rate = 20
-syn = 20
-# SYNC
-
-        
-     
-send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+#from Class_DTMF import SEND 
+#fs = 44100
+#amplitude = 15000
+#media = 'PyGame' # 'SD'
+#fade_P = 0.15
+#baud_rate = 20
+#syn = 20
+## SYNC
+#
+#        
+#     
+#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
 
 class LISTEN():
     def __init__(rec,baud):
@@ -101,10 +101,10 @@ class LISTEN():
         rec.ABcount=0
         rec.averageSuccess=0
         rec.synchronised=False
-
-        
-
-        print(np.array([1,2,3]))
+        rec.read_since_sync=0
+        rec.synctime=time()
+        rec.to_be_synchronised=False
+        rec.warning=0
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -130,7 +130,8 @@ class LISTEN():
                 output= i
                 break
         if not('output' in locals()):    
-            print(inputFreqs)
+            hej=0
+            #print(inputFreqs)
         else:    
             return output
 
@@ -164,7 +165,6 @@ class LISTEN():
         while True:
             #-----------------------------Reading-----------------------------
             start=time()
-            #divided by baudRate too to get the movement of the window
             #print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             #print(rec.stream.get_read_available())
@@ -227,7 +227,7 @@ class LISTEN():
                 print(rec.displacement)
             if rec.displacement>0.97 and not(rec.synchronised):
                 print("synchronising:")
-                rec.synchronised=True
+                rec.to_be_synchronised=True
                 print("succesful:")
                 print(rec.succesful)
                 print("Failed:")
@@ -240,13 +240,32 @@ class LISTEN():
             
             rec.previousRead=rec.currentRead
             #-----------------------Delay until proper baudrate----------------
-            while end-start<rec.read_window:
-                end=time()
+            #-----------------synced-----------------
+            if rec.synchronised:
+               while end-rec.synctime<rec.read_window*rec.read_since_sync:
+                    end=time() 
+            #---------------not synced---------------
+            if not(rec.synchronised):
+                while end-start<rec.read_window:
+                    end=time()
+            print(end-start)
+            if (end-start>0.7 or end-start<0.3) and rec.startReading:
+                rec.warning+=1
+            #set timer if just syncronised
+            if rec.to_be_synchronised:
+                rec.synchronised=True
+                rec.synctime=time()
+                rec.to_be_synchronised=False
+            if rec.synchronised:
+                rec.read_since_sync+=1
+
         rec.outputList=np.delete(rec.outputList,0)
         rec.outputList=rec.outputList.tolist()
+        print("Warning: times beyond recommended time")
+        print(rec.warning)
         return rec.outputList
 
-roberto = LISTEN(20)
-output=roberto.startListen()
-pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
-send.compare(pack,output)
+#roberto = LISTEN(50)
+#output=roberto.startListen()
+#pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
+#send.compare(pack,output)
