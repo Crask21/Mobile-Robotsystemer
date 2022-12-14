@@ -126,15 +126,15 @@ class LISTEN():
         return highestFreqs
 
     def dtmf_to_hexa(rec, inputFreqs):
-        output=[]
         inputFreqs.sort()
         for i in np.arange(16,dtype=int):
             if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange+1 and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange-1)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange+1 and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange-1):
-                output= [i]
+                output= i
                 break
-        if output==[] and rec.startReading:
+        if not('output' in locals()):    
             print(inputFreqs)
-        return np.array(output, dtype=int)
+        else:    
+            return output
 
     def getVectors(rec, angles):
         vectors=[]
@@ -190,7 +190,7 @@ class LISTEN():
             
             
             #-----------------------Check if no signal------------------------
-            if rec.dtmf_to_hexa(highestfreqs).size<1 and rec.startReading==True:
+            if rec.dtmf_to_hexa(highestfreqs)==None and rec.startReading==True:
                 rec.noSignal+=1
                 if rec.noSignal>5:
                     break
