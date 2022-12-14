@@ -4,6 +4,26 @@ from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 import Protocol.DataLink.protocol as protocol
 
+to_hex = {
+  '0x0':0,
+  '0x1':1,
+  '0x2':2,
+  '0x3':3,
+  '0x4':4,
+  '0x5':5,
+  '0x6':6,
+  '0x7':7,
+  '0x8':8,
+  '0x9':9,
+  '0x10':10,
+  '0x11':11,
+  '0x12':12,
+  '0x13':13,
+  '0x14':14,
+  '0x15':15
+  }
+
+
 
 def main():
     
