@@ -10,7 +10,7 @@ root.title("Move GUI")
 
 
 dtmfLabel = Label(root,text="Package in hex:")
-hexa = Text(root,height=1, borderwidth=0)
+hexa = Text(root,height=5, borderwidth=0)
 dtmfLabel.pack()
 hexa.pack()
 
@@ -26,7 +26,7 @@ moveList = []
 
 
 # Convert list to readable string
-def stringList(list):
+def moveDisplay(list):
     res = ''
     
 
@@ -43,20 +43,37 @@ def stringList(list):
 
     return res
 
+def listDisplay(list):
+    res = ''
+    
+
+    for i in range(len(list)):
+        temp = ''
+        if i == 0:
+            temp = '[' + str(list[i])
+        elif i == len(list)-1:
+            temp =', ' + str(list[i]) + ']'
+        else:
+            temp =', ' + str(list[i])
+
+        res = res + temp
+
+    return res
+
 
 
 # Set package/moves (not finished)
 def manualPackage():
     input = manual_enter.get()
 
+    out = inputToList(input)
     hexa.configure(state=NORMAL)
     hexa.delete("1.0","end")
     hexa.insert(1.0, input)
     hexa.configure(state=DISABLED)
 
-    out = []
-    for i in input.split(', '):
-        out.append(int(i))
+    
+    
     
 
     robot.send.send_package(out)
@@ -95,9 +112,11 @@ def dtmf_send():
     print(pack.data_list)
 
     #hexa.config(text=pack.getPackage())
+
+
     hexa.configure(state=NORMAL)
     hexa.delete("1.0","end")
-    hexa.insert(1.0, pack.getPackage())
+    hexa.insert(1.0, listDisplay(pack.data_list))
     hexa.configure(state=DISABLED)
 
 
@@ -119,7 +138,7 @@ def addMovement(dir):
         value = int(enter_lr.get())
         moveList.append([value,0])
 
-    update = stringList(moveList)
+    update = moveDisplay(moveList)
 
     move_txt.configure(state=NORMAL)
     move_txt.delete("1.0","end")
@@ -151,7 +170,7 @@ frame1 = LabelFrame(root,text='Enter moves', padx=20,pady=20)
 frame1.pack(padx=10,pady=10)
 
 myLabel = Label(frame1,text="Current movements: ")
-move_txt = Text(frame1,height=1, borderwidth=0)
+move_txt = Text(frame1,height=3, borderwidth=0, width=60)
 
 
 label_ud = Label(frame1,text="Up or Down:")
@@ -171,7 +190,7 @@ clear = Button(frame1, text="Clear package",command=clear_movement)
 send_dtmf = Button(frame1, text="Send as DTMF",command= dtmf_send)
 
 myLabel.grid(row=0,column=1)
-move_txt.grid(row=1,column=1,columnspan=1000)
+move_txt.grid(row=1,column=1,columnspan=1000)#columnspan=1000
 label_ud.grid(row=2,column=1)
 up.grid(row=3,column=1)
 enter_ud.grid(row=4,column=1)
@@ -187,7 +206,7 @@ clear.grid(row=9,column=1)
 send_dtmf.grid(row=10,column=1,pady=20)
 
 # Setup frame 2
-frame2 = LabelFrame(root,text='Manual hexa deciaml package', padx=20,pady=20)
+frame2 = LabelFrame(root,text='Manual hexa decimal package', padx=20,pady=20)
 frame2.pack(padx=10,pady=10)
 
 manual_enter = Entry(frame2, width = 10, borderwidth=5)
@@ -220,7 +239,7 @@ translated.grid(row=3,column=0)
 
 
 
-dtmf_send()
+
 
 
 
