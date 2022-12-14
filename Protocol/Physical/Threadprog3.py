@@ -165,9 +165,7 @@ class LISTEN():
         while True:
             #-----------------------------Reading-----------------------------
             start=time()
-            #print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
-            #print(rec.stream.get_read_available())
             #data_int = np.array(unpack(rec.format, data))
             data_int = np.frombuffer(data,dtype='h')
             #zeropad data
@@ -260,12 +258,15 @@ class LISTEN():
                 rec.read_since_sync+=1
 
         rec.outputList=np.delete(rec.outputList,0)
+        nones = rec.outputList == None
+        rec.outputList = np.delete(rec.outputList,nones)
         rec.outputList=rec.outputList.tolist()
-        print("Warning: times beyond recommended time")
-        print(rec.warning)
+        #print("Warning: times beyond recommended time")
+        #print(rec.warning)
         return rec.outputList
 
 #roberto = LISTEN(50)
 #output=roberto.startListen()
+#print(output)
 #pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
 #send.compare(pack,output)
