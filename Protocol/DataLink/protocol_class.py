@@ -67,6 +67,22 @@ class protocolClass:
         self.data_list=protocol.convert_to_decimal(self.data_list)
         print(self.data_list)
     
+
+    def decode(self,list):
+        list=protocol.organize(list)
+        list=protocol.esc_check(list)
+        list=protocol.decode_CRC(list)
+        list=protocol.decode_address(list, self.address)
+        self.removeSender()
+        #list=ErrorCorrection.errorCorrectionUp(list, self.robot)
+        #print(list)
+        list=protocol.remove_seq(list)
+        list=protocol.data_comb(list)
+        print(list)
+        list=protocol.convert_to_decimal(list)
+        return list
+        print(self.data_list)
+
     def removeSender(self):
         self.addressList = self.data_list[0][2:]
         self.data_list.pop(0)
