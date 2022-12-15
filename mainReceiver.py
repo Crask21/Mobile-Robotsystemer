@@ -35,12 +35,15 @@ def main():
 
     # Listen for package
     package = data_prot.PhysicalUp()
+
     # Convert package to message
     message = protocol.hexa_to_msg(package)
     
     # Write message to txt file
     with open('received.txt', 'w') as f:
         f.write(message)
+
+    
 
 
 
