@@ -6,6 +6,24 @@ from Protocol.Physical.DTMF_overclass import DTMF
 import numpy as np
 import time
 
+to_hex = {
+  '0x0':0,
+  '0x1':1,
+  '0x2':2,
+  '0x3':3,
+  '0x4':4,
+  '0x5':5,
+  '0x6':6,
+  '0x7':7,
+  '0x8':8,
+  '0x9':9,
+  '0xa':10,
+  '0xb':11,
+  '0xc':12,
+  '0xd':13,
+  '0xe':14,
+  '0xf':15
+  }
 
 #Der skal kommenteres alle SeqNo skal have samme hexadecimal længde
 #Errorhandle: 0x96
@@ -47,17 +65,36 @@ def errorCorrectionDown(pack, robot):
     #dtmf = DTMF(baud)
     resend = []
     errorMessage = robot.listen.startListen()
+    print('ECDown listened finished')
     errorMessage = protocol.organize(errorMessage)
-    for i in range(len(errorMessage)):
-        if(errorMessage[i][0:1]==[9,6]):
-            if(np.std(errorMessage[i][2:4])==0):
-                resend+=pack[errorMessage[i][3]]
+    errorMessage2 = errorMessage
+    for i in range(len(errorMessage2)):
+        for j in range(len(errorMessage[i])):
+            errorMessage2[i][j] = to_hex[errorMessage[i][j]]
+    print(errorMessage)
+    print(errorMessage2)
+    print(type(errorMessage2[0][0]))
+    print(errorMessage2[0][0:2])
+    print(np.std(errorMessage2[i][2:4]))
+    for i in range(len(errorMessage2)):
+        if(errorMessage2[i][0:2]==[9,6]):
+            print(np.std(errorMessage2[i][2:4]))
+            if(np.std(errorMessage2[i][2:4])==0.0):
+                resend+=pack[errorMessage2[i][3]]
             else:
                 print("Error in error message similarity") # a minor bandaid solution
-                resend+=pack[errorMessage[i][3]]
-    resend = protocol.one_list(resend)
+                resend+=pack[errorMessage2[i][3]]
+    print(resend)
+    #resend = protocol.one_list(resend)
+    print("ECDown prossessed. Resend length:")
+    print(len(resend))
+    resend2 = resend
+    for i in range(len(resend)):
+        resend2[i] = to_hex[resend[i]]
+    print(resend2)
     if len(resend) != 0:
+        print("ECDown sending")
         robot.send.send_package(resend)
     
-    
+
 #errorCorrection([[0x0,0x1,0x9],"error",[0x1,0xa],"error", "error", [0x1,0x4,0x9,0xf]],50)
