@@ -80,10 +80,10 @@ def errorCorrectionDown(pack, robot):
         if(errorMessage2[i][0:2]==[9,6]):
             print(np.std(errorMessage2[i][2:4]))
             if(np.std(errorMessage2[i][2:4])==0.0):
-                resend+=pack[errorMessage2[i][3]]
+                resend+=pack[errorMessage2[i][3]-1]
             else:
                 print("Error in error message similarity") # a minor bandaid solution
-                resend+=pack[errorMessage2[i][3]]
+                resend+=pack[errorMessage2[i][3]-1]
     print(resend)
     #resend = protocol.one_list(resend)
     print("ECDown prossessed. Resend length:")
