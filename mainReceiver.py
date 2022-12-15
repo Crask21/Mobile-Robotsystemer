@@ -28,10 +28,10 @@ to_hex = {
 def main():
     
     # Initialize DTMF receive/ send
-    robot=DTMF(20,10, mono_robot = True)
+    robot=DTMF(50,10, mono_robot = True)
 
     # Initialize protocol class
-    data_prot = protocolClass(moves=[],robot=robot)
+    data_prot = protocolClass(['0x7','0x0','0x8'],moves=[],robot=robot,filename='output.txt')
 
     # Listen for package
     package = data_prot.PhysicalUp()

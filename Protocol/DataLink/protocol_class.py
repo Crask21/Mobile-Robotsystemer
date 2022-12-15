@@ -77,6 +77,7 @@ class protocolClass:
     def PhysicalDown(self):
         
         self.robot.send.send_package(self.data_list)
+        self.robot.send.send_package([0,0,0,0,0,0,0,0],False)
         ec.errorCorrectionDown(self.dataListEC,self.robot)
         #ved ikke hvad det er eller hvad 40 kommer fra
         #ec.errorCorrectionDown(self.dataListEC,40)
