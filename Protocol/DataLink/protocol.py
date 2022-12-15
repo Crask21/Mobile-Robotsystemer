@@ -379,7 +379,9 @@ def data_comb(input_List):
             for j in range(len(input_List[i])):
                 temp.append(input_List[i][j])
         elif i!=0 and len(input_List[i-1])!=4:
+            print("data_comb")
             print(input_List[i])
+            print("data comb")
             for j in range(len(input_List[i])):
                 temp.append(input_List[i][j])
         else:
