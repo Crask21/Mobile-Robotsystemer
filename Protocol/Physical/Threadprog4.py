@@ -148,7 +148,6 @@ class LISTEN():
             if rec.startReading:
                 rec.outputList=np.append(rec.outputList, rec.dtmf_to_hexa(highestfreqs))
                 print(rec.outputList)
-                np.savetxt("ham.csv",highestfreqs,delimiter=",")
             else:
                 rec.currentRead=rec.dtmf_to_hexa(highestfreqs)
                 #print(rec.currentRead)

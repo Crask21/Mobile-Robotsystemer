@@ -3,24 +3,15 @@ import numpy as np
 from time import time
 from scipy.fftpack import fft
 from copy import deepcopy
-try:
-    from Class_DTMF import SEND
-except:
-    print("nvm") 
-fs = 44100
-amplitude = 15000
-media = 'PyGame' # 'SD'
-fade_P = 0.003
-baud_rate = 20
-syn = 20
-# SYNC
-
-        
-     
-send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+import pandas as pd
 
 class LISTEN():
-    def __init__(rec,baud):
+    def __init__(rec,baud, sync=0, fade=0, amplitude=0, senderFs=0):
+        #--------------------------------VARIABLE FOR LOG-------------------------
+        rec.sync=sync
+        rec.fade=fade
+        rec.amplitude=amplitude
+        rec.senderFs=senderFs
         #--------------------------------VARIABLES--------------------------------
         rec.FORMAT = pyaudio.paInt16 
         rec.CHANNELS = 1
@@ -86,22 +77,25 @@ class LISTEN():
         rec.xf_indices = np.arange(rec.xf.size-1)
         rec.cheatfilter = np.delete(rec.xf_indices,rec.cheatfilter)
 
-        #------------------------------GET THE FORMAT--------------------------
-        rec.data=rec.stream.read(int(rec.RATE*rec.time_per_read),exception_on_overflow=False)
-        
-        
         #------------------------------VARAIBLES--------------------------
-        rec.syncCounter=0
+        rec.expectedPack=[ 0, 1, 10, 11, 12, 1, 8, 4, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1,
+ 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 4, 1, 0, 1]
+        rec.accuracy=0
+        rec.averageMagn1=0
+        rec.averageMagn2=0
+
+
         rec.noSignal=0
         rec.startReading=False
-        rec.previousRead=0
         rec.currentRead=0
-        rec.firstTime=True
-        rec.displacement=0
         rec.ABcount=0
         rec.starting=False   
-        rec.tones=np.array([[99,99,99]])    
-        rec.checktones=True
+        
+        #for log
+        rec.tones=np.array([[99,99,99,99,99]])    
+        rec.getLog=True
+        rec.multipleTests=True
+        rec.testNumber=0
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -126,50 +120,137 @@ class LISTEN():
             if (inputFreqs[0]<rec.dtmf_freq[i][1]+rec.upperRange+1 and inputFreqs[0]>rec.dtmf_freq[i][1]-rec.lowerRange-1)and(inputFreqs[1]<rec.dtmf_freq[i][0]+rec.upperRange+1 and inputFreqs[1]>rec.dtmf_freq[i][0]-rec.lowerRange-1):
                 output= i
                 break
-        if not('output' in locals()):    
+        if not("output" in locals()):    
             hej=0
             #print(inputFreqs)
         else:    
             return int(output)
 
+    def compare(rec, original, recieved, compare = True):
+
+        dif = len(recieved) - len(original)
+
+        if len(recieved) > len(original):
+                recieved2 = recieved.copy()
+                recieved = recieved[:len(recieved) - dif]
+
+
+        if original == recieved:
+            print("100% match")
+            print("Original: ",original)
+            
+            print("Recieved: ",recieved2)
+        
+
+
+        elif compare:
+            count = 0
+
+            length = len(original) if dif >= 0 else len(recieved)
+
+            for i in range(length):
+                if recieved[i] == original[i]:
+                    count += 1
+            
+            print(count/len(original)*100,"% match.", len(original) - count, "errors")
+            print("Original:",original)
+            print("Recieved:",recieved)
+
+
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,"% count match. ", count, "errors")
+            print(original)
+            print(recieved)
+
+    def writeLogTXT(rec):
+        with open("log"+str(rec.testNumber)+".txt", "w") as f:
+            f.write("\Settings:\nBaudrate:"+str(rec.baudRate)+"\nsync:" +str(rec.sync)+"\nfade:"+str(rec.fade)+"\namplitude:"+str(rec.amplitude)+"\nsenderFs:"+str(rec.senderFs))
+            f.write("\n\nMeasurements\nAverageMagn1:"+str(rec.averageMagn1)+"\nAverageMagn2:"+str(rec.averageMagn2))
+
+    def writeLogXL(rec):
+        pdAccuracy=pd.Series([rec.accuracy])
+        log=pd.DataFrame(rec.tones,columns=["Rec Freq1","Rec Freq2","Freq1 magn","Freq2 magn","Rec Pkg"])
+        log["Freq1 magn"]=log["Freq1 magn"].div(log["Freq1 magn"].max())
+        log["Freq2 magn"]=log["Freq2 magn"].div(log["Freq2 magn"].max())
+        log=log.drop(0)
+        #print(log)
+        pdPack=pd.Series(rec.expectedPack)
+        log["Exp pkg"]=pdPack
+        #find expected frequencies based on expected package
+        expfreq1=[]
+        expfreq2=[]
+        for i in pdPack:
+            expfreq1.append(rec.dtmf_freq[i][1])
+            expfreq2.append(rec.dtmf_freq[i][0])
+        pdExpfreq1=pd.Series(expfreq1)
+        pdExpfreq2=pd.Series(expfreq2)
+        log["Exp Freq1"]=pdExpfreq1
+        log["Exp Freq2"]=pdExpfreq2
+        log["diff Freq1"]=log["Rec Freq1"]-log["Exp Freq1"]
+        log["diff Freq2"]=log["Rec Freq2"]-log["Exp Freq2"]
+        log["Accuracy"]=pdAccuracy
+
+        #add mean magn and diff
+        means={"diff Freq1":log["diff Freq1"].mean(),"diff Freq2":log["diff Freq1"].mean(), "Freq1 magn":log["Freq1 magn"].mean(), "Freq2 magn":log["Freq2 magn"].mean()}
+        pdMeans=pd.DataFrame(means, index=[0])
+        log=pd.concat([log,pdMeans],ignore_index=True)
+        #rearrange order
+        log=log[["Exp pkg","Rec Pkg","Exp Freq1", "Exp Freq2","Rec Freq1", "Rec Freq2","diff Freq1","diff Freq2", "Freq1 magn", "Freq2 magn", "Accuracy"]]
+        log.to_excel("log"+str(rec.testNumber)+".xlsx")
 
     def startListen(rec):
         print("started listening!")
-        #with open('ham1.csv','ab') as f:
         while True:
             #-----------------------------Reading-----------------------------
             #while(not(rec.starting)):
             #    data = rec.stream.read(1, exception_on_overflow=False)
-            #    data_int = np.frombuffer(data,dtype='h')
+            #    data_int = np.frombuffer(data,dtype="h")
             #    print(int(rec.RATE*rec.time_per_read))
             #    print(np.amax(data_int))
             #    if np.amax(data_int)>1500:
             #        rec.starting=True
             #start=time()
-            #print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
-            #print(rec.stream.get_read_available())
-            #data_int = np.array(unpack(rec.format, data))
-            data_int = np.frombuffer(data,dtype='h')
+
+            data_int = np.frombuffer(data,dtype="h")
             #zeropad data
             data_int = np.append(data_int, rec.z_pad_arr)
             #-------------------------------FFT-------------------------------
             yf=fft(data_int)
             yf=np.delete(yf,rec.delList)
-            highestfreqs=rec.find_highest_freqs(np.absolute(yf))
+            freqmagn=np.absolute(yf)
+            highestfreqs=rec.find_highest_freqs(freqmagn)
             if rec.startReading:
                 rec.outputList=np.append(rec.outputList, rec.dtmf_to_hexa(highestfreqs))
                 print(rec.outputList)
-                if rec.checkTones:
-                    forText=np.append(highestfreqs,int(rec.dtmf_to_hexa(highestfreqs) or 99))
+                #stuff for log
+                if rec.getLog:
+                    forText=np.append(highestfreqs,freqmagn[highestfreqs])
+                    try:
+                        forText=np.append(forText, int(rec.dtmf_to_hexa(highestfreqs)))
+                    except:
+                        forText=np.append(forText, 99)
                     forText=np.array([forText])
                     rec.tones=np.append(rec.tones,forText,axis=0)
-                #np.savetxt(f,forText,delimiter=",",fmt='%1.4d')
-                #print("hej")
             else:
                 rec.currentRead=rec.dtmf_to_hexa(highestfreqs)
-                #print(rec.currentRead)
-            #-----------Count A and Bs
+            #-----------Count A and Bs-----------
             if rec.currentRead==0xa or rec.currentRead==0xb:
                 rec.ABcount+=1
             #-----------------------Check if no signal------------------------
@@ -179,46 +260,45 @@ class LISTEN():
                     break
             else:
                 rec.noSignal=0
-            #-----------------------Check if finished--------------------------
+            #-----------------------Check if ready to start--------------------------
             if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
-            #-----------------------Check if Baudrate is too fast--------------
-            #end=time()
-            #print(end-start)
-           
-        print(rec.tones)
-        if rec.checktones:
-            with open('ham1.csv','ab') as f:
-                np.savetxt(f,rec.tones,delimiter=",",fmt='%1.4d', footer="Baudrate was %i" % rec.baudRate)
+        #remove second 12 from sync
         rec.outputList=np.delete(rec.outputList,0)
+        rec.accuracy=rec.compare(rec.expectedPack,list(rec.outputList))
+        print(rec.accuracy)
+        if rec.getLog:
+            rec.writeLogXL()
+            rec.writeLogTXT()
+            rec.testNumber+=1
+
+
+        
         nones = rec.outputList == None
         rec.outputList = np.delete(rec.outputList,nones)
         rec.outputList=rec.outputList.tolist()
 
         #-----------------------CLEANING AFTER YOURSELF-----------
+        rec.tones=np.array([[99,99,99,99,99]]) 
         rec.syncCounter=0
         rec.noSignal=0
         rec.startReading=False
-        rec.previousRead=0
         rec.currentRead=0
-        rec.firstTime=True
-        rec.succesful=[]
-        rec.failed=[]
-        rec.displacement=0
         rec.ABcount=0
-        rec.averageSuccess=0
         rec.synchronised=False
-        rec.read_since_sync=0
-        rec.synctime=time()
         rec.to_be_synchronised=False
-        rec.warning=0
         rec.result=rec.outputList
         rec.outputList=np.array([],dtype=int)
+
 
         return rec.result
 
 roberto = LISTEN(50)
+
 output=roberto.startListen()
 #print(output)
-pack=[0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
-send.compare(pack,output)
+
+if roberto.multipleTests:
+    while True:
+        output=roberto.startListen()
+        #print(output)
