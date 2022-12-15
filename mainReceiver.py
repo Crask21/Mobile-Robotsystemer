@@ -28,17 +28,25 @@ to_hex = {
 def main():
     
     # Initialize DTMF receive/ send
-    robot=DTMF(50,10, mono_robot = True)
+    robot=DTMF(50,10)
 
     # Initialize protocol class
-    data_prot = protocolClass(['0x7','0x0','0x8'],moves=[],robot=robot,filename='output.txt')
+    data_prot = protocolClass('0x8',moves=[],robot=robot,filename='output.txt')
 
     # Listen for package
-    package = data_prot.PhysicalUp()
+    #package = data_prot.PhysicalUp()
+
+    package =  [0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
+
+    
+
 
     # Convert package to message
-    message = protocol.hexa_to_msg(package)
+    data_prot.setPackage(package)
+    message = data_prot.DataLinkUp()
     
+
+
     # Write message to txt file
     with open('received.txt', 'w') as f:
         f.write(message)
