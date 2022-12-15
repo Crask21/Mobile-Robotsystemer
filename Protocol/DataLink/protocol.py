@@ -374,6 +374,7 @@ def decode_address(input_List, address):
 def data_comb(input_List):
     output = []
     temp = []
+    print(input_list)
     for i in range(len(input_List)):
         if len(input_List[i])!=4:
             for j in range(len(input_List[i])):
