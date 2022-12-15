@@ -6,7 +6,7 @@ import time
 
 def main():
     baud = 50
-    robot=DTMF(baud,10, mono_robot = True)
+    robot=DTMF(baud,30, mono_robot = True)
     
     moveObj = moveClass()
     pack = protocolClass('0x0',[],robot)

@@ -4,23 +4,52 @@ from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 import Protocol.DataLink.protocol as protocol
 
+to_hex = {
+  '0x0':0,
+  '0x1':1,
+  '0x2':2,
+  '0x3':3,
+  '0x4':4,
+  '0x5':5,
+  '0x6':6,
+  '0x7':7,
+  '0x8':8,
+  '0x9':9,
+  '0x10':10,
+  '0x11':11,
+  '0x12':12,
+  '0x13':13,
+  '0x14':14,
+  '0x15':15
+  }
+
+
 
 def main():
     
     # Initialize DTMF receive/ send
-    robot=DTMF(20,10, mono_robot = True)
+    robot=DTMF(50,10)
 
     # Initialize protocol class
-    data_prot = protocolClass(moves=[],robot=robot)
+    data_prot = protocolClass('0x8',moves=[],robot=robot,filename='output.txt')
 
     # Listen for package
     package = data_prot.PhysicalUp()
-    # Convert package to message
-    message = protocol.hexa_to_msg(package)
+
     
+    
+
+
+    # Convert package to message
+    message_in_list = data_prot.decode(package)
+    
+    message = message_in_list[0][0]
+
     # Write message to txt file
     with open('received.txt', 'w') as f:
         f.write(message)
+
+    
 
 
 

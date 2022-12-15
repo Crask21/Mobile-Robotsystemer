@@ -4,6 +4,27 @@ import numpy as np
 # 0xb er robotten
 # oxc er modtager computer
 
+
+
+# Hej Prip, Ditzel har ringet
+"""
+[0, 1, 1, 4, 0, 8, 6, 10, 0, 0, 0, 0, 2, 0, 8, 0, 9, 4, 0, 2, 0, 0, 0, 0, 1, 1, 13, 8, 8, 13, 8, 0, 0, 0, 1, 0, 1, 4, 4, 4, 5, 6, 5, 5, 6, 10, 0, 4, 6, 13, 6, 10, 12, 0, 1, 0, 1, 5, 5, 5, 4, 4, 3, 2, 14, 3, 8, 0, 1, 0, 1]
+
+
+Traceback (most recent call last):
+  File "mainTurtlebot.py", line 43, in <module>
+    main()
+  File "mainTurtlebot.py", line 19, in main
+    pack.DataLinkUp()
+  File "/home/ubuntu/code/Mobile-Robotsystems/Protocol/DataLink/protocol_class.py", line 58, in DataLinkUp
+    self.data_list=protocol.esc_check(self.data_list)
+  File "/home/ubuntu/code/Mobile-Robotsystems/Protocol/DataLink/protocol.py", line 133, in esc_check
+    temp.append(inpt_List[k][-1])
+IndexError: list index out of range
+"""
+
+
+
 def convert_to_hexa(input_List):
     temp_main = []
     for i in range(len(input_List)):

@@ -8,7 +8,7 @@ import time
 
 
 def main():
-    baudrate = 100
+    baudrate = 50
     sync = 30
 
     robot=DTMF(baudrate,sync)
@@ -20,12 +20,12 @@ def main():
     pack = protocolClass(['0x7','0x0','0x8'],move,robot,'output.txt')
 
     pack.DataLinkDown()
-    #pack.print()
-    #pack.DataLinkUp()
-    print(pack.data_list)
 
-    robot.send.send_package(pack.data_list)
-    robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
+    print(pack.data_list)
+    pack.PhysicalDown()
+    
+    #robot.send.send_package(pack.data_list)
+    #robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
 
 
     
