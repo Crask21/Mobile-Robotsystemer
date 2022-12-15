@@ -3,18 +3,21 @@ import numpy as np
 from time import time
 from scipy.fftpack import fft
 from copy import deepcopy
-#from Class_DTMF import SEND 
-#fs = 44100
-#amplitude = 15000
-#media = 'PyGame' # 'SD'
-#fade_P = 0.003
-#baud_rate = 20
-#syn = 20
-## SYNC
-#
-#        
-#     
-#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+try:
+    from Class_DTMF import SEND
+except:
+    print("nvm") 
+fs = 44100
+amplitude = 15000
+media = 'PyGame' # 'SD'
+fade_P = 0.003
+baud_rate = 20
+syn = 20
+# SYNC
+
+        
+     
+send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
 
 class LISTEN():
     def __init__(rec,baud):
@@ -96,7 +99,9 @@ class LISTEN():
         rec.firstTime=True
         rec.displacement=0
         rec.ABcount=0
-        rec.starting=False       
+        rec.starting=False   
+        rec.tones=np.array([[99,99,99]])    
+        rec.checktones=True
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -125,11 +130,12 @@ class LISTEN():
             hej=0
             #print(inputFreqs)
         else:    
-            return output
+            return int(output)
 
 
     def startListen(rec):
         print("started listening!")
+        #with open('ham1.csv','ab') as f:
         while True:
             #-----------------------------Reading-----------------------------
             #while(not(rec.starting)):
@@ -140,14 +146,13 @@ class LISTEN():
             #    if np.amax(data_int)>1500:
             #        rec.starting=True
             #start=time()
-            print(rec.stream.get_read_available())
+            #print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
-            print(rec.stream.get_read_available())
+            #print(rec.stream.get_read_available())
             #data_int = np.array(unpack(rec.format, data))
             data_int = np.frombuffer(data,dtype='h')
             #zeropad data
             data_int = np.append(data_int, rec.z_pad_arr)
-            
             #-------------------------------FFT-------------------------------
             yf=fft(data_int)
             yf=np.delete(yf,rec.delList)
@@ -155,16 +160,18 @@ class LISTEN():
             if rec.startReading:
                 rec.outputList=np.append(rec.outputList, rec.dtmf_to_hexa(highestfreqs))
                 print(rec.outputList)
-                np.savetxt("ham.csv",highestfreqs,delimiter=",")
+                if rec.checkTones:
+                    forText=np.append(highestfreqs,int(rec.dtmf_to_hexa(highestfreqs) or 99))
+                    forText=np.array([forText])
+                    rec.tones=np.append(rec.tones,forText,axis=0)
+                #np.savetxt(f,forText,delimiter=",",fmt='%1.4d')
+                #print("hej")
             else:
                 rec.currentRead=rec.dtmf_to_hexa(highestfreqs)
                 #print(rec.currentRead)
-
             #-----------Count A and Bs
             if rec.currentRead==0xa or rec.currentRead==0xb:
                 rec.ABcount+=1
-            
-            
             #-----------------------Check if no signal------------------------
             if rec.dtmf_to_hexa(highestfreqs)==None and rec.startReading==True:
                 rec.noSignal+=1
@@ -172,20 +179,17 @@ class LISTEN():
                     break
             else:
                 rec.noSignal=0
-
             #-----------------------Check if finished--------------------------
             if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
-
-
-
-
             #-----------------------Check if Baudrate is too fast--------------
             #end=time()
             #print(end-start)
            
-
-
+        print(rec.tones)
+        if rec.checktones:
+            with open('ham1.csv','ab') as f:
+                np.savetxt(f,rec.tones,delimiter=",",fmt='%1.4d', footer="Baudrate was %i" % rec.baudRate)
         rec.outputList=np.delete(rec.outputList,0)
         nones = rec.outputList == None
         rec.outputList = np.delete(rec.outputList,nones)
@@ -213,8 +217,8 @@ class LISTEN():
 
         return rec.result
 
-#roberto = LISTEN(160)
-#output=roberto.startListen()
+roberto = LISTEN(50)
+output=roberto.startListen()
 #print(output)
-#pack=[0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
-#send.compare(pack,output)
+pack=[0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
+send.compare(pack,output)
