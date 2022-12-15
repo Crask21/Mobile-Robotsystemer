@@ -51,7 +51,7 @@ dtmf_freq = [[1209,697], # 0
                     [1336,941],  # D
                     [1477,941],  # E
                     [1633,941]]  # F
-dtmf_single_freqs=np.array([697, 770, 852, 941, 1209, 1336, 1477, 1633])
+
 upperRange= 20
 lowerRange=20
 outputList=[]
@@ -115,11 +115,7 @@ xf=np.delete(xf,delList)
 xf_below1000=np.where(xf<1000)
 xf_above1000=np.where(xf>=1000)
 xf_noise=np.where(xf<650)
-cheatfilter=np.array([],dtype=int)
-for i in dtmf_single_freqs:
-    cheatfilter=np.append(cheatfilter,np.arange(i-lowerRange, i+upperRange))
-xf_indices = np.arange(xf.size-1)
-cheatfilter = np.delete(xf_indices,cheatfilter)
+
 
 #------------------------------GET THE FORMAT
 #divided by resolution to get the fft in resolution of choice in hz
@@ -142,12 +138,6 @@ fig1=plt.plot(data_int)
 plt.show()
 fig2=plt.plot(xf,yf)
 plt.show()
-yf=fft(data_intz)
-yf=abs(yf)
-yf=np.delete(yf,delList)
-yf[cheatfilter]=0
-fig2=plt.plot(xf,yf)
-plt.show()
 
 
 
@@ -156,53 +146,52 @@ noSignal=0
 startReading=False
 
 
-while True:
-    #start=time.time()
+while False:
+    start=time.time()
     #divided by baudRate too to get the movement of the window
-    print(stream.get_read_available())
-    #data = stream.read(int(RATE*time_per_read))
-    #data_int = np.array(struct.unpack(format, data))
-    #data_int = np.append(data_int, z_pad_arr)
-#
-    #
-    ##data_int=butter_bandpass_filter(data_int)
-#
-    #yf=fft(data_int)
-    #yf=np.delete(yf,delList)
-    #highestfreqs=find_highest_freqs(abs(yf))
-    #outputList+=dtmf_to_hexa(highestfreqs)
-    #print(xf[highestfreqs])
-    #end=time.time()
-    #if dtmf_to_hexa(highestfreqs)==[] and startReading==True:
-    #    noSignal+=1
-    #    if noSignal>5:
-    #        break
-    #else:
-    #    noSignal=0
-#
-    #if end-start>time_per_read:
-    #    print("ERROR: The baudrate is too fast")
-#
-    #if outputList==[0xC,0xC] and syncCounter>5:
-    #    startReading=True
-    #    outputList=[]
-#
-    #if len(outputList)>0 and not(startReading):
-    #    if outputList[0]!=0xa and outputList[0]!=0xC :
-    #        outputList=[]
-#
-    #if outputList==[0xa,0xb]and not(startReading):
-    #    print("Synchronized")
-    #    outputList=[]
-    #    syncCounter+=1
-    #    print("Times synchronized: " +str(syncCounter))
-    #
-#
-    #if outputList!=[0xa,0xb] and len(outputList)==2 and not(startReading):
-    #    print("Sync failed, delaying with 10 percent")
-    #    outputList=[]
-    #    syncCounter=0
-    #    while end-start<time_per_read+time_per_read*0.1:
-    #        end=time.time()
-    #while end-start<time_per_read:
-    #    end=time.time()
+    data = stream.read(int(RATE*time_per_read))
+    data_int = np.array(struct.unpack(format, data))
+    data_int = np.append(data_int, z_pad_arr)
+
+    
+    #data_int=butter_bandpass_filter(data_int)
+
+    yf=fft(data_int)
+    yf=np.delete(yf,delList)
+    highestfreqs=find_highest_freqs(abs(yf))
+    outputList+=dtmf_to_hexa(highestfreqs)
+    print(xf[highestfreqs])
+    end=time.time()
+    if dtmf_to_hexa(highestfreqs)==[] and startReading==True:
+        noSignal+=1
+        if noSignal>5:
+            break
+    else:
+        noSignal=0
+
+    if end-start>time_per_read:
+        print("ERROR: The baudrate is too fast")
+
+    if outputList==[0xC,0xC] and syncCounter>5:
+        startReading=True
+        outputList=[]
+
+    if len(outputList)>0 and not(startReading):
+        if outputList[0]!=0xa and outputList[0]!=0xC :
+            outputList=[]
+
+    if outputList==[0xa,0xb]and not(startReading):
+        print("Synchronized")
+        outputList=[]
+        syncCounter+=1
+        print("Times synchronized: " +str(syncCounter))
+    
+
+    if outputList!=[0xa,0xb] and len(outputList)==2 and not(startReading):
+        print("Sync failed, delaying with 10 percent")
+        outputList=[]
+        syncCounter=0
+        while end-start<time_per_read+time_per_read*0.1:
+            end=time.time()
+    while end-start<time_per_read:
+        end=time.time()

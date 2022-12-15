@@ -9,7 +9,7 @@ move = [[10,20],[-10,30]]
 class protocolClass:
     data_list = []
     addressList = []
-    n = 16  #Data package size
+    n = 4  #Data package size
     def __init__(self, address, moves, robot, filename=0):
         if type(address) == type('0x0'):
             self.address = address
@@ -69,18 +69,19 @@ class protocolClass:
     
 
     def decode(self,list):
-        list=protocol.organize(list)
-        list=protocol.esc_check(list)
-        list=protocol.decode_CRC(list)
-        list=protocol.decode_address(list, self.address)
+        self.data_list=list
+        self.data_list=protocol.organize(self.data_list)
+        self.data_list=protocol.esc_check(self.data_list)
+        self.data_list=protocol.decode_CRC(self.data_list)
+        self.data_list=protocol.decode_address(self.data_list, self.address)
         self.removeSender()
-        #list=ErrorCorrection.errorCorrectionUp(list, self.robot)
-        #print(list)
-        list=protocol.remove_seq(list)
-        list=protocol.data_comb(list)
-        print(list)
-        list=protocol.convert_to_decimal(list)
-        return list
+        #self.data_list=ErrorCorrection.errorCorrectionUp(self.data_list, self.robot)
+        #print(self.data_list)
+        self.data_list=protocol.remove_seq(self.data_list)
+        self.data_list=protocol.data_comb(self.data_list)
+        self.data_list=protocol.convert_to_decimal(self.data_list)
+        print(self.data_list)
+        return self.data_list
         print(self.data_list)
 
     def removeSender(self):
