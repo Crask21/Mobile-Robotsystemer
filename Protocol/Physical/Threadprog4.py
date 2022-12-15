@@ -95,16 +95,8 @@ class LISTEN():
         rec.previousRead=0
         rec.currentRead=0
         rec.firstTime=True
-        rec.succesful=[]
-        rec.failed=[]
         rec.displacement=0
-        rec.ABcount=0
-        rec.averageSuccess=0
-        rec.synchronised=False
-        rec.read_since_sync=0
-        rec.synctime=time()
-        rec.to_be_synchronised=False
-        rec.warning=0
+        rec.ABcount=0       
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -135,37 +127,15 @@ class LISTEN():
         else:    
             return output
 
-    def getVectors(rec, angles):
-        vectors=[]
-        for i in angles:
-            vector=[math.cos(i*2*math.pi),math.sin(i*2*math.pi)]
-            vectors.append(vector)
-        #print(vectors)
-        return vectors
-    def sumvectors(rec, vectors):
-        vectorSum=[0,0]
-        for i in vectors:
-            vectorSum[0]+=i[0]
-            vectorSum[1]+=i[1]
-        #print(vectorSum)
-        return np.array(vectorSum)
-    def getAngle(rec, cartesianCoord):
-        #print(cartesianCoord)
-        angle=math.atan2(cartesianCoord[1],cartesianCoord[0])
-        angleinList=angle/(math.pi*2)
-        return angleinList
-    def getAverage(rec, angles):
-        vectors=rec.getVectors(angles)
-        vectorSum=rec.sumvectors(vectors)
-        average=rec.getAngle(vectorSum)
-        return average%1
 
     def startListen(rec):
         print("started listening!")
         while True:
             #-----------------------------Reading-----------------------------
             start=time()
+            print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
+            print(rec.stream.get_read_available())
             #data_int = np.array(unpack(rec.format, data))
             data_int = np.frombuffer(data,dtype='h')
             #zeropad data
@@ -194,68 +164,19 @@ class LISTEN():
                 rec.noSignal=0
 
             #-----------------------Check if finished--------------------------
-            if rec.currentRead==0xc and rec.synchronised:
+            if rec.currentRead==0xc and rec.ABcount>4:
                 rec.startReading=True
+
 
 
 
             #-----------------------Check if Baudrate is too fast--------------
             end=time()
-            if end-start>rec.read_window:
-                print("ERROR: The baudrate is too fast:"+str(rec.read_window)+","+str(end-start-rec.read_window))
-           
-            #-----------------------Check if fits -----------------------------
-            if rec.currentRead != rec.previousRead and not(rec.synchronised) and rec.ABcount>3:
-                print("fits")
-                rec.succesful.append(rec.displacement)
-                rec.displacement+=0.05
-                while end-start<rec.read_window+rec.read_window*0.05:
-                    end=time()
-                
-            
-            #-----------------------Check if does not fit----------------------
-            if rec.currentRead == rec.previousRead and not(rec.synchronised) and rec.ABcount>3:
-                print("does not fit")
-                rec.failed.append(rec.displacement)
-                rec.displacement+=0.05
-                #print("Hej")
-                while end-start<rec.read_window+rec.read_window*0.05:
-                    end=time()
-            if not(rec.synchronised):
-                print(rec.displacement)
-            if rec.displacement>0.97 and not(rec.synchronised):
-                print("synchronising:")
-                rec.to_be_synchronised=True
-                print("succesful:")
-                print(rec.succesful)
-                print("Failed:")
-                print(rec.failed)
-                print("recommended displacement:")
-                print(rec.getAverage(rec.succesful))
-                while end-start<rec.read_window+rec.read_window*rec.getAverage(rec.succesful):
-                    end=time()
-                np.mean(rec.succesful)
-            
-            rec.previousRead=rec.currentRead
-            #-----------------------Delay until proper baudrate----------------
-            #-----------------synced-----------------
-            if rec.synchronised:
-               while end-rec.synctime<rec.read_window*rec.read_since_sync:
-                    end=time() 
-            #---------------not synced---------------
-            if not(rec.synchronised):
-                while end-start<rec.read_window:
-                    end=time()
             print(end-start)
-            if (end-start>0.7 or end-start<0.3) and rec.startReading:
-                rec.warning+=1
-            #set timer if just syncronised
-            if rec.to_be_synchronised:
-                rec.synchronised=True
-                rec.synctime=time()
-                rec.to_be_synchronised=False
-            if rec.synchronised:
-                rec.read_since_sync+=1
+            #if end-start>rec.read_window:
+            #    print("ERROR: The baudrate might be too fast:"+str(rec.read_window)+","+str(end-start-rec.read_window))
+           
+
 
         rec.outputList=np.delete(rec.outputList,0)
         nones = rec.outputList == None
@@ -286,8 +207,8 @@ class LISTEN():
 
         return rec.result
 
-roberto = LISTEN(50)
+roberto = LISTEN(182)
 output=roberto.startListen()
 print(output)
-pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]
+pack=[0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
 send.compare(pack,output)
