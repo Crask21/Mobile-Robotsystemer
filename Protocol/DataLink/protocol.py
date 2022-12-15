@@ -21,6 +21,7 @@ Traceback (most recent call last):
   File "/home/ubuntu/code/Mobile-Robotsystems/Protocol/DataLink/protocol.py", line 133, in esc_check
     temp.append(inpt_List[k][-1])
 IndexError: list index out of range
+
 """
 
 
@@ -31,12 +32,14 @@ def convert_to_hexa(input_List):
         temp = []
         for j in range(len(input_List[i])):
             if isinstance(input_List[i][j],int) == True:
+                
                 temp.append(hex(input_List[i][j]+128))
             elif isinstance(input_List[i][j],str) == True:
                 for k in range(len(input_List[i][j])):
                     temp.append(hex(ord(input_List[i][j][k])))
         temp_main.append(temp)
     return temp_main
+
 
 def data_seg(input_List, n):
     temp = []
@@ -47,6 +50,7 @@ def data_seg(input_List, n):
         else:
             temp.append(input_List[i])
     return temp          
+
 
 def hexa_devide(input_List):
     temp_main = []
@@ -77,6 +81,7 @@ def hexa_devide(input_List):
             temp_main.append(temp1)
     return temp_main
 
+
 def add_esc(input_List):
     for i in range(len(input_List)):
         for j in range(len(input_List[i])-1):
@@ -84,6 +89,7 @@ def add_esc(input_List):
                 input_List[i].insert(j,'0xf')
                 input_List[i].insert(j,'0xf')
     return input_List
+
 
 def add_seq(input_List):
     count = 0
@@ -155,11 +161,13 @@ def esc_check(inpt_List):
         output.append(temp)
     return output
 
+
 def remove_seq(input_List):
     for i in range(len(input_List)):
         
         input_List[i].pop(0)
     return input_List
+
 
 def convert_to_decimal(input_List):
     output = []
@@ -210,6 +218,8 @@ def movement(input_List):
         if len(input_List[i])==2:
             move.append(input_List[i])
     return move
+
+
 
 def add_CRC(list):
     for k in range(len(list)):
@@ -311,7 +321,7 @@ def decode_CRC(list):
 
     
 
-        tempres=codeword
+        tempres = codeword
 
         for j in range(len(codeword)-13):
             if(tempres[0]==1):
@@ -356,10 +366,12 @@ def decode_CRC(list):
             print("Error in data")
     return list
 
+
 def add_address(input_List, address):
     #address = ['0xa','0x0','0xd']
     input_List = [address] + input_List
     return input_List
+
 
 def decode_address(input_List, address):
     if input_List[2] == address : print('second true')

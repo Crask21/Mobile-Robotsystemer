@@ -16,7 +16,11 @@ def main():
     #moveObj = moveClass.bot()
     
     #move = [[0,20],[90,15]]
-    move = [[180,103],[45,67],[-45,129],[10,292]]
+    move = [[90,0],[90,103],[45,67],[-45,127],[-10,100],[0,100],[0,92]]
+
+
+
+
 
     pack = protocolClass(['0x7','0x0','0x8'],move,robot,'output.txt')
 
