@@ -3,8 +3,7 @@ import numpy as np
 from time import time
 from scipy.fftpack import fft
 from copy import deepcopy
-import math
-from Class_DTMF import SEND 
+#from Class_DTMF import SEND 
 #fs = 44100
 #amplitude = 15000
 #media = 'PyGame' # 'SD'
