@@ -3,11 +3,12 @@ import sys
 sys.path.append('../Mobile-Robotsystems')
 from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
+#from tkinter.ttk import *
 
 root = Tk()
 root.title("Move GUI")
 
-
+global window_
 
 dtmfLabel = Label(root,text="Package in hex:")
 hexa = Text(root,height=5, borderwidth=0)
@@ -19,7 +20,7 @@ hexa.pack()
 robot=DTMF(50,20)
 
 
-pack = protocolClass([], robot=robot)
+pack = protocolClass(['0x7','0x0','0x8'],[],robot=robot,filename='output.txt')
 
 global moveList
 moveList = []
@@ -43,6 +44,7 @@ def moveDisplay(list):
 
     return res
 
+# Display list like it were printed
 def listDisplay(list):
     res = ''
     
@@ -79,6 +81,7 @@ def manualPackage():
     robot.send.send_package(out)
     print(out)
 
+# Printable list to python list
 def inputToList(list):
     res = []
     
@@ -101,29 +104,50 @@ def inputToList(list):
 def dtmf_send():
     
     
-    
+    # Get moves
     pack.setMoves(moveList,msg_entry.get())
     
-
+    # Convert to package
     pack.DataLinkDown()
 
+    # Send package
     robot.send.send_package(pack.data_list)
     print("Package:")
     print(pack.data_list)
 
-    #hexa.config(text=pack.getPackage())
 
-
+    # Show package
     hexa.configure(state=NORMAL)
     hexa.delete("1.0","end")
     hexa.insert(1.0, listDisplay(pack.data_list))
     hexa.configure(state=DISABLED)
+    
+    
+    
 
+
+# Open new window 
+def openNewWindow():
+
+    # Toplevel object which will
+    # be treated as a new window
+    newWindow = Toplevel(root)
+
+    # sets the title of the
+    # Toplevel widget
+    newWindow.title("Listen")
+
+    # sets the geometry of toplevel
+    #newWindow.geometry("200x200")
+
+    # A Label widget to show in toplevel
+    Label(newWindow, text ="Listening!").pack()
+    return newWindow
+
+window = openNewWindow()
 
 # Add movement to current package
 def addMovement(dir):
-    
- 
 
     if dir == 'up':
         value = int(enter_ud.get())
@@ -144,14 +168,23 @@ def addMovement(dir):
     move_txt.delete("1.0","end")
     move_txt.insert(1.0, update)
     move_txt.configure(state=DISABLED)
+    printGUI('test')
+
+
+def printGUI(string_):
+    
+    Label(window, text=string_).pack()
 
 def decode_pack(list):
 
+    # Get readable list
     res = inputToList(list)
 
+    # Decode
     pack.setPackage(res)
     pack.DataLinkUp()
 
+    # Show decoded package
     translated.config(text = pack.data_list)
     print(pack.data_list)
 
@@ -159,6 +192,7 @@ def decode_pack(list):
 
 
 def clear_movement():
+    # Clear move list
     moveList.clear()
 
     move_txt.configure(state=NORMAL)

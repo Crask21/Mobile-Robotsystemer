@@ -28,19 +28,28 @@ to_hex = {
 def main():
     
     # Initialize DTMF receive/ send
-    robot=DTMF(20,10, mono_robot = True)
+    robot=DTMF(50,10)
 
     # Initialize protocol class
-    data_prot = protocolClass(moves=[],robot=robot)
+    data_prot = protocolClass('0x8',moves=[],robot=robot,filename='output.txt')
 
     # Listen for package
     package = data_prot.PhysicalUp()
-    # Convert package to message
-    message = protocol.hexa_to_msg(package)
+
     
+    
+
+
+    # Convert package to message
+    message_in_list = data_prot.decode(package)
+    
+    message = message_in_list[0][0]
+
     # Write message to txt file
     with open('received.txt', 'w') as f:
         f.write(message)
+
+    
 
 
 
