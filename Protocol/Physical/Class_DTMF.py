@@ -61,6 +61,7 @@ class SEND:
 
     def setBaud(data,baud):
         data.baud = baud
+        data.duration = 1/baud
         data.DTMF_init()
     
     def setFade(data,fade):
@@ -76,17 +77,19 @@ class SEND:
             return silence
 
 # Send package of hexi decimals
-    def send_package(data, package, mute = True):
+    def send_package(data, pack, mute = True,plot = False):
 
-        package = [*package,0,0,0,0,0]
+        package = [*pack,0,0,0,0,0]
 
         data.soundwave = np.arange(0,1)
         
         if mute:
             package = data.synchroniazation(data.sync) + package
             #data.silentDTMF()
+            #print(package)
 
-
+        if plot:
+            package = pack
 
         # Convert package into sound array
         for hex in package:
@@ -111,7 +114,7 @@ class SEND:
     
 
 # Plot the package as DTMF tones
-    def plot_last_package(data, dur = False, custom = False):
+    def plot_last_package(data, dur = False, custom = False,curve='o', xlabel = "Time", ylabel="Amplitude",title="DTMF 0x0 sampled at 44100Hz"):
 
         package_size = round(len(data.soundwave)/data.fs/data.duration)
         
@@ -125,10 +128,11 @@ class SEND:
         
         if custom:
             data.soundwave = 5000 * np.sin(2*np.pi*1209*time) + 5000 * np.sin(2*np.pi*697*time)
-        plt.plot(time,data.soundwave,'o')#'r--' 'o'
-        plt.title("DTMF 0x0 sampled at 44100Hz")
-        plt.xlabel("Time")
-        plt.ylabel("Amplitude")
+
+        plt.plot(time,data.soundwave,curve)#'r--' 'o'
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
         plt.show()
 
 
@@ -160,7 +164,7 @@ class SEND:
         # Fadeeeeeee #
         number_of_faded_points = int(percentage_fade * f_sample)
         if percentage_fade > 1:
-            number_of_faded_points = int((percentage_fade/1000000) / dur * f_sample)
+            number_of_faded_points = int(percentage_fade/100 * dur * f_sample)
 
         fade = np.linspace(0,1,num=number_of_faded_points)
         fade_end = np.linspace(1,0,num=number_of_faded_points)
@@ -274,7 +278,7 @@ class SEND:
             sync.append(0xA)
             sync.append(0xB)
         sync.append(0xC)
-        sync.append(0xC)
+        #sync.append(0xC)
         #data.send_package(sync,mute)
         return sync
 
