@@ -1,6 +1,6 @@
 from Protocol.Physical.Class_DTMF import SEND
 
-from Protocol.Physical.Threadprog4 import LISTEN
+from Protocol.Physical.Threadprog5 import LISTEN
 
 class DTMF:
     def __init__(self, baud, sync=10, mono_robot=False):

@@ -6,7 +6,7 @@ from copy import deepcopy
 import pandas as pd
 
 class LISTEN():
-    def __init__(rec,baud, sync=0, fade=0, amplitude=0, senderFs=0):
+    def __init__(rec, baud, sync=0, fade=0, amplitude=0, senderFs=0):
         #--------------------------------VARIABLE FOR LOG-------------------------
         rec.sync=sync
         rec.fade=fade
@@ -293,12 +293,11 @@ class LISTEN():
 
         return rec.result
 
-roberto = LISTEN(50)
-
-output=roberto.startListen()
-#print(output)
-
-if roberto.multipleTests:
-    while True:
-        output=roberto.startListen()
-        #print(output)
+#roberto = LISTEN(50)
+#
+#output=roberto.startListen()
+#
+#
+#if roberto.multipleTests:
+#    while True:
+#        output=roberto.startListen()
