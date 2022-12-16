@@ -29,7 +29,7 @@ def main():
     print(pack.data_list)
     pack.PhysicalDown()
     
-    #robot.send.send_package(pack.data_list)
+    robot.send.send_package(pack.data_list)
     #robot.send.send_package([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],False)
 
 
