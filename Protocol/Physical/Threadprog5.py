@@ -263,7 +263,7 @@ class LISTEN():
             if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
         #remove second 12 from sync
-        rec.outputList=np.delete(rec.outputList,0)
+        #rec.outputList=np.delete(rec.outputList,0)
         rec.accuracy=rec.compare(rec.expectedPack,list(rec.outputList))
         print(rec.accuracy)
         if rec.getLog:
