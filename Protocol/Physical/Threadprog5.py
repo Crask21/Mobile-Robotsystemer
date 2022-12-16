@@ -293,12 +293,11 @@ class LISTEN():
 
         return rec.result
 
-roberto = LISTEN(50)
-
-output=roberto.startListen()
-#print(output)
-
-if roberto.multipleTests:
-    while True:
-        output=roberto.startListen()
-        #print(output)
+#roberto = LISTEN(50)
+#
+#output=roberto.startListen()
+#
+#
+#if roberto.multipleTests:
+#    while True:
+#        output=roberto.startListen()
