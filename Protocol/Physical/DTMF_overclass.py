@@ -15,7 +15,7 @@ class DTMF:
 
         
         self.send = SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=mono_robot)
-        self.listen=LISTEN(baud_rate, syn, fade_P, amplitude, fs)
+        self.listen=LISTEN(baud_rate, syn, fade_P, amplitude, fs, pack=[])
 
 
 #robot=DTMF(10)
