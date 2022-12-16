@@ -295,6 +295,7 @@ class SEND:
             print("Original: ",original)
             
             print("Recieved: ",recieved2)
+            return 100
         
 
 
@@ -306,10 +307,12 @@ class SEND:
             for i in range(length):
                 if recieved[i] == original[i]:
                     count += 1
+            accuracy = count/len(original)*100
             
-            print(count/len(original)*100,'% match.', len(original) - count, 'errors')
+            print(accuracy,'% match.', len(original) - count, 'errors')
             print('Original:',original)
             print('Recieved:',recieved)
+            return accuracy
 
 
         else:
@@ -332,6 +335,7 @@ class SEND:
             print(count/16*100,'% count match. ', count, 'errors')
             print(original)
             print(recieved)
+            return count/16*100
 
 
 
