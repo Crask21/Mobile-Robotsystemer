@@ -9,7 +9,7 @@ move = [[10,20],[-10,30]]
 class protocolClass:
     data_list = []
     addressList = []
-    n = 4  #Data package size
+    n = 16  #Data package size
     def __init__(self, address, moves, robot, filename=0):
         if type(address) == type('0x0'):
             self.address = address
@@ -68,12 +68,7 @@ class protocolClass:
         print(self.data_list)
     
 
-    def decode(self,list, address):
-        if type(address) == type('0x0'):
-            self.address = address
-        else:
-            self.address = address[0]
-            self.addressList = address
+    def decode(self,list):
         self.data_list=list
         self.data_list=protocol.organize(self.data_list)
         self.data_list=protocol.esc_check(self.data_list)

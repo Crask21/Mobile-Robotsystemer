@@ -20,6 +20,7 @@ def main():
     print("After DataLinkUp:")
     pack.print()
     
+    #fix the length of following range
     for i in range(len(pack.data_list)-1):
         moveObj.move(pack.data_list[i][0],pack.data_list[i][1])
     moveObj.stop()

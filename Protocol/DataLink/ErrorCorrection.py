@@ -31,7 +31,7 @@ to_hex = {
 def errorCorrectionUp(pack, robot):
     #dtmf = DTMF(baud)
     errorList = []
-    errorList = range(len(pack))
+    #errorList = range(len(pack))
     #three lines are the real lines
     for i in range(len(pack)):
         if (pack[i][1]=="error"):

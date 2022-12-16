@@ -3,19 +3,18 @@ import numpy as np
 from time import time
 from scipy.fftpack import fft
 from copy import deepcopy
-import math
-from Protocol.Physical.Class_DTMF import SEND 
-fs = 44100
-amplitude = 15000
-media = 'PyGame' # 'SD'
-fade_P = 0.003
-baud_rate = 20
-syn = 20
-# SYNC
-
-        
-     
-send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+#from Class_DTMF import SEND 
+#fs = 44100
+#amplitude = 15000
+#media = 'PyGame' # 'SD'
+#fade_P = 0.003
+#baud_rate = 20
+#syn = 20
+## SYNC
+#
+#        
+#     
+#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
 
 class LISTEN():
     def __init__(rec,baud):
@@ -74,7 +73,7 @@ class LISTEN():
         rec.xf=np.delete(rec.xf,rec.delList)
         rec.xf_below1000=np.where(rec.xf<1000)
         rec.xf_above1000=np.where(rec.xf>=1000)
-        #rec.xf_above1000=np.delete(rec.xf_above1000,-1)
+        rec.xf_above1000=np.delete(rec.xf_above1000,-1)
         rec.xf_noise=np.where(rec.xf<650)
 
         #-----------------------------------CHEATFILTER------------------------------------------
@@ -96,7 +95,8 @@ class LISTEN():
         rec.currentRead=0
         rec.firstTime=True
         rec.displacement=0
-        rec.ABcount=0       
+        rec.ABcount=0
+        rec.starting=False       
 
     #--------------------------------FUNCTIONS--------------------------------
     def find_highest_freqs(rec, freqMagn):
@@ -132,7 +132,14 @@ class LISTEN():
         print("started listening!")
         while True:
             #-----------------------------Reading-----------------------------
-            start=time()
+            #while(not(rec.starting)):
+            #    data = rec.stream.read(1, exception_on_overflow=False)
+            #    data_int = np.frombuffer(data,dtype='h')
+            #    print(int(rec.RATE*rec.time_per_read))
+            #    print(np.amax(data_int))
+            #    if np.amax(data_int)>1500:
+            #        rec.starting=True
+            #start=time()
             print(rec.stream.get_read_available())
             data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
             print(rec.stream.get_read_available())
@@ -151,6 +158,8 @@ class LISTEN():
             else:
                 rec.currentRead=rec.dtmf_to_hexa(highestfreqs)
                 #print(rec.currentRead)
+
+            #-----------Count A and Bs
             if rec.currentRead==0xa or rec.currentRead==0xb:
                 rec.ABcount+=1
             
@@ -164,17 +173,15 @@ class LISTEN():
                 rec.noSignal=0
 
             #-----------------------Check if finished--------------------------
-            if rec.currentRead==0xc and rec.ABcount>4:
+            if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
 
 
 
 
             #-----------------------Check if Baudrate is too fast--------------
-            end=time()
-            print(end-start)
-            #if end-start>rec.read_window:
-            #    print("ERROR: The baudrate might be too fast:"+str(rec.read_window)+","+str(end-start-rec.read_window))
+            #end=time()
+            #print(end-start)
            
 
 
@@ -182,8 +189,6 @@ class LISTEN():
         nones = rec.outputList == None
         rec.outputList = np.delete(rec.outputList,nones)
         rec.outputList=rec.outputList.tolist()
-        #print("Warning: times beyond recommended time")
-        #print(rec.warning)
 
         #-----------------------CLEANING AFTER YOURSELF-----------
         rec.syncCounter=0
@@ -207,7 +212,7 @@ class LISTEN():
 
         return rec.result
 
-#roberto = LISTEN(182)
+#roberto = LISTEN(160)
 #output=roberto.startListen()
 #print(output)
 #pack=[0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
