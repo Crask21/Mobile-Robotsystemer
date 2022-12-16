@@ -1,9 +1,11 @@
 import pyaudio
 import numpy as np
 from time import time
+import time
 from scipy.fftpack import fft
 from copy import deepcopy
 import pandas as pd
+import pygame as pg
 
 class LISTEN():
     def __init__(rec, baud, sync=20, fade=0.006667, amplitude=15000, senderFs=44100, pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]):
@@ -20,6 +22,7 @@ class LISTEN():
         rec.baudRate=baud
         rec.read_percentage=1
         rec.time_per_read=1*rec.read_percentage/rec.baudRate
+        rec.sampleSize=rec.time_per_read*rec.RATE
         rec.read_window=1/rec.baudRate
         rec.z_pad=rec.RATE/rec.resolution-rec.time_per_read*rec.RATE
         rec.z_pad_arr=np.zeros(int(rec.z_pad))
@@ -82,13 +85,17 @@ class LISTEN():
         rec.accuracy=0
         rec.averageMagn1=0
         rec.averageMagn2=0
+        rec.frames=np.array([])
+        rec.previousI=0
 
 
         rec.noSignal=0
         rec.startReading=False
         rec.currentRead=0
         rec.ABcount=0
-        rec.starting=False   
+        rec.starting=False  
+        rec.tooHigh=0 
+        rec.tooLow=0
         
         #for log
         rec.tones=np.array([[99,99,99,99,99]])    
@@ -222,58 +229,102 @@ class LISTEN():
         log.to_excel("log"+str(rec.testNumber)+".xlsx")
 
     def startListen(rec):
+        print(rec.sampleSize)
         print("started listening!")
-        while True:
-            #-----------------------------Reading-----------------------------
-            #while(not(rec.starting)):
-            #    #print(rec.stream.get_read_available())
-            #    #data = rec.stream.read(100, exception_on_overflow=True)
-            #    #print(rec.stream.get_read_available())
-            #    #data_int = np.frombuffer(data,dtype="h")
-            #    print(int(rec.RATE*rec.time_per_read))
-            #    print(np.amax(data_int))
-            #    if np.amax(data_int)>1500:
-            #        rec.starting=True
-            #start=time()
-            data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
-
+        #-----------------------------Reading-----------------------------
+        while(not(rec.starting)):
+            data = rec.stream.read(1024, exception_on_overflow=False)
             data_int = np.frombuffer(data,dtype="h")
-            #zeropad data
-            data_int = np.append(data_int, rec.z_pad_arr)
-            #-------------------------------FFT-------------------------------
-            yf=fft(data_int)
+            print(np.amax(data_int))
+            if np.amax(data_int)>9000:
+                rec.starting=True
+                rec.tooHigh+=1
+            else:
+                rec.tooHigh=0
+            if rec.tooHigh>10:
+                break
+        while(rec.starting):
+            data = rec.stream.read(1024, exception_on_overflow=False)
+            data_int = np.frombuffer(data,dtype="h")
+            rec.frames=np.append(rec.frames,data_int)
+            if np.amax(data_int)<9000:
+                rec.starting=False
+                rec.tooLow+=1
+            else:
+                rec.tooLow=0
+            if rec.tooLow>10:
+                break
+        #zeropad data
+        #data_int = np.append(data_int, rec.z_pad_arr)
+        #-------------------------------FFT-------------------------------
+        #yf=fft(data_int)
+        #yf=np.delete(yf,rec.delList)
+        #freqmagn=np.absolute(yf)
+        #highestfreqs=rec.find_highest_freqs(freqmagn)
+        #if rec.startReading:
+        #    rec.outputList=np.append(rec.outputList, rec.dtmf_to_hexa(highestfreqs))
+        #    print(rec.outputList)
+        #    #stuff for log
+        #    if rec.getLog:
+        #        forText=np.append(highestfreqs,freqmagn[highestfreqs])
+        #        try:
+        #            forText=np.append(forText, int(rec.dtmf_to_hexa(highestfreqs)))
+        #        except:
+        #            forText=np.append(forText, 99)
+        #        forText=np.array([forText])
+        #        rec.tones=np.append(rec.tones,forText,axis=0)
+        #else:
+        #    rec.currentRead=rec.dtmf_to_hexa(highestfreqs)
+        ##-----------Count A and Bs-----------
+        #if rec.currentRead==0xa or rec.currentRead==0xb:
+        #    rec.ABcount+=1
+        ##-----------------------Check if no signal------------------------
+        #if rec.dtmf_to_hexa(highestfreqs)==None and rec.startReading==True:
+        #    rec.noSignal+=1
+        #    if rec.noSignal>5:
+        #        break
+        #else:
+        #    rec.noSignal=0
+        ##-----------------------Check if ready to start--------------------------
+        #if rec.currentRead==0xc and rec.ABcount>10:
+        #    rec.startReading=True
+    
+        
+        
+        #remove second 12 from sync
+        #rec.outputList=np.delete(rec.outputList,0)
+
+        #------------------------LOG-----------------------
+        print("maybe finished")
+        print(rec.frames)
+        print(rec.frames.size)
+        print(rec.frames.size/(rec.sampleSize))
+        print(rec.frames.size%int(rec.sampleSize))
+        excessive=rec.frames.size%int(rec.sampleSize)
+        rec.frames=rec.frames[:rec.frames.size-excessive]
+        rec.frames=rec.frames.reshape(-1,int(rec.sampleSize))
+        print(rec.frames)
+
+        #converting float samplesize to int might give problems but this is already a problem anyway
+        for i in rec.frames:
+            i=np.append(i,rec.z_pad_arr)
+            yf=fft(i)
             yf=np.delete(yf,rec.delList)
             freqmagn=np.absolute(yf)
             highestfreqs=rec.find_highest_freqs(freqmagn)
-            if rec.startReading:
-                rec.outputList=np.append(rec.outputList, rec.dtmf_to_hexa(highestfreqs))
-                print(rec.outputList)
-                #stuff for log
-                if rec.getLog:
-                    forText=np.append(highestfreqs,freqmagn[highestfreqs])
-                    try:
-                        forText=np.append(forText, int(rec.dtmf_to_hexa(highestfreqs)))
-                    except:
-                        forText=np.append(forText, 99)
-                    forText=np.array([forText])
-                    rec.tones=np.append(rec.tones,forText,axis=0)
-            else:
-                rec.currentRead=rec.dtmf_to_hexa(highestfreqs)
-            #-----------Count A and Bs-----------
-            if rec.currentRead==0xa or rec.currentRead==0xb:
-                rec.ABcount+=1
-            #-----------------------Check if no signal------------------------
-            if rec.dtmf_to_hexa(highestfreqs)==None and rec.startReading==True:
-                rec.noSignal+=1
-                if rec.noSignal>5:
-                    break
-            else:
-                rec.noSignal=0
-            #-----------------------Check if ready to start--------------------------
-            if rec.currentRead==0xc and rec.ABcount>10:
-                rec.startReading=True
-        #remove second 12 from sync
-        #rec.outputList=np.delete(rec.outputList,0)
+            tone=rec.dtmf_to_hexa(highestfreqs)
+            rec.tones =np.append(rec.tones,tone)
+            print(rec.tones)
+        print(set(rec.expectedPack).issubset(rec.tones))
+        rec.accuracy=rec.compare(rec.expectedPack,list(rec.tones))
+        print(rec.accuracy)
+
+        while rec.frames.size>rec.sampleSize:
+            rec.frames
+        time.sleep(10000)
+        
+        
+        
         rec.accuracy=rec.compare(rec.expectedPack,list(rec.outputList))
         print(rec.accuracy)
         if rec.getLog:
@@ -303,11 +354,11 @@ class LISTEN():
         return rec.result
 
 
-#roberto = LISTEN(50)
-#
-#output=roberto.startListen()
-#
-#
-#if roberto.multipleTests:
-#    while True:
-#        output=roberto.startListen()
+roberto = LISTEN(100)
+
+output=roberto.startListen()
+
+
+if roberto.multipleTests:
+    while True:
+        output=roberto.startListen()
