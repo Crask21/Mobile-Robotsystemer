@@ -1,0 +1,10 @@
+\Settings:
+Baudrate:50
+sync:0
+fade:0
+amplitude:0
+senderFs:0
+
+Measurements
+AverageMagn1:0
+AverageMagn2:0
