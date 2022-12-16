@@ -6,7 +6,7 @@ from copy import deepcopy
 import pandas as pd
 
 class LISTEN():
-    def __init__(rec, baud, sync=0, fade=0, amplitude=0, senderFs=0, pack=[]):
+    def __init__(rec, baud, sync=20, fade=0.006667, amplitude=15000, senderFs=44100, pack=[0, 1, 1, 7, 0, 8, 6, 10, 2, 0, 1, 0, 1, 2, 8, 0, 8, 10, 7, 9, 3, 0, 1, 0, 1, 3, 4, 13, 6, 5, 7, 3, 7, 3, 6, 1, 6, 7, 0, 8, 7, 0, 1, 0, 1, 4, 6, 5, 15, 5, 4, 0, 1]):
         #--------------------------------VARIABLE FOR LOG-------------------------
         rec.sync=sync
         rec.fade=fade
@@ -135,10 +135,11 @@ class LISTEN():
 
 
         if original == recieved:
-            print("100% match")
+            print('100% match')
             print("Original: ",original)
             
             print("Recieved: ",recieved2)
+            return 100
         
 
 
@@ -150,10 +151,12 @@ class LISTEN():
             for i in range(length):
                 if recieved[i] == original[i]:
                     count += 1
+            accuracy = count/len(original)*100
             
-            print(count/len(original)*100,"% match.", len(original) - count, "errors")
-            print("Original:",original)
-            print("Recieved:",recieved)
+            print(accuracy,'% match.', len(original) - count, 'errors')
+            print('Original:',original)
+            print('Recieved:',recieved)
+            return accuracy
 
 
         else:
@@ -173,17 +176,20 @@ class LISTEN():
 
 
 
-            print(count/16*100,"% count match. ", count, "errors")
+            print(count/16*100,'% count match. ', count, 'errors')
             print(original)
             print(recieved)
+            return count/16*100
 
+    
     def writeLogTXT(rec):
         with open("log"+str(rec.testNumber)+".txt", "w") as f:
             f.write("\Settings:\nBaudrate:"+str(rec.baudRate)+"\nsync:" +str(rec.sync)+"\nfade:"+str(rec.fade)+"\namplitude:"+str(rec.amplitude)+"\nsenderFs:"+str(rec.senderFs))
             f.write("\n\nMeasurements\nAverageMagn1:"+str(rec.averageMagn1)+"\nAverageMagn2:"+str(rec.averageMagn2))
 
     def writeLogXL(rec):
-        pdAccuracy=pd.Series([rec.accuracy])
+        pdAccuracy=pd.Series([10,rec.accuracy])
+        #print(pdAccuracy)
         log=pd.DataFrame(rec.tones,columns=["Rec Freq1","Rec Freq2","Freq1 magn","Freq2 magn","Rec Pkg"])
         log["Freq1 magn"]=log["Freq1 magn"].div(log["Freq1 magn"].max())
         log["Freq2 magn"]=log["Freq2 magn"].div(log["Freq2 magn"].max())
@@ -203,8 +209,9 @@ class LISTEN():
         log["Exp Freq2"]=pdExpfreq2
         log["diff Freq1"]=log["Rec Freq1"]-log["Exp Freq1"]
         log["diff Freq2"]=log["Rec Freq2"]-log["Exp Freq2"]
+        #print(pdAccuracy)
         log["Accuracy"]=pdAccuracy
-
+        #print(log)
         #add mean magn and diff
         means={"diff Freq1":log["diff Freq1"].mean(),"diff Freq2":log["diff Freq1"].mean(), "Freq1 magn":log["Freq1 magn"].mean(), "Freq2 magn":log["Freq2 magn"].mean()}
         pdMeans=pd.DataFrame(means, index=[0])
@@ -263,7 +270,7 @@ class LISTEN():
             if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
         #remove second 12 from sync
-        #rec.outputList=np.delete(rec.outputList,0)
+        rec.outputList=np.delete(rec.outputList,0)
         rec.accuracy=rec.compare(rec.expectedPack,list(rec.outputList))
         print(rec.accuracy)
         if rec.getLog:
@@ -292,11 +299,12 @@ class LISTEN():
 
         return rec.result
 
-#roberto = LISTEN(50)
-#
-#output=roberto.startListen()
-#
-#
-#if roberto.multipleTests:
-#    while True:
-#        output=roberto.startListen()
+
+roberto = LISTEN(110)
+
+output=roberto.startListen()
+
+
+if roberto.multipleTests:
+    while True:
+        output=roberto.startListen()
