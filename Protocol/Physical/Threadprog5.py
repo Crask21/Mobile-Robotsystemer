@@ -6,7 +6,7 @@ from copy import deepcopy
 import pandas as pd
 
 class LISTEN():
-    def __init__(rec, baud, sync=0, fade=0, amplitude=0, senderFs=0):
+    def __init__(rec, baud, sync=0, fade=0, amplitude=0, senderFs=0, pack=[]):
         #--------------------------------VARIABLE FOR LOG-------------------------
         rec.sync=sync
         rec.fade=fade
@@ -78,8 +78,7 @@ class LISTEN():
         rec.cheatfilter = np.delete(rec.xf_indices,rec.cheatfilter)
 
         #------------------------------VARAIBLES--------------------------
-        rec.expectedPack=[ 0, 1, 10, 11, 12, 1, 8, 4, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1,
- 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 4, 1, 0, 1]
+        rec.expectedPack=pack
         rec.accuracy=0
         rec.averageMagn1=0
         rec.averageMagn2=0
