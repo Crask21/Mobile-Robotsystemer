@@ -6,7 +6,7 @@ from copy import deepcopy
 import pandas as pd
 
 class LISTEN():
-    def __init__(rec,baud, sync=0, fade=0, amplitude=0, senderFs=0):
+    def __init__(rec, baud, sync=0, fade=0, amplitude=0, senderFs=0):
         #--------------------------------VARIABLE FOR LOG-------------------------
         rec.sync=sync
         rec.fade=fade
