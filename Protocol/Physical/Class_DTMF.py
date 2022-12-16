@@ -59,6 +59,14 @@ class SEND:
         data.dtmf = []
         data.DTMF_init()
 
+    def setBaud(data,baud):
+        data.baud = baud
+        data.DTMF_init()
+    
+    def setFade(data,fade):
+        data.p_fade = fade
+        data.DTMF_init()
+
 
     def silentDTMF(data,mute = False,dur = 2):
             silence = data.makeSIN(1,dur,2,2,data.fs,0.4)
@@ -70,6 +78,7 @@ class SEND:
 # Send package of hexi decimals
     def send_package(data, package, mute = True):
 
+        package = [*package,0,0,0,0,0]
 
         data.soundwave = np.arange(0,1)
         
@@ -140,7 +149,7 @@ class SEND:
 # Make a DTMF tone
     def makeDTMF(data,freq1,freq2):
         amplitude = data.amplitude
-        dur = data.duration
+        dur = 1/data.baud
         f_sample = data.fs
         percentage_fade= data.p_fade
 
@@ -228,6 +237,7 @@ class SEND:
                     [1477,941],  # E
                     [1633,941]]  # F
 
+        data.dtmf = []
 
         for i in np.arange(len(dtmf_freq)):
             data.dtmf.append(data.makeDTMF(dtmf_freq[i][0], dtmf_freq[i][1]))

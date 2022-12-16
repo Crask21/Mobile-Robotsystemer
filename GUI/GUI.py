@@ -15,12 +15,15 @@ hexa = Text(root,height=5, borderwidth=0)
 dtmfLabel.pack()
 hexa.pack()
 
+package = []
 
+baud = 50
+fade = 0.003
 
 robot=DTMF(50,20)
 
 
-pack = protocolClass(['0x7','0x0','0x8'],[],robot=robot,filename='output.txt')
+
 
 global moveList
 moveList = []
@@ -63,12 +66,29 @@ def listDisplay(list):
     return res
 
 
+def updateBAUD():
+    baud = int(baud_enter.get())
+    robot.send.setBaud(baud)
+   
+
+def updateFADE():
+
+    fade = int(fade_enter.get())
+    robot.send.setFade(fade)
+
+def updateLENGTH():
+    length = len(package)
+    length2.config(text=str(length))
+
+
+
+
 
 # Set package/moves (not finished)
 def manualPackage():
     input = manual_enter.get()
 
-    out = inputToList(input)
+    package = inputToList(input)
     hexa.configure(state=NORMAL)
     hexa.delete("1.0","end")
     hexa.insert(1.0, input)
@@ -78,8 +98,9 @@ def manualPackage():
     
     
 
-    robot.send.send_package(out)
-    print(out)
+    robot.send.send_package(package)
+    length2.config(text=len(package))
+    print(package)
 
 # Printable list to python list
 def inputToList(list):
@@ -103,6 +124,7 @@ def inputToList(list):
 # Send current package
 def dtmf_send():
     
+    pack = protocolClass(['0x7','0x0','0x8'],[],robot=robot,filename='output.txt')
     
     # Get moves
     pack.setMoves(moveList,msg_entry.get())
@@ -114,13 +136,15 @@ def dtmf_send():
     robot.send.send_package(pack.data_list)
     print("Package:")
     print(pack.data_list)
-
+    length2.config(text=len(pack.data_list))
 
     # Show package
     hexa.configure(state=NORMAL)
     hexa.delete("1.0","end")
     hexa.insert(1.0, listDisplay(pack.data_list))
     hexa.configure(state=DISABLED)
+    pack.setMoves(moveList,[])
+
     
     
     
@@ -195,6 +219,12 @@ def clear_movement():
     # Clear move list
     moveList.clear()
 
+    hexa.configure(state=NORMAL)
+    hexa.delete("1.0","end")
+    hexa.insert(1.0, '')
+    hexa.configure(state=DISABLED)
+
+
     move_txt.configure(state=NORMAL)
     move_txt.delete("1.0","end")
     move_txt.configure(state=DISABLED)
@@ -250,6 +280,23 @@ submit = Button(frame2, text="Submit",command= manualPackage)
 manual_enter.grid(row=0,column=0)
 submit.grid(row=1,column=0)
 
+baud_enter = Entry(frame2, width = 10, borderwidth=5)
+baud_enter.insert(0,'Baud rate')
+baud_submit = Button(frame2, text="Baud submit",command= updateBAUD)
+baud_enter.grid(row=0,column=1)
+baud_submit.grid(row=1,column=1)
+
+
+fade_enter = Entry(frame2, width = 10, borderwidth=5)
+fade_enter.insert(0,'Fade')
+fade_submit = Button(frame2, text="Fade submit",command= updateFADE)
+fade_enter.grid(row=2,column=1)
+fade_submit.grid(row=3,column=1)
+
+length2 = Label(frame2,text="Length")
+length2.grid(row=4,column=1)
+
+
     # Setup frame 3
 #frame3 = LabelFrame(root,text='Play', padx=20,pady=20)
 #frame3.pack(padx=10,pady=10)
@@ -273,6 +320,9 @@ translated.grid(row=3,column=0)
 
 
 
+# Baud
+# længde
+# fade
 
 
 
