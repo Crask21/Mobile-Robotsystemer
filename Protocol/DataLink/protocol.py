@@ -53,13 +53,17 @@ def data_seg(input_List, n):
 
 
 def hexa_devide(input_List):
+    print(input_List)
     temp_main = []
     for i in range(len(input_List)):
         if len(input_List[i])>2:
             temp = []
             for j in range(len(input_List[i])):
                 temp.append(hex(int(input_List[i][j][2],16)))
-                temp.append(hex(int(input_List[i][j][3],16)))
+                try:
+                    temp.append(hex(int(input_List[i][j][3],16)))
+                except:
+                    print("spørg Prip: protocol.py l.64 Der er fejl")
             temp_main.append(temp)
             
         elif len(input_List[i])<2:

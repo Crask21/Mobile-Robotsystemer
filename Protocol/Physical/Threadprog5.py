@@ -6,7 +6,7 @@ from copy import deepcopy
 import pandas as pd
 
 class LISTEN():
-    def __init__(rec, baud, sync=20, fade=0.006667, amplitude=15000, senderFs=44100, pack=[0, 1, 10, 11, 12, 1, 8, 0, 9, 4, 12, 8, 2, 0, 1, 0, 1, 10, 11, 12, 2, 13, 10, 8, 15, 0, 5, 15, 0, 1, 0, 1, 10, 11, 12, 3, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 2, 8, 9, 0, 1, 0, 1, 10, 11, 12, 4, 7, 5, 7, 4, 7, 3, 12, 10, 10, 0, 1]):
+    def __init__(rec, baud, sync=20, fade=0.006667, amplitude=15000, senderFs=44100, pack=[0, 1, 1, 7, 0, 8, 6, 10, 2, 0, 1, 0, 1, 2, 8, 0, 8, 10, 7, 9, 3, 0, 1, 0, 1, 3, 4, 13, 6, 5, 7, 3, 7, 3, 6, 1, 6, 7, 0, 8, 7, 0, 1, 0, 1, 4, 6, 5, 15, 5, 4, 0, 1]):
         #--------------------------------VARIABLE FOR LOG-------------------------
         rec.sync=sync
         rec.fade=fade
@@ -33,6 +33,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
+                 frames_per_buffer=9999
                  #input_device_index=3 
         )
 
@@ -273,7 +274,7 @@ class LISTEN():
             if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
         #remove second 12 from sync
-        rec.outputList=np.delete(rec.outputList,0)
+        #rec.outputList=np.delete(rec.outputList,0)
         rec.accuracy=rec.compare(rec.expectedPack,list(rec.outputList))
         print(rec.accuracy)
         if rec.getLog:
@@ -303,7 +304,7 @@ class LISTEN():
         return rec.result
 
 
-roberto = LISTEN(50)
+roberto = LISTEN(160)
 
 output=roberto.startListen()
 
