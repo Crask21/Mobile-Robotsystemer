@@ -1,14 +1,13 @@
 import sys
 #import Turtlebot.Turtlebot_Python.moveClass as moveClass
 from Protocol.DataLink.protocol_class import protocolClass
-
 from Protocol.Physical.DTMF_overclass import DTMF
 import time
 
 
 
 def main():
-    baudrate = 50
+    baudrate = 100
     sync = 30
 
     robot=DTMF(baudrate,sync)
