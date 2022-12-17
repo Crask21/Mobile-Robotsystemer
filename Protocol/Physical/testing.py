@@ -78,7 +78,7 @@ send.send_package([0,1,2,3,4,5,6,7,8],save_wav=True)
 send.setBaud(50)
 send.setFade(0.005)
 title2 = '2'
-points2 = [*send.makeDTMF(1209,697),*send.makeDTMF(1209,770)]
+points2 = [*send.makeDTMF(1209,697),*send.makeDTMF(1209,770),*send.makeDTMF(1209,697)]
 send.send_package([0],plot=True)
 #send.plot_last_package(curve='r--',title="60 baud rate with 40% fade")
 
@@ -95,7 +95,7 @@ fields2 = ['2']
 # data rows of csv file 
 rows = [ ['Max Fade (20ms)'], 
          points1, 
-         ['0x0 og 0x4'], 
+         ['0x0, 0x4 og 0x0'], 
          points2]
   
 with open('GFG.csv', 'w') as f:
