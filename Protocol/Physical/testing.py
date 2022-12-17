@@ -95,7 +95,7 @@ fields2 = ['2']
 # data rows of csv file 
 rows = [ ['Max Fade (20ms)'], 
          points1, 
-         ['2', '', '', ''], 
+         ['0x0 og 0x4'], 
          points2]
   
 with open('GFG.csv', 'w') as f:
