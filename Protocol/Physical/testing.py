@@ -68,17 +68,17 @@ def fft():
 # fe
 
 send.setBaud(50)
-send.setFade(0.00)
+send.setFade(0.02)
 title1 = '1'
 points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1633,941),*send.makeDTMF(1209,697)]
 print(points1)
 send.send_package([0,1,2,3,4,5,6,7,8],save_wav=True)
 #send.plot_last_package(curve='r--',title="20 baud rate with 40% fade")
 
-send.setBaud(60)
+send.setBaud(50)
 send.setFade(0.005)
 title2 = '2'
-points2 = send.makeDTMF(1209,697).tolist()
+points2 = [*send.makeDTMF(1209,697),*send.makeDTMF(1209,770)]
 send.send_package([0],plot=True)
 #send.plot_last_package(curve='r--',title="60 baud rate with 40% fade")
 
@@ -93,7 +93,7 @@ fields1 = ['1']
 fields2 = ['2'] 
     
 # data rows of csv file 
-rows = [ ['1', '', '', ''], 
+rows = [ ['Max Fade (20ms)'], 
          points1, 
          ['2', '', '', ''], 
          points2]
