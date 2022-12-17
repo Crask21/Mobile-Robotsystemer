@@ -5,6 +5,7 @@ import pygame
 import time
 from random import randrange
 import threading
+import wave
 
 
 def CharListToInt(list):
@@ -77,7 +78,7 @@ class SEND:
             return silence
 
 # Send package of hexi decimals
-    def send_package(data, pack, mute = True,plot = False):
+    def send_package(data, pack, mute = True,plot = False, save_wav = False):
 
         package = [*pack,0,0,0,0,0]
 
@@ -109,6 +110,9 @@ class SEND:
             # Play through Sounddevice
         elif data.sound_media == 'SD':
             data.play_SD(data.soundwave)
+        
+        if save_wav:
+            data.savewav(data.soundwave)
 
 
     
@@ -245,6 +249,32 @@ class SEND:
 
         for i in np.arange(len(dtmf_freq)):
             data.dtmf.append(data.makeDTMF(dtmf_freq[i][0], dtmf_freq[i][1]))
+
+    def savewav(data, soundwave):
+        # open new wave file
+        pygame.mixer.init(frequency=data.fs, size=-16, channels=1)
+
+        # Convert list to numpy array
+        buffer = np.array(soundwave,dtype=np.int16)
+
+        # Dublicate sound channel for stereo
+        buffer = np.repeat(buffer.reshape(len(soundwave), 1), 2, axis = 1)
+
+        # Create sound object
+        sound = pygame.sndarray.make_sound(buffer)
+
+        sfile = wave.open('pure_tone.wav', 'w')
+
+        # set the parameters
+        sfile.setframerate(data.fs)
+        sfile.setnchannels(2)
+        sfile.setsampwidth(2)
+
+        # write raw PyGame sound buffer to wave file
+        sfile.writeframesraw(sound.get_raw())
+
+        # close file
+        sfile.close()
 
 # Play the sound through either PyGame or Sounddevice
     def play_PyGame(data, soundwave, mono = False):
