@@ -74,7 +74,7 @@ def updateBAUD():
 
 def updateFADE():
 
-    fade = int(fade_enter.get())
+    fade = float(fade_enter.get())
     robot.send.setFade(fade)
 
 def updateLENGTH():
@@ -295,7 +295,7 @@ fade_enter.grid(row=2,column=1)
 fade_submit.grid(row=3,column=1)
 
 length2 = Label(frame2,text="Length")
-length2.grid(row=4,column=1)
+length2.grid(row=0,column=2)
 
 
     # Setup frame 3

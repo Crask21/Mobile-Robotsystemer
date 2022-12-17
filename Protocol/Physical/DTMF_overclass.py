@@ -8,7 +8,7 @@ class DTMF:
         fs = 44100
         amplitude = 15000
         media = 'PyGame' # 'SD'
-        fade_P = 0.006667
+        fade_P = 0.005
         baud_rate = baud
         syn = sync
         # SYNC
@@ -25,5 +25,62 @@ class DTMF:
 #robot.send.send_package([0xc,0xa,0xa,0xa,0xa,0xb])
 # helo
 
-    
+def compare(data, original, recieved, compare = True):
+
+
+        dif = len(recieved) - len(original)
+
+        if len(recieved) > len(original):
+                recieved2 = recieved.copy()
+                recieved = recieved[:len(recieved) - dif]
+
+
+        if original == recieved:
+            print('100% match')
+            print("Original: ",original)
+            
+            print("Recieved: ",recieved2)
+            return 100
+        
+
+
+        elif compare:
+            count = 0
+
+            length = len(original) if dif >= 0 else len(recieved)
+
+            for i in range(length):
+                if recieved[i] == original[i]:
+                    count += 1
+            accuracy = count/len(original)*100
+            
+            print(accuracy,'% match.', len(original) - count, 'errors')
+            print('Original:',original)
+            print('Recieved:',recieved)
+            return accuracy
+
+
+        else:
+            send_count =[]
+            for i in range(16):
+                send_count.append(original.count(i))
+
+            recieved_count = []
+            for i in range(16):
+                recieved_count.append(recieved.count(i))
+
+            count = 0
+            for i in range(16):
+                
+                if recieved_count[i] == send_count[i]:
+                    count += 1
+
+
+
+            print(count/16*100,'% count match. ', count, 'errors')
+            print(original)
+            print(recieved)
+            return count/16*100
+
+
 
