@@ -3,7 +3,7 @@ import sys
 import numpy as np 
 sys.path.append('../Mobile-Robotsystems')
 #from Turtlebot.moveClass import moveClass
-from Protocol.DataLink.protocol_class import protocolClass
+#from Protocol.DataLink.protocol_class import protocolClass
 from Protocol.Physical.DTMF_overclass import DTMF
 from scipy.fftpack import fft
 import matplotlib.pyplot as plt
@@ -31,10 +31,10 @@ dtmf_freq = [[1209,697], # 0
 
 
 # DTMF Settings
-fs = 44100
-amplitude = 6000
-fade_P = 0.006
-baud_rate = 100
+fs = 4000
+amplitude = 15000
+fade_P = 0.000
+baud_rate = 10
 sync = 20
 send = SEND(fs, amplitude, fade_P, baud_rate,sync)
 pack = [0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
@@ -44,14 +44,14 @@ pack = [0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 
 
 
 
-robot=DTMF(50,30, mono_robot = True)
+robot=DTMF(baud_rate,30, mono_robot = True)
 #pack = protocolClass('0x0',[],robot)
 
 
 
 def fft():
     twoDTMF = [*send.makeDTMF(697,1477), *send.makeDTMF(697,1209)]
-    dtmflen = len(twoDTMF)
+
     newDTMF = twoDTMF[int(4/8*len(twoDTMF)):]
 
     print(len(twoDTMF))
@@ -64,16 +64,19 @@ def fft():
     fig2 = plt.plot(xf,yf)
     plt.show()
 
-send.setBaud(20)
-send.setFade(40)
+
+
+
+send.setBaud(50)
+send.setFade(0.005)
 title1 = '1'
-points1 = send.makeDTMF(1209,697)
+points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1633,941),*send.makeDTMF(1209,697)]
 print(points1)
-send.send_package([0],plot=True)
+send.send_package([0,1,2,3,4,5,6,7,8],save_wav=True)
 #send.plot_last_package(curve='r--',title="20 baud rate with 40% fade")
 
 send.setBaud(60)
-send.setFade(40)
+send.setFade(0.005)
 title2 = '2'
 points2 = send.makeDTMF(1209,697).tolist()
 send.send_package([0],plot=True)
