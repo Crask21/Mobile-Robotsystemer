@@ -235,7 +235,7 @@ class LISTEN():
             #    if np.amax(data_int)>1500:
             #        rec.starting=True
             #start=time()
-            data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=False)
+            data = rec.stream.read(int(rec.RATE*rec.time_per_read), exception_on_overflow=True)
 
             data_int = np.frombuffer(data,dtype="h")
             #zeropad data
@@ -273,7 +273,7 @@ class LISTEN():
             if rec.currentRead==0xc and rec.ABcount>10:
                 rec.startReading=True
         #remove second 12 from sync
-        #rec.outputList=np.delete(rec.outputList,0)
+        rec.outputList=np.delete(rec.outputList,0)
         rec.accuracy=rec.compare(rec.expectedPack,list(rec.outputList))
         print(rec.accuracy)
         if rec.getLog:
@@ -303,11 +303,11 @@ class LISTEN():
         return rec.result
 
 
-#roberto = LISTEN(50)
-#
-#output=roberto.startListen()
-#
-#
-#if roberto.multipleTests:
-#    while True:
-#        output=roberto.startListen()
+roberto = LISTEN(50)
+
+output=roberto.startListen()
+
+
+if roberto.multipleTests:
+    while True:
+        output=roberto.startListen()
