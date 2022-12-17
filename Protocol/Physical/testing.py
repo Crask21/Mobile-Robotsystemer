@@ -32,7 +32,7 @@ dtmf_freq = [[1209,697], # 0
 
 # DTMF Settings
 fs = 44100
-amplitude = 6000
+amplitude = 20000
 fade_P = 0.006
 baud_rate = 100
 sync = 20
@@ -51,7 +51,7 @@ robot=DTMF(50,30, mono_robot = True)
 
 def fft():
     twoDTMF = [*send.makeDTMF(697,1477), *send.makeDTMF(697,1209)]
-    dtmflen = len(twoDTMF)
+
     newDTMF = twoDTMF[int(4/8*len(twoDTMF)):]
 
     print(len(twoDTMF))
@@ -64,16 +64,19 @@ def fft():
     fig2 = plt.plot(xf,yf)
     plt.show()
 
+
+
+
 send.setBaud(20)
-send.setFade(40)
+send.setFade(0.005)
 title1 = '1'
 points1 = send.makeDTMF(1209,697)
 print(points1)
-send.send_package([0],plot=True)
+send.send_package([0,1,2,3,4,5,6,7,8])
 #send.plot_last_package(curve='r--',title="20 baud rate with 40% fade")
 
 send.setBaud(60)
-send.setFade(40)
+send.setFade(0.005)
 title2 = '2'
 points2 = send.makeDTMF(1209,697).tolist()
 send.send_package([0],plot=True)
