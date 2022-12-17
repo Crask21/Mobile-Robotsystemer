@@ -1,0 +1,10 @@
+\Settings:
+Baudrate:80
+sync:20
+fade:0.006667
+amplitude:15000
+senderFs:44100
+
+Measurements
+AverageMagn1:0
+AverageMagn2:0

@@ -68,7 +68,7 @@ def fft():
 # fe
 
 send.setBaud(50)
-send.setFade(0.005)
+send.setFade(0.00)
 title1 = '1'
 points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1633,941),*send.makeDTMF(1209,697)]
 print(points1)
