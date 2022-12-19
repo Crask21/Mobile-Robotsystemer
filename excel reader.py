@@ -1,13 +1,27 @@
 import pandas as pd
 
 
-df = pd.read_excel('log0.xlsx', sheet_name=0)
-df
+df1 = pd.read_excel('log0.xlsx', sheet_name=0)
+
+#df6 = pd.read_excel('log0.xlsx', sheet_name=0)
+#df7 = pd.read_excel('log0.xlsx', sheet_name=0)
+#df8 = pd.read_excel('log0.xlsx', sheet_name=0)
+#df9 = pd.read_excel('log0.xlsx', sheet_name=0)
 
 
 
-data = df["Sheet1"]
-print(data)
-secondary_data = df["Sheet2"]
 
-secondary_data.loc[2,0]
+file_num = 5
+count100 = 0
+
+for i in range(file_num):
+    df = pd.read_excel('log' + str(i) + '.xlsx', sheet_name=0)
+    
+    acc = df.loc[1][11]
+    #print(acc)
+    if acc == 100:
+        print(acc)
+        count100 += 1
+
+print('AVG:')
+print(100*count100/file_num)

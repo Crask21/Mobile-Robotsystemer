@@ -175,13 +175,13 @@ class SEND:
 
         data.FFT.append(np.fft.fft(xi))
 
-        for j in np.arange(number_of_faded_points):
+        for j in range(number_of_faded_points):
             xi[j] = xi[j] * fade[j]
 
         #print(xi[-1*number_of_faded_points:])
 
         for j in np.arange(-1*number_of_faded_points,-1):    
-            xi[j] = xi[j] * fade_end[j]    
+            xi[j] = xi[j] * fade_end[j]
 
         #print(xi[-1*number_of_faded_points:-1])
 
