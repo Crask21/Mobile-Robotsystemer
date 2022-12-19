@@ -70,7 +70,7 @@ print(pack)
 # fe
 
 send.setBaud(50)
-send.setFade(0.02)
+send.setFade(0.005)
 title1 = '1'
 points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1336,697),*send.makeDTMF(1209,697)]
 #print(points1)
