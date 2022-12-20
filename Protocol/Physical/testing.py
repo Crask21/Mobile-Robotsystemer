@@ -65,20 +65,24 @@ def fft():
     plt.show()
 
 
+pack=send.rand_pack(185)
+print(pack)
 # fe
 
 send.setBaud(50)
-send.setFade(0.02)
+send.setFade(0.005)
 title1 = '1'
-points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1633,941),*send.makeDTMF(1209,697)]
-print(points1)
-send.send_package([0,1,2,3,4,5,6,7,8],save_wav=True)
+points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1336,697),*send.makeDTMF(1209,697)]
+#print(points1)
+send.send_package([0,15,0],plot=True)
+send.plot_last_package(curve='r--')
 #send.plot_last_package(curve='r--',title="20 baud rate with 40% fade")
 
 send.setBaud(50)
 send.setFade(0.005)
 title2 = '2'
-points2 = [*send.makeDTMF(1209,697),*send.makeDTMF(1209,770),*send.makeDTMF(1209,697)]
+points2 = [*send.makeDTMF(1209,697),*send.makeDTMF(1633,697),*send.makeDTMF(1209,697)]
+points3 = [*send.makeDTMF(1209,697),*send.makeDTMF(1477,770),*send.makeDTMF(1209,697)]
 send.send_package([0],plot=True)
 #send.plot_last_package(curve='r--',title="60 baud rate with 40% fade")
 
@@ -93,10 +97,12 @@ fields1 = ['1']
 fields2 = ['2'] 
     
 # data rows of csv file 
-rows = [ ['Max Fade (20ms)'], 
+rows = [ ['0x010'], 
          points1, 
-         ['0x0, 0x4 og 0x0'], 
-         points2]
+         ['0x030'], 
+         points2,
+         ['0x060'], 
+         points3]
   
 with open('GFG.csv', 'w') as f:
       
@@ -110,9 +116,41 @@ with open('GFG.csv', 'w') as f:
 print(pack)
 
 
+send.makeDTMF(1,1)
 
+import time
 
+import numpy as np
+import pyaudio
 
+p = pyaudio.PyAudio()
+
+volume = 0.5  # range [0.0, 1.0]
+fs = 44100  # sampling rate, Hz, must be integer
+duration = 1  # in seconds, may be float
+f = 440.0  # sine frequency, Hz, may be float
+
+# generate samples, note conversion to float32 array
+samples = (np.sin(2 * np.pi * np.arange(fs * duration) * 1209 / fs)+np.sin(2 * np.pi * np.arange(fs * duration) * 697 / fs)).astype(np.float32)
+
+# per @yahweh comment explicitly convert to bytes sequence
+output_bytes = (volume * samples).tobytes()
+
+# for paFloat32 sample values must be in range [-1.0, 1.0]
+stream = p.open(format=pyaudio.paFloat32,
+                channels=1,
+                rate=fs,
+                output=True)
+
+# play. May repeat with different volume values (if done interactively)
+start_time = time.time()
+stream.write(output_bytes)
+print("Played sound for {:.2f} seconds".format(time.time() - start_time))
+
+stream.stop_stream()
+stream.close()
+
+p.terminate()
 
 
 

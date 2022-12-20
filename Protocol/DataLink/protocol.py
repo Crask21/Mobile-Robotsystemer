@@ -98,6 +98,8 @@ def add_esc(input_List):
 def add_seq(input_List):
     count = 0
     for i in range(len(input_List)):
+        if count == 15:
+            count = -1
         count=count+1
         input_List[i].insert(0,hex(count))
     return input_List

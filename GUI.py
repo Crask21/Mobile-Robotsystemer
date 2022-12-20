@@ -18,10 +18,10 @@ hexa.pack()
 
 package = []
 
-baud = 50
-fade = 0.003
+baud = 100
+fade = 0.005
 
-robot=DTMF(50,20)
+robot=DTMF(baud,20)
 
 
 
@@ -87,7 +87,7 @@ def updateLENGTH():
 
 # Set package/moves (not finished)
 def manualPackage():
-    input = manual_enter.get()
+    #input = manual_enter.get()
 
     package = inputToList(input)
     hexa.configure(state=NORMAL)
@@ -270,32 +270,38 @@ clear.grid(row=9,column=1)
 
 send_dtmf.grid(row=10,column=1,pady=20)
 
+# Baud and fade
+baud_enter = Entry(frame1, width = 10, borderwidth=5)
+baud_enter.insert(0,'100')
+baud_submit = Button(frame1, text="Baud submit",command= updateBAUD)
+baud_enter.grid(row=8,column=4)
+baud_submit.grid(row=9,column=4)
+
+
+fade_enter = Entry(frame1, width = 10, borderwidth=5)
+fade_enter.insert(0,'0.005')
+fade_submit = Button(frame1, text="Fade submit",command= updateFADE)
+fade_enter.grid(row=8,column=5)
+fade_submit.grid(row=9,column=5)
+
+length3 = Label(frame1,text="Package length:")
+length2 = Label(frame1,text="0")
+length3.grid(row=8,column=6)
+length2.grid(row=9,column=6)
+
+# Manual package---------------------------------------------------------
 # Setup frame 2
-frame2 = LabelFrame(root,text='Manual hexa decimal package', padx=20,pady=20)
-frame2.pack(padx=10,pady=10)
-
-manual_enter = Entry(frame2, width = 10, borderwidth=5)
-submit = Button(frame2, text="Submit",command= manualPackage)
-
-
-manual_enter.grid(row=0,column=0)
-submit.grid(row=1,column=0)
-
-baud_enter = Entry(frame2, width = 10, borderwidth=5)
-baud_enter.insert(0,'Baud rate')
-baud_submit = Button(frame2, text="Baud submit",command= updateBAUD)
-baud_enter.grid(row=0,column=1)
-baud_submit.grid(row=1,column=1)
+#frame2 = LabelFrame(root,text='Manual hexa decimal package', padx=20,pady=20)
+#frame2.pack(padx=10,pady=10)
+#
+#manual_enter = Entry(frame2, width = 10, borderwidth=5)
+#submit = Button(frame2, text="Submit",command= manualPackage)
+#
+#
+#manual_enter.grid(row=0,column=0)
+#submit.grid(row=1,column=0)
 
 
-fade_enter = Entry(frame2, width = 10, borderwidth=5)
-fade_enter.insert(0,'Fade')
-fade_submit = Button(frame2, text="Fade submit",command= updateFADE)
-fade_enter.grid(row=2,column=1)
-fade_submit.grid(row=3,column=1)
-
-length2 = Label(frame2,text="Length")
-length2.grid(row=0,column=2)
 
 
     # Setup frame 3
@@ -306,18 +312,18 @@ length2.grid(row=0,column=2)
 #
 #send_dtmf.grid(row=0,column=0)
 
-
+# DECODE----------------------------------------------
 # Setup frame 4 ()
-frame4 = LabelFrame(root,text='Translate package', padx=20,pady=20)
-frame4.pack(padx=10,pady=10)
-
-decode_enter = Entry(frame4, width = 10, borderwidth=5)
-#decode = Button(frame4, text='Decode package', command=lambda: decode_pack(decode_enter.get()))
-translated = Label(frame4, text='')
-
-decode_enter.grid(row=1,column=0)
-#decode.grid(row=2,column=0)
-translated.grid(row=3,column=0)
+        #frame4 = LabelFrame(root,text='Translate package', padx=20,pady=20)
+        #frame4.pack(padx=10,pady=10)
+        #
+        #decode_enter = Entry(frame4, width = 10, borderwidth=5)
+        ##decode = Button(frame4, text='Decode package', command=lambda: decode_pack(decode_enter.get()))
+        #translated = Label(frame4, text='')
+        #
+        #decode_enter.grid(row=1,column=0)
+        ##decode.grid(row=2,column=0)
+        #translated.grid(row=3,column=0)
 
 
 
