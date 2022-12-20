@@ -1498,9 +1498,6 @@
    'C:\\Users\\Markus Simonsen\\Desktop\\UNI\\Robtek\\3. sem\\Semester '
    'projekt\\.venv\\lib\\site-packages\\_distutils_hack\\override.py',
    'PYMODULE'),
-  ('tracemalloc',
-   'C:\\Program Files\\Python310\\lib\\tracemalloc.py',
-   'PYMODULE'),
   ('nturl2path',
    'C:\\Program Files\\Python310\\lib\\nturl2path.py',
    'PYMODULE'),
@@ -1509,10 +1506,13 @@
   ('http.cookiejar',
    'C:\\Program Files\\Python310\\lib\\http\\cookiejar.py',
    'PYMODULE'),
-  ('_py_abc', 'C:\\Program Files\\Python310\\lib\\_py_abc.py', 'PYMODULE'),
+  ('tracemalloc',
+   'C:\\Program Files\\Python310\\lib\\tracemalloc.py',
+   'PYMODULE'),
   ('stringprep',
    'C:\\Program Files\\Python310\\lib\\stringprep.py',
    'PYMODULE'),
+  ('_py_abc', 'C:\\Program Files\\Python310\\lib\\_py_abc.py', 'PYMODULE'),
   ('Protocol.Physical.DTMF_overclass',
    'C:\\Users\\Markus Simonsen\\Desktop\\UNI\\Robtek\\3. '
    'sem\\Mobile-Robotsystems\\Protocol\\Physical\\DTMF_overclass.py',
@@ -6217,6 +6217,8 @@
    'C:\\Users\\Markus Simonsen\\Desktop\\UNI\\Robtek\\3. '
    'sem\\Mobile-Robotsystems\\Protocol\\Physical\\Class_DTMF.py',
    'PYMODULE'),
+  ('wave', 'C:\\Program Files\\Python310\\lib\\wave.py', 'PYMODULE'),
+  ('chunk', 'C:\\Program Files\\Python310\\lib\\chunk.py', 'PYMODULE'),
   ('pygame',
    'C:\\Users\\Markus Simonsen\\Desktop\\UNI\\Robtek\\3. sem\\Semester '
    'projekt\\.venv\\lib\\site-packages\\pygame\\__init__.py',
