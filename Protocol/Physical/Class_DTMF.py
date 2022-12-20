@@ -377,14 +377,15 @@ class SEND:
 
 
 
-# DTMF Settings
-fs = 4000
-amplitude = 15000
-media = 'PyGame' # 'SD'
-fade_P = 0.005
-baud_rate = 1
-syn = 0
-# SYNC'
-send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
-
-send.send_package([0,1,0], save_wav=True)
+## DTMF Settings
+#fs = 4000
+#amplitude = 15000
+#media = 'PyGame' # 'SD'
+#fade_P = 0.005
+#baud_rate = 1
+#syn = 0
+## SYNC'
+#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+#
+#send.send_package([0,1,0], save_wav=True)
+#
