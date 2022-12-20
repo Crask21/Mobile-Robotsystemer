@@ -232,6 +232,7 @@ class LISTEN():
 
     def startListen(rec):
         print(rec.sampleSize)
+        
         print("started listening!")
         #-----------------------------Reading-----------------------------
         while(True):
