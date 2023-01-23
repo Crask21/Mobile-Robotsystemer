@@ -32,6 +32,8 @@ class moveClass:
         else:
             print('Not a topic to react on.')
     
+    #A function that will publish a message to the motors causing it to drive
+    #lin can vary between -0.2 - +0.2
     def drive(self, ang = 0.0,lin = 0.0, time = 0.5):
         pub_msg = { 'linear' : {'x':lin, 'y':0, 'z':0},
                         'angular' : {'x':0, 'y':0, 'z':ang}}
@@ -39,6 +41,7 @@ class moveClass:
         self.client.publish('cmd_vel', payload=pub_msg)
         sleep(time)
     
+    #will perform a rotation and then a linear movement based on the angle and distance requested
     def move(self,ang = 0.0, dist = 0.0):
         #posibly need to take into account negative movement
         dist = float(dist)
