@@ -63,7 +63,8 @@ def hexa_devide(input_List):
                 try:
                     temp.append(hex(int(input_List[i][j][3],16)))
                 except:
-                    print("spørg Prip: protocol.py l.64 Der er fejl")
+                    pass
+                    #print("spørg Prip: protocol.py l.64 Der er fejl")
             temp_main.append(temp)
             
         elif len(input_List[i])<2:

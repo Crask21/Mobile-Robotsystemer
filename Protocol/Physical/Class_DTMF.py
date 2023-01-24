@@ -79,7 +79,7 @@ class SEND:
 
 # Send package of hexi decimals
     def send_package(data, pack, mute = True,plot = False, save_wav = False):
-
+        
         package = [*pack,0,0,0,0,0]
 
         data.soundwave = np.arange(0,1)
@@ -115,8 +115,6 @@ class SEND:
             data.savewav(data.soundwave)
 
 
-    
-
 # Plot the package as DTMF tones
     def plot_last_package(data, dur = False, custom = False,curve='o', xlabel = "Time", ylabel="Amplitude",title="DTMF 0x0 sampled at 44100Hz"):
 
@@ -151,8 +149,6 @@ class SEND:
         plt.plot(data.FFT,'r--')
         plt.ylabel('some numbers')
         plt.show()
-    
-
     
         
 # Make a DTMF tone
@@ -321,10 +317,13 @@ class SEND:
         print(random_data)
         return random_data
 
+<<<<<<< HEAD
 
 
 
 # Compare send package with received package
+=======
+>>>>>>> 70b7bba7eb7d44a818b98a7ca7e2dbdf301b3760
     def compare(data, original, recieved, compare = True):
 
         dif = len(recieved) - len(original)
@@ -385,3 +384,15 @@ class SEND:
 
 
 
+## DTMF Settings
+#fs = 4000
+#amplitude = 15000
+#media = 'PyGame' # 'SD'
+#fade_P = 0.005
+#baud_rate = 1
+#syn = 0
+## SYNC'
+#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+#
+#send.send_package([0,1,0], save_wav=True)
+#

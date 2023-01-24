@@ -15,7 +15,7 @@ from scipy.signal import freqz
 
 FORMAT = pyaudio.paInt16 
 CHANNELS = 1
-RATE = 5000
+RATE = 4000
 INPUT_BLOCK_TIME = 0.1
 INPUT_FRAMES_PER_BLOCK = int(RATE*INPUT_BLOCK_TIME)
 
@@ -136,17 +136,35 @@ print(data_int)
 
 yf=fft(data_intz)
 yf=abs(yf)
+
+#Time plot
+fig1=plt.plot(data_int)
+plt.xlabel("Time")
+plt.ylabel("Amplitude")
+plt.show()
+
+
+#FFT with folding
+xf = np.linspace(0, RATE, int(time_per_read*RATE+z_pad))
+fig2=plt.plot(xf,yf)
+plt.xlabel("Frequencies: Hz")
+plt.ylabel("Amplitude")
+plt.show()
+
+xf=np.delete(xf,delList)
 yf=np.delete(yf,delList)
 
-fig1=plt.plot(data_int)
+#FFT without folding
+fig3=plt.plot(xf,yf)
+plt.xlabel("Frequencies: Hz")
+plt.ylabel("Amplitude")
 plt.show()
-fig2=plt.plot(xf,yf)
-plt.show()
-yf=fft(data_intz)
-yf=abs(yf)
-yf=np.delete(yf,delList)
+
+#FFT with filter
 yf[cheatfilter]=0
-fig2=plt.plot(xf,yf)
+fig4=plt.plot(xf,yf)
+plt.xlabel("Frequencies: Hz")
+plt.ylabel("Amplitude")
 plt.show()
 
 
