@@ -14,8 +14,8 @@ def butter_bandpass(lowcut, highcut, fs, order=5):
     return b, a
 
 fs = 5000.0
-lowcut = 500.0
-highcut = 1700.0
+lowcut = 0.0
+highcut = 2000.0
 
 def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
