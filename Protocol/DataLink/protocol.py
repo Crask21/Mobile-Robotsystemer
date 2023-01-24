@@ -150,6 +150,7 @@ def organize(input_List):
     return output
 
 def esc_check(inpt_List):
+    print(inpt_List)
     output = []
     for k in range(len(inpt_List)):
         temp = []
