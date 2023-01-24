@@ -318,9 +318,10 @@ class LISTEN():
                 indexes = np.arange(1000, freqmagn.size)
                 freqmagn = np.delete(freqmagn, indexes)
                 lowestFreqs = np.append(lowestFreqs, np.argmax(freqmagn))
-                plt.plot(lowestFreqs)
-                print(lowestFreqs)
-
+                
+            plt.plot(lowestFreqs)
+            plt.show()
+            print(lowestFreqs)
                 
 
             time.sleep(100)
@@ -345,7 +346,7 @@ class LISTEN():
                 highestfreqs=rec.find_highest_freqs(freqmagn)
                 tone=rec.dtmf_to_hexa(highestfreqs)
                 rec.tones =np.append(rec.tones,tone)
-                print(rec.tones)
+                #print(rec.tones)
 
                 #if rec.getLog:
                 #    rec.writeLogXL()
