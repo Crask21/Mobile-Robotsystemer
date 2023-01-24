@@ -33,7 +33,7 @@ class LISTEN():
                  channels = rec.CHANNELS,                          
                  rate = rec.RATE,                                  
                  input = True,
-                 frames_per_buffer=9999*2
+                 frames_per_buffer=9999*2,
                  input_device_index=3 
         )
 
