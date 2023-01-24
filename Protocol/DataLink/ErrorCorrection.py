@@ -35,7 +35,7 @@ def errorCorrectionUp(pack, robot):
     #three lines are the real lines
     for i in range(len(pack)):
         if (pack[i][1]=="error"):
-            errorList += pack[i][0]
+            errorList += to_hex[pack[i][0]]
     errorMessage = []
     #changed from len(errorList>0) to len(errorList)>0 this looks more right
     if len(errorList)>0:

@@ -80,7 +80,7 @@ class SEND:
 # Send package of hexi decimals
     def send_package(data, pack, mute = True,plot = False, save_wav = False):
         
-        package = [*pack,0,0,0,0,0]
+        package = [0,0,0,0,0,0,*pack,0,0,0,0,0]
 
         data.soundwave = np.arange(0,1)
         
