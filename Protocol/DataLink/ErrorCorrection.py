@@ -38,7 +38,8 @@ def errorCorrectionUp(pack, robot):
             print('Error List')
 
             print(pack[i])
-            errorList += to_hex[pack[i][0]]
+            print(to_hex[pack[i][0]])
+            errorList.append(to_hex[pack[i][0]])
             print(errorList)
             print(type(to_hex[pack[i][0]]))
     errorMessage = []
