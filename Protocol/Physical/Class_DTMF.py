@@ -65,11 +65,11 @@ class SEND:
         data.duration = 1/baud
         data.DTMF_init()
     
-    def setFade(data,fade):
+    def setFade(data, fade):
         data.p_fade = fade
         data.DTMF_init()
 
-
+# 
     def silentDTMF(data,mute = False,dur = 2):
             silence = data.makeSIN(1,dur,2,2,data.fs,0.4)
             
@@ -138,6 +138,7 @@ class SEND:
         plt.show()
 
 
+# Plot fft
     def plot_fft(data):
 
         package_size = round(len(data.FFT)/data.fs/data.duration)
@@ -246,6 +247,7 @@ class SEND:
         for i in np.arange(len(dtmf_freq)):
             data.dtmf.append(data.makeDTMF(dtmf_freq[i][0], dtmf_freq[i][1]))
 
+# Save soundwave as soundfile
     def savewav(data, soundwave):
         # open new wave file
         pygame.mixer.init(frequency=data.fs, size=-16, channels=1)
@@ -293,9 +295,7 @@ class SEND:
         # Delay for the duration of the sound
         pygame.time.wait(int(sound.get_length() * 1000)) 
 
-    #def play_SD(data, soundwave):
-    #    wav_wave = np.array(soundwave, dtype=np.int16)
-    #    sd.play(wav_wave, blocking=True)
+    
 
     # Synchroniazation
     def synchroniazation(data,num, mute = False):
@@ -308,7 +308,7 @@ class SEND:
         #data.send_package(sync,mute)
         return sync
 
-        # Random package
+        # Create a random package
     def rand_pack(data,num):
         size = 16
         random_data = []
@@ -377,14 +377,15 @@ class SEND:
 
 
 
-# DTMF Settings
-fs = 4000
-amplitude = 15000
-media = 'PyGame' # 'SD'
-fade_P = 0.005
-baud_rate = 1
-syn = 0
-# SYNC'
-send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
-
-send.send_package([0,1,0], save_wav=True)
+## DTMF Settings
+#fs = 4000
+#amplitude = 15000
+#media = 'PyGame' # 'SD'
+#fade_P = 0.005
+#baud_rate = 1
+#syn = 0
+## SYNC'
+#send=SEND(fs, amplitude, fade_P, baud_rate,syn, media,mono=False)
+#
+#send.send_package([0,1,0], save_wav=True)
+#

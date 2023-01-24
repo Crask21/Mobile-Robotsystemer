@@ -4,7 +4,7 @@ import numpy as np
 sys.path.append('../Mobile-Robotsystems')
 #from Turtlebot.moveClass import moveClass
 #from Protocol.DataLink.protocol_class import protocolClass
-from Protocol.Physical.DTMF_overclass import DTMF
+#from Protocol.Physical.DTMF_overclass import DTMF
 from scipy.fftpack import fft
 import matplotlib.pyplot as plt
 import time
@@ -27,14 +27,15 @@ dtmf_freq = [[1209,697], # 0
             [1477,941],  # E
             [1633,941]]  # F
 
-
-
+var = '0x7'
+#print(var[2]+2)
+print(int(var[2]))
 
 # DTMF Settings
-fs = 4000
-amplitude = 15000
-fade_P = 0.000
-baud_rate = 10
+fs = 44100
+amplitude = 5000
+fade_P = 0.005
+baud_rate = 160
 sync = 20
 send = SEND(fs, amplitude, fade_P, baud_rate,sync)
 pack = [0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 6, 14, 4, 10, 2, 0, 1, 0, 1, 3, 7, 5, 7, 4, 7, 3, 14, 7, 0, 0, 1]
@@ -44,10 +45,10 @@ pack = [0, 1, 1, 0, 8, 3, 11, 13, 0, 1, 0, 1, 2, 4, 4, 6, 5, 6, 5, 7, 10, 2, 0, 
 
 
 
-robot=DTMF(baud_rate,30, mono_robot = True)
+#robot=DTMF(baud_rate,30, mono_robot = False)
 #pack = protocolClass('0x0',[],robot)
 
-
+send.send_package([0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4,0x0,0xF,0x0,0x4], mute=False)
 
 def fft():
     twoDTMF = [*send.makeDTMF(697,1477), *send.makeDTMF(697,1209)]
@@ -74,8 +75,11 @@ send.setFade(0.005)
 title1 = '1'
 points1 = [*send.makeDTMF(1209,697),*send.makeDTMF(1336,697),*send.makeDTMF(1209,697)]
 #print(points1)
-send.send_package([0,15,0],plot=True)
-send.plot_last_package(curve='r--')
+
+
+
+
+#send.plot_last_package(curve='r--')
 #send.plot_last_package(curve='r--',title="20 baud rate with 40% fade")
 
 send.setBaud(50)
@@ -116,7 +120,6 @@ with open('GFG.csv', 'w') as f:
 print(pack)
 
 
-send.makeDTMF(1,1)
 
 import time
 
@@ -137,20 +140,20 @@ samples = (np.sin(2 * np.pi * np.arange(fs * duration) * 1209 / fs)+np.sin(2 * n
 output_bytes = (volume * samples).tobytes()
 
 # for paFloat32 sample values must be in range [-1.0, 1.0]
-stream = p.open(format=pyaudio.paFloat32,
-                channels=1,
-                rate=fs,
-                output=True)
+#stream = p.open(format=pyaudio.paFloat32,
+         #      channels=1,
+         #      rate=fs,
+         #      output=True)
 
 # play. May repeat with different volume values (if done interactively)
 start_time = time.time()
-stream.write(output_bytes)
-print("Played sound for {:.2f} seconds".format(time.time() - start_time))
-
-stream.stop_stream()
-stream.close()
-
-p.terminate()
+#stream.write(output_bytes)
+#print("Played sound for {:.2f} seconds".format(time.time() - start_time))
+#
+#stream.stop_stream()
+#stream.close()
+#
+#p.terminate()
 
 
 

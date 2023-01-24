@@ -6,6 +6,7 @@ from scipy.fftpack import fft
 from copy import deepcopy
 import pandas as pd
 import pygame as pg
+import matplotlib.pyplot as plt
 
 class LISTEN():
     def __init__(rec, baud, sync=20, fade=0.006667, amplitude=15000, senderFs=44100, pack=[0, 1, 1, 7, 0, 8, 6, 10, 2, 0, 1, 0, 1, 2, 8, 0, 8, 10, 7, 9, 3, 0, 1, 0, 1, 3, 4, 13, 6, 5, 7, 3, 7, 3, 6, 1, 6, 7, 0, 8, 7, 0, 1, 0, 1, 4, 6, 5, 15, 5, 4, 0, 1]):
@@ -300,13 +301,39 @@ class LISTEN():
 
             #------------------------LOG-----------------------
             print("maybe finished")
-            print(rec.frames)
-            print(rec.frames.size)
-            print(rec.frames.size/(rec.sampleSize))
-            print(rec.frames.size%int(rec.sampleSize))
-            excessive=rec.frames.size%int(rec.sampleSize)
-            rec.frames=rec.frames[:rec.frames.size-excessive]
-            rec.frames=rec.frames.reshape(-1,int(rec.sampleSize))
+            #print(rec.frames)
+            #print(rec.frames.size)
+            #print(rec.frames.size/(rec.sampleSize))
+            #print(rec.frames.size%int(rec.sampleSize))
+            excessive = rec.frames.size%int(rec.sampleSize)
+            rec.frames = rec.frames[:rec.frames.size-excessive]
+            
+            lowestFreqs = np.array([])
+            for i in range(rec.frames.size):
+                frameSlice = rec.frames[i : int(i+rec.sampleSize)]
+                frameSlice = np.append(frameSlice, rec.z_pad_arr)
+                yf = fft(frameSlice)
+                yf = np.delete(yf, rec.delList)
+                freqmagn = np.absolute(yf)
+                indexes = np.arange(1000, freqmagn.size)
+                freqmagn = np.delete(freqmagn, indexes)
+                lowestFreqs = np.append(lowestFreqs, np.argmax(freqmagn))
+                
+            plt.plot(lowestFreqs)
+            plt.show()
+            print(lowestFreqs)
+                
+
+            time.sleep(100)
+            i=np.append(i,rec.z_pad_arr)
+            yf=fft(i)
+            yf=np.delete(yf,rec.delList)
+            freqmagn=np.absolute(yf)
+            highestfreqs=rec.find_highest_freqs(freqmagn)
+            tone=rec.dtmf_to_hexa(highestfreqs)
+            rec.tones =np.append(rec.tones,tone)
+            print(rec.tones)
+            #rec.frames=rec.frames.reshape(-1,int(rec.sampleSize))
             #print(rec.frames)
 
 
@@ -319,7 +346,7 @@ class LISTEN():
                 highestfreqs=rec.find_highest_freqs(freqmagn)
                 tone=rec.dtmf_to_hexa(highestfreqs)
                 rec.tones =np.append(rec.tones,tone)
-                print(rec.tones)
+                #print(rec.tones)
 
                 #if rec.getLog:
                 #    rec.writeLogXL()
