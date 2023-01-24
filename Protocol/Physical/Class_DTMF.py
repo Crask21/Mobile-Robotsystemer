@@ -317,13 +317,6 @@ class SEND:
         print(random_data)
         return random_data
 
-<<<<<<< HEAD
-
-
-
-# Compare send package with received package
-=======
->>>>>>> 70b7bba7eb7d44a818b98a7ca7e2dbdf301b3760
     def compare(data, original, recieved, compare = True):
 
         dif = len(recieved) - len(original)
