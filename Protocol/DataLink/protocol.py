@@ -151,6 +151,7 @@ def organize(input_List):
     return output
 
 def esc_check(inpt_List):
+    print("Escape check: error debugging:")
     print(inpt_List)
     output = []
     for k in range(len(inpt_List)):
