@@ -56,6 +56,8 @@ class moveClass:
         if(dist != 0):
             for i in range(int(abs(dist)/10)):
                 self.drive(0,dist/abs(dist)*0.2)
+                
+                
             self.drive(0,(dist%10)*0.02*dist/abs(dist))
         else:
             print("A distance was 0")
