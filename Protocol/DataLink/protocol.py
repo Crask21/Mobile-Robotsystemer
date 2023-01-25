@@ -394,11 +394,11 @@ def decode_address(input_List, address):
             return input_List
         else:
             print("Addressing sucks")
-            return False
+            return input_List
+            #previously ^ return false
     else:
         print("--------CORRUPTED ADDRESS: STOP PROGRAM--------")
-        #
-
+        return input_List
     
 
 def data_comb(input_List):
