@@ -383,18 +383,20 @@ def add_address(input_List, address):
 
 
 def decode_address(input_List, address):
-    
-    try:
-        if input_List[0][2] == address : print('second true')
-    except:
-        print('Decode address:')
-        print(address)
-        print(input_List)
-    if len(input_List[0])>2 and input_List[0][2] == address:
-        return input_List
+    if len(input_List[0]) < 3:
+        try:
+            if input_List[0][2] == address : print('second true')
+        except:
+            print('Decode address:')
+            print(address)
+            print(input_List)
+        if len(input_List[0])>2 and input_List[0][2] == address:
+            return input_List
+        else:
+            print("Addressing sucks")
+            return False
     else:
-        print("Addressing sucks")
-        return False
+        print("--------CORRUPTED ADDRESS: STOP PROGRAM--------")
 
     
 
