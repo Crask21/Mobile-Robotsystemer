@@ -383,6 +383,8 @@ def add_address(input_List, address):
 
 
 def decode_address(input_List, address):
+    print("Length of input")
+    print(len(input_List[0]))
     if len(input_List[0]) < 2:
         try:
             if input_List[0][2] == address : print('second true')
