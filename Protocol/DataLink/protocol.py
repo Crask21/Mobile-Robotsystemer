@@ -383,7 +383,7 @@ def add_address(input_List, address):
 
 
 def decode_address(input_List, address):
-    if len(input_List[0]) < 3:
+    if len(input_List[0]) < 2:
         try:
             if input_List[0][2] == address : print('second true')
         except:
@@ -397,6 +397,7 @@ def decode_address(input_List, address):
             return False
     else:
         print("--------CORRUPTED ADDRESS: STOP PROGRAM--------")
+        #
 
     
 
