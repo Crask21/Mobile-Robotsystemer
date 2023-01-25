@@ -5,7 +5,7 @@ from Protocol.Physical.DTMF_overclass import DTMF
 import time
 
 def main():
-    baud = 50
+    baud = 20
     robot=DTMF(baud,30, mono_robot = True)
     
     moveObj = moveClass()
