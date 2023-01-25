@@ -383,10 +383,13 @@ def add_address(input_List, address):
 
 
 def decode_address(input_List, address):
-    print('Decode address:')
-    print(address)
-    print(input_List)
-    if input_List[0][2] == address : print('second true')
+    
+    try:
+        if input_List[0][2] == address : print('second true')
+    except:
+        print('Decode address:')
+        print(address)
+        print(input_List)
     if len(input_List[0])>2 and input_List[0][2] == address:
         return input_List
     else:
